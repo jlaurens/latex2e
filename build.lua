@@ -6,9 +6,15 @@
 bundle  = "LaTeX2e"
 module  = ""
 
--- A couple of custom variables: the order here is set up for 'importance'
-bundles  = {"base"}
-required = {"cyrillic", "graphics", "tools", "amsmath", "firstaid"}
+-- List of bundles ordered by 'importance'
+bundles  = {
+  "base",
+  "required/cyrillic",
+  "required/graphics",
+  "required/tools",
+  "required/amsmath",
+  "required/firstaid"
+}
 
 -- Location of main directory: use Unix-style path separators
 maindir = "."
@@ -30,15 +36,8 @@ end
 function main (target)
   local errorlevel
   local function dobundles (target)
-    local t = { }
-    for _,v in ipairs(bundles) do
-      table.insert(t, v)
-    end
-    for _,v in ipairs(required) do
-      table.insert(t, "required/" .. v)
-    end
     -- Avoid inter-bundle issues
-    for _,v in ipairs(t) do
+    for _,v in ipairs(bundles) do
       if target == "ctan" then call({v},"clean") end
       local errorlevel = call({v},target)
       if errorlevel ~= 0 then return errorlevel end
@@ -56,9 +55,6 @@ function main (target)
     if errorlevel == 0 then
       for _,i in ipairs (bundles) do
         cp ("*.zip", i, ".")
-      end
-      for _,i in ipairs (required) do
-        cp ("*.zip", "required/" .. i, ".")
       end
     end
   elseif target == "doc" then
