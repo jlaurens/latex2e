@@ -51,7 +51,113 @@
 %
 % \fi
 %
+% \providecommand\metatt[1]{\texttt{\meta{#1}}}
+% \ExplSyntaxOn
+% \cs_new:Npn \LHXVert {|}
+% ^^A material to typeset code chunks
+% \tl_new:N \l__lthooks_tl
+% \int_new:N \l__lthooks_int
+% \AddToHook{env/syntax/begin}{
+%   \def\SEP{\smash{\rule[-\dp\strutbox]{1pt}{\baselineskip}}\phantom{x}}
+%   \def\TAB{\phantom{xx}}
+%   \def\FILL#1{\prg_replicate:nn{38-(#1)}{~}}
+%   \def\FILLER{\phantom{\prg_replicate:nn{9}{xxxx}xxx}}
+%   \def\LEFT#1{\leavevmode\rlap{#1}\FILLER}
+%   \def\RIGHT#1{\SEP#1}
+%   \cs_set_eq:NN \meta_saved:n \meta
+%   \def\meta#1{^^A
+%     \tl_set:Nn \l__lthooks_tl { #1 }
+%     \hbox_set:Nn \l_tmpa_box { \meta_saved:n { #1 } }
+%     \hbox_set:Nn \l_tmpb_box { x }
+%     \int_set:Nn \l__lthooks_int { \int_div_truncate:nn
+%       { \box_wd:N \l_tmpa_box  }
+%       { \box_wd:N \l_tmpb_box  }
+%     }
+%     \fp_compare:nNnT
+%       { \l__lthooks_int * \box_wd:N \l_tmpb_box }
+%       < 
+%       { \box_wd:N \l_tmpa_box }
+%       { \int_incr:N \l__lthooks_int }
+%     \makebox[ \l__lthooks_int \box_wd:N \l_tmpb_box ][c]
+%       { \box_use:N \l_tmpa_box }
+%   }
+% }
+% \int_new:N \l__lthooks_source_int
+% \hook_new:n {lthooksCode/lineno.format}
+% \hook_gput_code:nnn
+%   {lthooksCode/lineno.format}
+%   {lthooksCode/default}
+%   {\sffamily\tiny}
+% \makeatletter
+% \NewDocumentEnvironment{lthooksCode}{O{}} {
+%   \keys_define:nn { lthooksCode } {
+%     lineno .bool_set:N = \l__lthooks_source_lineno_bool,
+%     lineno .default:n  = true,
+%     no-lineno .bool_set_inverse:N = \l__lthooks_source_lineno_bool,
+%     first  .int_set:N  = \l__lthooks_source_int,
+%   }
+%   \keys_set:nn { lthooksCode } {first=1, lineno=false, #1 }
+%   \cs_set:Npn\SEP{\rule[-\dp\strutbox]{1pt}{\baselineskip}~~}
+%   \cs_set:Npn\TAB{\phantom{xx}}
+%   \cs_set_eq:NN\IT\textit
+%   \bool_if:NF \c_true_bool { FAIL }
+%   \bool_if:NT \c_false_bool { FAIL }
+%   \bool_if:NTF \l__lthooks_source_lineno_bool {
+%     \keys_define:nn { lthooksCode.ROW } {
+%       format  .code:n  = \hook_gput_next_code:nn
+%         { lthooksCode/lineno.format }
+%         { ##1 },
+%       mark  .tl_set:N  = \l__lthooks_source_mark_tl,
+%       mark  .initial:n = ,
+%       label .tl_set:N  = \l__lthooks_label_tl,
+%     }
+%     \NewDocumentCommand\ROW{O{}}{
+%       \keys_define:nn { lthooksCode.ROW } {
+%         mark .initial:n = ,
+%       }
+%       \keys_set:nn { lthooksCode.ROW } { label=, ##1, }
+%       \makebox[0pt][r]{\textcolor[gray]{0.5}{
+%         \hook_use:n { lthooksCode/lineno.format }
+%         \l__lthooks_source_mark_tl
+%         \int_use:N \l__lthooks_source_int
+%       }\hphantom{x}}
+%       \tl_if_empty:NF \l__lthooks_label_tl {
+%         \tl_set:Nx \@currentlabel { \int_use:N \l__lthooks_source_int }
+%         \phantomsection
+%         \label{ \l__lthooks_label_tl }
+%       }
+%       \int_incr:N \l__lthooks_source_int
+%       \TAB
+%     }
+%   } {
+%     \cs_set:Npn\ROW{
+%       \TAB
+%     }
+%   }
+%   \begin{flushleft}\ttfamily\small
+%   \UseHook{env/syntax/begin}
+%   \def\FILL##1{\prg_replicate:nn{37-(##1)}{~}}
+%   \def\FILLER{\phantom{\prg_replicate:nn{9}{xxxx}xxx}}
+% }{
+%   \end{flushleft}
+% }
+% \makeatother
+% \let \lthookslangle \langle
+% \let \lthooksrangle \rangle
+% \let \META \meta
+% \providecommand\META[1]{{
+%   \def\langle{
+%     \mbox{\ensuremath\lthookslangle \hskip-0.5ex \ensuremath\lthookslangle}
+%   }
+%   \def\rangle{
+%     \mbox{\ensuremath\lthooksrangle \hskip-0.5ex \ensuremath\lthooksrangle}
+%   }
+%   \meta{#1}
+% }}
 %
+% \ExplSyntaxOff
+%
+% \providecommand\LHXLabel[1]{\texttt{#1}}
 % \providecommand\hook[1]{\texttt{#1}}
 %
 % \providecommand\fmi[1]{\marginpar{\footnotesize FMi: #1}}
@@ -153,8 +259,10 @@
 %     \cs{NewMirroredHookPair} \Arg{hook-1} \Arg{hook-2}
 %   \end{syntax}
 %     A shorthand for
-%    \cs{NewHook}\Arg{hook-1}\cs{NewReversedHook}\Arg{hook-2}.
-%
+% \begin{lthooksCode}
+% \ROW\cs{NewHook}\Arg{hook-1}\\
+% \ROW\cs{NewReversedHook}\Arg{hook-2}\\
+% \end{lthooksCode}
 %    The \meta{hook} can be specified using the dot-syntax to denote
 %    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
@@ -189,9 +297,11 @@
 %     \cs{NewMirroredHookPairWithArguments} \Arg{hook-1} \Arg{hook-2} \Arg{number}
 %   \end{syntax}
 %   A shorthand for
-%   \cs{NewHookWithArguments}\Arg{hook-1}\Arg{number}\\
-%   \cs{NewReversedHookWithArguments}\Arg{hook-2}\Arg{number}.
-%   Section~\ref{sec:hook-args} explains hooks with arguments.
+% \begin{lthooksCode}
+% \ROW\cs{NewHookWithArguments}\Arg{hook-1}\Arg{number}\\
+% \ROW\cs{NewReversedHookWithArguments}\Arg{hook-2}\Arg{number}\\
+% \end{lthooksCode}
+%%   Section~\ref{sec:hook-args} explains hooks with arguments.
 %
 %    The \meta{hook} can be specified using the dot-syntax to denote
 %    the current package name. See section~\ref{sec:default-label}.
@@ -379,14 +489,14 @@
 %    (\verb|#|) that are not supposed to be understood as the arguments
 %    of the hook, such tokens should be doubled.  For example, with
 %    \cs{AddToHook} one can write:
-%\begin{verbatim}
-%   \AddToHook{myhook}{\def\foo#1{Hello, #1!}}
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW\cs{AddToHook}|{myhook}{\def\foo#1{Hello, #1!}}|\\
+% \end{lthooksCode}
 %    but to achieve the same with \cs{AddToHookWithArguments}, one should
 %    write:
-%\begin{verbatim}
-%   \AddToHookWithArguments{myhook}{\def\foo##1{Hello, ##1!}}
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW\cs{AddToHookWithArguments}|{myhook}{\def\foo##1{Hello, ##1!}}|\\
+% \end{lthooksCode}
 %    because in the latter case, \verb|#1| refers to the first argument
 %    of the hook \hook{myhook}.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
@@ -434,19 +544,19 @@
 % A useful application for this declaration inside the document body
 % is when one wants to temporarily add code to hooks and later remove
 % it again, e.g.,
-%\begin{verbatim}
-%   \AddToHook{env/quote/before}{\small}
-%   \begin{quote}
-%     A quote set in a smaller typeface
-%   \end{quote}
-%   ...
-%   \RemoveFromHook{env/quote/before}
-%   ... now back to normal for further quotes
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW\cs{AddToHook}|{env/quote/before}{\small}|\\
+% \ROW|\begin{quote}|\\
+% \ROW~~\meta{A quote set in a smaller typeface}\\
+% \ROW|\end{quote}|\\
+% \ROW...\\
+% \ROW\cs{RemoveFromHook}|{env/quote/before}|\\
+% \ROW...|%| \IT{now back to normal for further quotes}
+% \end{lthooksCode}
 % Note that you can't cancel the setting with
-%\begin{verbatim}
-%   \AddToHook{env/quote/before}{}
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW\cs{AddToHook}|{env/quote/before}{}|
+% \end{lthooksCode}
 % because that only \enquote{adds} a further empty chunk of code to
 % the hook. Adding \cs{normalsize} would work but that means the hook
 % then contained \cs{small}\cs{normalsize} which means two font size
@@ -487,10 +597,10 @@
 %
 %    It is possible to nest this declaration using the same hook (or
 %    different hooks): e.g.,
-%   \begin{quote}
-%     \cs{AddToHookNext}\Arg{hook}\verb={=\meta{code-1}^^A
+%   \begin{lthooksCode}
+%     \ROW\cs{AddToHookNext}\Arg{hook}\verb={=\meta{code-1}^^A
 %     \cs{AddToHookNext}\Arg{hook}\Arg{code-2}\verb=}=
-%   \end{quote}
+%   \end{lthooksCode}
 %    will execute \meta{code-1} next time the \meta{hook} is used and at
 %    that point puts \meta{code-2} into  the \meta{hook} so that it gets
 %    executed on following time the hook is run.
@@ -586,21 +696,21 @@
 % For example,
 % inside the package \texttt{mypackage.sty}, the default label is
 % \texttt{mypackage}, so the instructions:
-% \begin{verbatim}
-%   \NewHook   {./hook}
-%   \AddToHook {./hook}[.]{code}     % Same as \AddToHook{./hook}{code}
-%   \AddToHook {./hook}[./sub]{code}
-%   \DeclareHookRule{begindocument}{.}{before}{babel}
-%   \AddToHook {file/foo.tex/after}{code}
-% \end{verbatim}
+% \begin{lthooksCode}
+%   \ROW|\NewHook   {./hook}|\\
+%   \ROW|\AddToHook {./hook}[.]{code}     % |\IT{Same as }|\AddToHook{./hook}{code}|\\
+%   \ROW|\AddToHook {./hook}[./sub]{code}|\\
+%   \ROW|\DeclareHookRule{begindocument}{.}{before}{babel}|\\
+%   \ROW|\AddToHook {file/foo.tex/after}{code}|\\
+% \end{lthooksCode}
 %    are equivalent to:
-% \begin{verbatim}
-%   \NewHook   {mypackage/hook}
-%   \AddToHook {mypackage/hook}[mypackage]{code}
-%   \AddToHook {mypackage/hook}[mypackage/sub]{code}
-%   \DeclareHookRule{begindocument}{mypackage}{before}{babel}
-%   \AddToHook {file/foo.tex/after}{code}                  % unchanged
-% \end{verbatim}
+% \begin{lthooksCode}
+%   \ROW|\NewHook   {mypackage/hook}|\\
+%   \ROW|\AddToHook {mypackage/hook}[mypackage]{code}|\\
+%   \ROW|\AddToHook {mypackage/hook}[mypackage/sub]{code}|\\
+%   \ROW|\DeclareHookRule{begindocument}{mypackage}{before}{babel}|\\
+%   \ROW|\AddToHook {file/foo.tex/after}{code}                  % |\IT{unchanged}
+% \end{lthooksCode}
 %
 % The \meta{default label} is automatically set equal to the name of the
 % current package or class at the time the package is loaded.  If the
@@ -653,11 +763,11 @@
 %   The effect of \cs{PushDefaultHookLabel} holds until the next
 %   \cs{PopDefaultHookLabel}.  \cs{usepackage} (and \cs{RequirePackage}
 %   and \cs{documentclass}) internally use
-%   \begin{quote}
-%     \cs{PushDefaultHookLabel}\Arg{package name} \\
-%     \null \quad  \meta{package code} \\
-%     \cs{PopDefaultHookLabel}
-%   \end{quote}
+%   \begin{lthooksCode}
+%     \ROW\cs{PushDefaultHookLabel}\Arg{package name}\\
+%     \ROW\ROW\meta{package code}\\
+%     \ROW\cs{PopDefaultHookLabel}\\
+%   \end{lthooksCode}
 %   to set the \meta{default label} for the package or class file.
 %   Inside the \meta{package code} the \meta{default label} can also be
 %   changed with \cs{SetDefaultHookLabel}.  \cs{input} and other
@@ -940,67 +1050,61 @@
 %   \bigskip
 %   Suppose a hook \texttt{example-hook} whose output of
 %   \cs{ShowHook}|{example-hook}| is:
-%   \begin{verbatim}[numbers=left]
-%   -> The hook 'example-hook':
-%   > Code chunks:
-%   >     foo -> [code from package 'foo']
-%   >     bar -> [from package 'bar']
-%   >     baz -> [package 'baz' is here]
-%   > Document-level (top-level) code (executed last):
-%   >     -> [code from 'top-level']
-%   > Extra code for next invocation:
-%   >     -> [one-time code]
-%   > Rules:
-%   >     foo|baz with relation >
-%   >     baz|bar with default relation <
-%   > Execution order (after applying rules):
-%   >     baz, foo, bar.
-%   \end{verbatim}
+%   \begin{lthooksCode}[lineno]
+%   \ROW|==> Hook: 'example-hook'|\\
+%   \ROW|> Code chunks:|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:top-level,
+%   ]|>   'top-level' -> [code from 'top-level']|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:next-only,
+%   ]|>   next-only -> [one-time code]|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:foo,
+%   ]|>   'foo' -> [code from package 'foo']|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:bar,
+%   ]|>   'bar' -> [from package 'bar']|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:baz,
+%   ]|>   'baz' -> [package 'baz' is here]|\\
+%   \ROW|> Default rules:|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:default-rule,
+%   ]|>   'foo' after 'baz'|\\
+%   \ROW|> Rules:|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:rule,
+%   ]|>   'baz' before 'bar'|\\
+%   \ROW|> Execution order:|\\
+%   \ROW[format=\bfseries]|>   1: 'baz'|\\
+%   \ROW[format=\bfseries]|>   2: 'foo'|\\
+%   \ROW[format=\bfseries]|>   3: 'bar'|\\
+%   \ROW[format=\bfseries]|>   4: 'top-level'|\\
+%   \ROW[format=\bfseries]|>   5: next-only|\\
+%   \end{lthooksCode}
 %
-%   In the listing above, lines~3 to~5 show the three code chunks added
-%   to the hook and their respective labels in the format
-%   \begin{quote}
-%   \quad \meta{label}\verb| -> |\meta{code}
-%   \end{quote}
-%
-%   Line~7 shows the code chunk added by the user in the main document
-%   (labeled |top-level|) in the format
-%   \begin{quote}
-%   \quad\verb|Document-level (top-level) code (executed |%^^A
-%              \meta{first\texttt{\string|}last}\verb|):|\\
-%   \quad\verb|    -> |\meta{\texttt{top-level} code}
-%   \end{quote}
-%   This code will be either the first or last code executed by the hook
+%   In the listing above, lines~\ref{line:example-hook:foo} to~\ref{line:example-hook:baz}
+%   show the three code chunks added
+%   to the hook and their respective labels.
+%   Line~\ref{line:example-hook:top-level} shows the code chunk added by the user in the main document
+%   (labeled |top-level|).
+%   This code will be either the first or last labeled code executed by the hook
 %   (|last| if the hook is normal, |first| if it is reversed).  This
 %   chunk is not affected by rules and does not take part in sorting.
 %
-%   Line~9 shows the code chunk for the next execution of the hook in
-%   the format
-%   \begin{quote}
-%   \quad \verb|-> |\meta{next-code}
-%   \end{quote}
+%   Line~\ref{line:example-hook:next-only} shows the code chunk for the next execution of the hook.
 %   This code will be used and disappear at the next
 %   \verb|\UseHook{example-hook}|, in contrast to the chunks mentioned
 %   earlier, which can only be removed from that hook by doing
 %   \verb|\RemoveFromHook{|\meta{label}|}[example-hook]|.
 %
-%   Lines~11 and~12 show the rules declared that affect this hook in the
-%   format
-%   \begin{quote}
-%   \quad \meta{label-1}\verb+|+\meta{label-2}| with |%^^A
-%         \meta{\texttt{default}?}| relation |\meta{relation}
-%   \end{quote}
-%   which means that the \meta{relation} applies to \meta{label-1} and
-%   \meta{label-2}, in that order, as detailed in \cs{DeclareHookRule}.
-%   If the relation is \texttt{default} it means that this rule applies
-%   to \meta{label-1} and \meta{label-2} in \emph{all} hooks, (unless
-%   overridden by a non-default relation).
+%   Line~\ref{line:example-hook:default-rule}
+%   shows the rules declared by \cs{DeclareDefaultHookRule}.
+%   This rule applies to its labels in \emph{all} hooks, unless
+%   overridden by a non-default relation. Line~\ref{line:example-hook:rule}
+%   shows the rules declared by \cs{DeclareHookRule}.
+%   Both |'|\metatt{label_1}|' before '|\metatt{label_2}
+%   and  |'|\metatt{label_2}|' after '|\metatt{label_1}
+%   are equivalent.
 %
-%   Finally, line~14 lists the labels in the hook after sorting;
-%   that is, in the order they will be executed when the hook is used.
+%   Finally, last lines list the code chunks in the order they will be executed when the hook is used.
 %
 %
-% \subsubsection{Debugging hook code}
+% \subsubsection{Debugging or testing hook code}
 %
 % \begin{function}{\DebugHooksOn,\DebugHooksOff}
 %   \begin{syntax}
@@ -1008,7 +1112,15 @@
 %   \end{syntax}
 %    Turn the debugging of hook code on or off. This displays most changes
 %    made to the hook data structures. The output is rather coarse and
-%      not really intended for normal use.
+%      primarily intended for debugging or testing purposes.
+% \end{function}
+%
+% \begin{function}{\DebugPrintHook}
+%   \begin{syntax}
+%     \cs{DebugPrintHook} \Arg{hook}
+%   \end{syntax}
+%    Prints information about the hook. The output is rather coarse and
+%      primarily intended for debugging or testing purposes.
 % \end{function}
 %
 %
@@ -1096,8 +1208,6 @@
 %
 %    Normally \cs{hook_new:n} should be used instead of this.
 % \end{function}
-%
-%
 %
 %
 % \begin{function}{\hook_use:n,\hook_use:nnw}
@@ -1296,32 +1406,28 @@
 %    make assumptions about the order of execution!
 %
 %    Suppose you have the following declarations:
-%\begin{verbatim}
-%    \NewHook{myhook}
-%    \AddToHook{myhook}[packageA]{\typeout{A}}
-%    \AddToHook{myhook}[packageB]{\typeout{B}}
-%    \AddToHook{myhook}[packageC]{\typeout{C}}
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW|\NewHook{myhook}|\\
+% \ROW|\AddToHook{myhook}[packageA]{\typeout{A}}|\\
+% \ROW|\AddToHook{myhook}[packageB]{\typeout{B}}|\\
+% \ROW|\AddToHook{myhook}[packageC]{\typeout{C}}|\\
+% \end{lthooksCode}
 %    then executing the hook with \cs{UseHook} will produce the
 %    typeout \texttt{A} \texttt{B} \texttt{C} in that order.  In other
 %    words, the execution order is computed to be \texttt{packageA},
 %    \texttt{packageB}, \texttt{packageC} which you can verify with
 %    \cs{ShowHook}\texttt{\{myhook\}}:
-%\begin{verbatim}
-%    -> The hook 'myhook':
-%    > Code chunks:
-%    >     packageA -> \typeout {A}
-%    >     packageB -> \typeout {B}
-%    >     packageC -> \typeout {C}
-%    > Document-level (top-level) code (executed last):
-%    >     ---
-%    > Extra code for next invocation:
-%    >     ---
-%    > Rules:
-%    >     ---
-%    > Execution order:
-%    >     packageA, packageB, packageC.
-%\end{verbatim}
+% \begin{lthooksCode}
+% \ROW|==> Hook: 'myhook'|\\
+% \ROW|> Code chunks:|\\
+% \ROW|>   'packageA' -> \typeout {A}|\\
+% \ROW|>   'packageB' -> \typeout {B}|\\
+% \ROW|>   'packageC' -> \typeout {C}|\\
+% \ROW|> Execution order:|\\
+% \ROW|>   1: 'packageA'|\\
+% \ROW|>   2: 'packageB'|\\
+% \ROW|>   3: 'packageC'.|\\
+% \end{lthooksCode}
 %    The reason is that the code chunks are internally saved in a property list
 %    and the initial order of such a property list is the order in
 %    which key-value pairs got added. However, that is only true if
@@ -1329,37 +1435,40 @@
 %
 %    Suppose, for example, you want to replace the code chunk for
 %    \texttt{packageA}, e.g.,
-%\begin{verbatim}
-%    \RemoveFromHook{myhook}[packageA]
-%    \AddToHook{myhook}[packageA]{\typeout{A alt}}
-%\end{verbatim}
-%    then your order becomes  \texttt{packageB},
-%    \texttt{packageC}, \texttt{packageA} because the label got removed
+%\begin{lthooksCode}
+%\ROW|\RemoveFromHook{myhook}[packageA]|\\
+%\ROW|\AddToHook{myhook}[packageA]{\typeout{A alt}}|\\
+%\end{lthooksCode}
+%    then your execution order becomes
+%\begin{lthooksCode}
+%\ROW|>   1: 'packageB'|\\
+%\ROW|>   2: 'packageC'|\\
+%\ROW|>   3: 'packageA'.|\\
+%\end{lthooksCode}
+%    because the label got removed
 %    from the property list and then re-added (at its end).
 %
 %    While that may not be too surprising,  the execution order is
 %    also sometimes altered if you add a redundant rule, e.g. if you specify
-%\begin{verbatim}
-%    \DeclareHookRule{myhook}{packageA}{before}{packageB}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW\cs{DeclareHookRule}|{myhook}{packageA}{before}{packageB}|\\
+%\end{lthooksCode}
 %    instead of the previous lines we get
-%\begin{verbatim}
-%    -> The hook 'myhook':
-%    > Code chunks:
-%    >     packageA -> \typeout {A}
-%    >     packageB -> \typeout {B}
-%    >     packageC -> \typeout {C}
-%    > Document-level (top-level) code (executed last):
-%    >     ---
-%    > Extra code for next invocation:
-%    >     ---
-%    > Rules:
-%    >     packageB|packageA with relation >
-%    > Execution order (after applying rules):
-%    >     packageA, packageC, packageB.
-%\end{verbatim}
-%    As you can see the code chunks are still in the same order, but
-%    in the execution order for the labels \texttt{packageB} and
+%\begin{lthooksCode}
+%\ROW|==> Hook: 'myhook'|\\
+%\ROW|> Code chunks:|\\
+%\ROW|>   'packageA' -> \typeout {A}|\\
+%\ROW|>   'packageB' -> \typeout {B}|\\
+%\ROW|>   'packageC' -> \typeout {C}|\\
+%\ROW|> Rule:|\\
+%\ROW|>   'packageB' after 'packageA'|\\
+%\ROW|> Execution order:|\\
+%\ROW|>   1: 'packageA'|\\
+%\ROW|>   2: 'packageC'|\\
+%\ROW|>   3: 'packageB'.|\\
+%\end{lthooksCode}
+%    As you can see the code chunks are still listed in the same order, but
+%    in the execution order the labels \texttt{packageB} and
 %    \texttt{packageC} have
 %    swapped places.
 %    The reason is that, with the rule there are two orders that
@@ -1367,9 +1476,9 @@
 %    different one compared to the case without rules (where it
 %    doesn't run at all as there is nothing to resolve).
 %    Incidentally, if we had instead specified the redundant rule
-%\begin{verbatim}
-%    \DeclareHookRule{myhook}{packageB}{before}{packageC}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\DeclareHookRule{myhook}{packageB}{before}{packageC}|\\
+%\end{lthooksCode}
 %    the execution order would not have changed.
 %
 %    In summary: it is not possible to rely on the order of execution
@@ -1392,48 +1501,43 @@
 %    To give a somewhat contrived example\footnote{there are simpler
 %    ways to achieve the same effect.}, suppose there is a package
 %    adding the following:
-%\begin{verbatim}
-%    \AddToHook{env/quote/before}[package-1]{\begin{itshape}}
-%    \AddToHook{env/quote/after} [package-1]{\end{itshape}}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\AddToHook{env/quote/before}[package-1]{\begin{itshape}}|\\
+%\ROW|\AddToHook{env/quote/after} [package-1]{\end{itshape}}|\\
+%\end{lthooksCode}
 %    As a result, all quotes will be in italics.
 %    Now suppose further that another |package-too| makes the quotes
 %    also in blue and therefore adds:
-%\begin{verbatim}
-%    \usepackage{color}
-%    \AddToHook{env/quote/before}[package-too]{\begin{color}{blue}}
-%    \AddToHook{env/quote/after} [package-too]{\end{color}}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\usepackage{color}|\\
+%\ROW|\AddToHook{env/quote/before}[package-too]{\begin{color}{blue}}|\\
+%\ROW|\AddToHook{env/quote/after} [package-too]{\end{color}}|\\
+%\end{lthooksCode}
 %    Now if the \hook{env/quote/after} hook would be a normal hook we
 %    would get the same execution order in  both hooks, namely:
-%\begin{verbatim}
-%    package-1, package-too
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|package-1, package-too|\\
+%\end{lthooksCode}
 %    (or vice versa) and as a result, would get:
-%\begin{verbatim}
-%    \begin{itshape}\begin{color}{blue} ...
-%    \end{itshape}\end{color}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\begin{itshape}\begin{color}{blue} ...|\\
+%\ROW|\end{itshape}\end{color}|\\
+%\end{lthooksCode}
 %    and an error message saying that \verb=\begin{color}= was ended by
 %    \verb=\end{itshape}=.
 %    With \hook{env/quote/after} declared as a reversed hook the
 %    execution order is reversed and so all environments are closed in
 %    the correct sequence and \cs{ShowHook} would give us the
 %    following output:
-%\begin{verbatim}
-%    -> The hook 'env/quote/after':
-%    > Code chunks:
-%    >     package-1 -> \end {itshape}
-%    >     package-too -> \end {color}
-%    > Document-level (top-level) code (executed first):
-%    >     ---
-%    > Extra code for next invocation:
-%    >     ---
-%    > Rules:
-%    >     ---
-%    > Execution order (after reversal):
-%    >     package-too, package-1.
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|==> Hook: 'env/quote/after'|\\
+%\ROW|> Code chunks:|\\
+%\ROW|>   'package-1' -> \end {itshape}|\\
+%\ROW|>   'package-too' -> \end {color}|\\
+%\ROW|> Execution order:|\\
+%\ROW|>   1: 'package-too'|\\
+%\ROW|>   2: 'package-1'.|\\
+%\end{lthooksCode}
 %
 %    The reversal of the execution order happens before applying any
 %    rules, so if you alter the order you will probably have to alter
@@ -1476,12 +1580,12 @@
 %
 %    \end{itemize}
 %    In particular this means that construct such as
-%\begin{quote}
-%    \cs{AddToHook}\verb={myhook}=\\
-%    \phantom{\cs{AddToHook}}\verb={= \meta{code-1}
-%                                     \cs{AddToHook}\verb={myhook}=\Arg{code-2}
-%                                     \meta{code-3} \verb=}=
-%\end{quote}
+%\begin{lthooksCode}
+%\ROW\cs{AddToHook}\verb={myhook}=^^A
+%   \verb={=\meta{code_1}^^A
+%   \cs{AddToHook}\verb={myhook}=\Arg{code_2}^^A
+%   \meta{code_3}\verb=}=
+%\end{lthooksCode}
 %    works for one-time hooks\footnote{This is sometimes used with
 %    \cs{AtBeginDocument} which is why it is supported.} (all three
 %    code chunks are executed one after another), but it makes little
@@ -1489,17 +1593,17 @@
 %    \verb=\UseHook{myhook}= is executed it would
 %    \begin{itemize}
 %    \item
-%       execute \meta{code-1},
+%       execute \meta{code_1},
 %    \item
-%       then execute \verb=\AddToHook{myhook}{code-2}= which adds the
-%    code chunk \meta{code-2} to the hook for use on the next invocation,
+%       then execute \cs{AddToHook}|{myhook}{|\metatt{code_2}|}| which adds the
+%    code chunk \meta{code_2} to the hook for use on the next invocation,
 %    \item
-%       and finally execute \meta{code-3}.
+%       and finally execute \meta{code_3}.
 %    \end{itemize}
 %    The second time \cs{UseHook} is called it would execute the
-%    above and in addition \meta{code-2} as that was added as a code
+%    above and in addition \meta{code_2} as that was added as a code
 %    chunk to the hook in the meantime. So each time the hook is used
-%    another copy of \meta{code-2} is added and so that code chunk
+%    another copy of \meta{code_2} is added and so that code chunk
 %    is executed $\meta{\# of invocations} -1$ times.
 %
 %
@@ -1607,11 +1711,11 @@
 %    \cs{UseHookWithArguments}\Arg{hook}\Arg{number} followed by a
 %    braced list of the arguments.  For example, if the hook \hook{test}
 %    takes three arguments, write:
-%\begin{verbatim}
-%    \UseHookWithArguments{test}{3}{arg-1}{arg-2}{arg-3}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\UseHookWithArguments{test}{3}|\Arg{arg_1}\Arg{arg_2}\Arg{arg_3}
+%\end{lthooksCode}
 %    then, in the \meta{code} of the hook, all instances of \verb|#1|
-%    will be replaced by \verb|arg-1|, \verb|#2| by \verb|arg-2| and so
+%    will be replaced by \meta{arg_1}, \verb|#2| by \meta{arg_2} and so
 %    on.  If, at the point of usage, the programmer provides more
 %    arguments than the hook is declared to take, the excess arguments
 %    are simply ignored by the hook.  Behaviour is
@@ -1635,9 +1739,9 @@
 %    does for all other hooks. This allows a package developer to add
 %    arguments to a hook that otherwise had none without having to worry
 %    about compatibility.  This means that, for example:
-%\begin{verbatim}
-%    \AddToHook{test}{\def\foo#1{Hello, #1!}}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\AddToHook{test}{\def\foo#1{Hello, #1!}}|\\
+%\end{lthooksCode}
 %    will define the same macro \cs[no-index]{foo} regardless if the
 %    hook \hook{test} takes arguments or not.
 %
@@ -1648,28 +1752,28 @@
 %    \meta{code} that token must be doubled in the input.  The same
 %    definition from above, using \cs{AddToHookWithArguments}, needs to
 %    be rewritten:
-%\begin{verbatim}
-%    \AddToHookWithArguments{test}{\def\foo##1{Hello, ##1!}}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\AddToHookWithArguments{test}{\def\foo##1{Hello, ##1!}}|\\
+%\end{lthooksCode}
 %
 %    Extending the above example to use the hook arguments, we could
 %    rewrite something like (now from declaration to usage, to get the
 %    whole picture):
-%\begin{verbatim}
-%    \NewHookWithArguments{test}{1}
-%    \AddToHookWithArguments{test}{%
-%      \typeout{Defining foo with "#1"}
-%      \def\foo##1{Hello, ##1! Some text after: #1}%
-%    }
-%    \UseHook{test}{Howdy!}
-%    \ShowCommand\foo
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\NewHookWithArguments{test}{1}|\\
+%\ROW|\AddToHookWithArguments{test}{%|\\
+%\ROW~~|\typeout{Defining foo with "#1"}|\\
+%\ROW~~|\def\foo##1{Hello, ##1! Some text after: #1}%|\\
+%\ROW|}|\\
+%\ROW|\UseHook{test}{Howdy!}|\\
+%\ROW|\ShowCommand\foo|\\
+%\end{lthooksCode}
 %    Running the code above prints in the terminal:
-%\begin{verbatim}
-%    Defining foo with "Howdy!"
-%    > \foo=macro:
-%    #1->Hello, #1! Some text after: Howdy!.
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|Defining foo with "Howdy!"|\\
+%\ROW|> \foo=macro:|\\
+%\ROW|#1->Hello, #1! Some text after: Howdy!.|\\
+%\end{lthooksCode}
 %    Note how \verb|##1| in the call to \cs{AddToHookWithArguments}
 %    became \verb|#1|, and the \verb|#1| was replaced by the argument
 %    passed to the hook.  Should the hook be used again, with a
@@ -1708,10 +1812,10 @@
 %    convention: \cs{@kernel@before@\meta{hook}} or
 %    \cs{@kernel@after@\meta{hook}}. For example, in
 %    \cs{enddocument} you find
-%\begin{verbatim}
-%   \UseHook{enddocument}%
-%   \@kernel@after@enddocument
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\UseHook{enddocument}%|\\
+%\ROW|\@kernel@after@enddocument|\\
+%\end{lthooksCode}
 %    which means first the user/package-accessible \hook{enddocument}
 %    hook is executed and then the internal kernel hook. As their name
 %    indicates these kernel commands should not be altered by third-party
@@ -1902,11 +2006,11 @@
 %    (e.g., to avoid the environment grouping) they are not
 %    available. If you want them available in code using this method,
 %    you would need to add them yourself, i.e., write something like
-%\begin{verbatim}
-%  \UseHook{env/quote/before}\quote
-%      ...
-%  \endquote\UseHook{env/quote/after}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|\UseHook{env/quote/before}\quote|\\
+%\ROW|...|\\
+%\ROW|\endquote\UseHook{env/quote/after}|\\
+%\end{lthooksCode}
 %    to add the outer hooks, etc.
 %
 %
@@ -2345,7 +2449,7 @@
 %
 %  \begin{macro}{\g_@@_all_seq}
 %    In a few places we need a list of all hook names ever defined so
-%    we keep track if them in this sequence.
+%    we keep track of them in this sequence.
 %    \begin{macrocode}
 \seq_new:N \g_@@_all_seq
 %    \end{macrocode}
@@ -3511,7 +3615,9 @@
         \msg_error:nnnnn { hooks } { set-top-level }
           { for } { SetDefaultHookLabel } {#1}
       }
-      { \exp_args:Nx \@@_set_default_label:n { \@@_make_name:n {#1} } }
+      {
+        \exp_args:Nx \@@_set_default_label:n { \@@_make_name:n {#1} }
+      }
   }
 \cs_new_protected:Npn \@@_set_default_label:n #1
   {
@@ -4666,12 +4772,12 @@
 %    \end{macrocode}
 %   To start, we define two auxiliary token lists.
 %   \cs[no-index]{l_@@_tmpb_tl} contains:
-%\begin{verbatim}
-%   {\c__hook_hashes_tl 1}
-%   {\c__hook_hashes_tl 2}
-%   ...
-%   {\c__hook_hashes_tl 9}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|{\c__hook_hashes_tl 1}|\\
+%\ROW|{\c__hook_hashes_tl 2}|\\
+%\ROW|...|\\
+%\ROW|{\c__hook_hashes_tl 9}|\\
+%\end{lthooksCode}
 %    \begin{macrocode}
     \cs_set:Npn \@@_tmp:w ##1##2##3##4##5##6##7##8##9 { }
     \tl_set:Ne \l_@@_tmpb_tl
@@ -4685,12 +4791,12 @@
         }
 %    \end{macrocode}
 %   And \cs[no-index]{l_@@_tmpa_tl} contains:
-%\begin{verbatim}
-%   {\c__hook_hash_tl 1}
-%   {\c__hook_hash_tl 2}
-%   ...
-%   {\c__hook_hash_tl <n>}
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|{\c__hook_hash_tl 1}|\\
+%\ROW|{\c__hook_hash_tl 2}|\\
+%\ROW|...|\\
+%\ROW|{\c__hook_hash_tl |\meta{n}|}|\\
+%\end{lthooksCode}
 %   with \meta{n} being the number of arguments declared for the hook.
 %    \begin{macrocode}
     \exp_last_unbraced:NNf
@@ -4711,12 +4817,12 @@
 %   nicely formatted.  For example, if the label \enquote{badpkg} adds
 %   some code that references argument \verb|#3| in the hook
 %   \enquote{foo}, which takes only two arguments, the error will be:
-%\begin{verbatim}
-%   ! Illegal parameter number in definition of hook 'foo'.
-%   (hooks)             Offending label: 'badpkg'.
-%   <to be read again> 
-%                      3
-%\end{verbatim}
+%\begin{lthooksCode}
+%\ROW|! Illegal parameter number in definition of hook 'foo'.|\\
+%\ROW|(hooks)             Offending label: 'badpkg'.|\\
+%\ROW|<to be read again> |\\
+%\ROW|                   3|\\
+%\end{lthooksCode}
 %   At the point of this definition, the error is raised if the code
 %   happens to reference an invalid argument.  If it was possible to
 %   detect that this definition raised no error, the next step would be
@@ -5982,7 +6088,12 @@
 %    \end{macrocode}
 %  \end{macro}
 %
-%
+% \begin{variable}{\l_@@_info_seq}
+% Sequence to record the code chunk labels by order of execution.
+%    \begin{macrocode}
+\seq_new:N \l_@@_info_seq
+%    \end{macrocode}
+% \end{variable}
 %
 % \begin{macro}{\hook_show:n,\hook_log:n}
 % \begin{macro}{\@@_log_line:x,\@@_log_line_indent:x}
@@ -6013,143 +6124,201 @@
 %    \begin{macrocode}
 %<latexrelease>\IncludeInRelease{2023/06/01}{\@@_log:nN}
 %<latexrelease>                 {Hooks~with~args}
+\tl_new:N \l_@@_print_tl
 \cs_new_protected:Npn \@@_log:nN #1 #2
   {
-    \@@_if_deprecated_generic:nT {#1}
+    \@@_if_deprecated_generic:nT { #1 }
       {
-        \@@_deprecated_generic_warn:n {#1}
-        \@@_do_deprecated_generic:Nn \@@_log:nN {#1} #2
-        \exp_after:wN \use_none:nnnnnnnnn \use_none:nnnnn
+        \@@_deprecated_generic_warn:n { #1 }
+        \@@_do_deprecated_generic:Nn \@@_log:nN { #1 } #2
+        \use_none:nnnnnnnnn
       }
-    \@@_preamble_hook:n {#1}
-    \@@_log_cmd:x
+    \@@_preamble_hook:n { #1 }
+    \@@_log_cmd:x { ^^J ==>~Hook:~'#1' }
+    \use:n
       {
-        ^^J ->~The~
-        \@@_if_generic:nT {#1} { generic~ }
-        hook~'#1'
-        \@@_if_disabled:nF {#1}
+        \seq_clear:N \l_@@_info_seq
+        \@@_if_generic:nT { #1 }
           {
-            \exp_args:Nf \@@_print_args:nn {#1}
-              {
-                \int_eval:n
-                  { \str_count:e { \@@_parameter:n {#1} } / 3 }
-              }
+            \seq_put_right:Nn \l_@@_info_seq { builtin~generic }
+            \use_none:nnn
           }
-        :
+        \@@_if_usable:nF { #1 }
+          { \seq_put_right:Nx \l_@@_info_seq { not~declared } }
+        \@@_if_reversed:nT { #1 }
+          { \seq_put_right:Nx \l_@@_info_seq { reversed } }
+        \@@_if_disabled:nF { #1 }
+          {
+            \exp_args:Nf \int_compare:nNnT
+              { \str_count:e { \@@_parameter:n { #1 } } } > 2
+              {
+                \seq_put_right:Nx \l_@@_info_seq
+                  {
+                    \@@_print_args:nn { #1 }
+                      {
+                        \int_eval:n
+                          { \str_count:e { \@@_parameter:n { #1 } } / 3 }
+                      }
+                  }
+              }
+              \use_none:nnn
+          }
+        \seq_put_right:Nn \l_@@_info_seq { disabled }
+        \hook_if_empty:nT { #1 }
+          {
+            \seq_if_empty:NT \l_@@_info_seq
+              { \seq_put_right:Nn \l_@@_info_seq { empty } }
+            #2 { ~ \space \seq_use:Nn \l_@@_info_seq { ,~ } }
+            \use_none:nnnnnn
+          }
+        \seq_if_empty:NF \l_@@_info_seq
+          {
+            \@@_log_line_indent:x { \seq_use:Nn \l_@@_info_seq { ,~ } }
+          }
       }
 %    \end{macrocode}
-%
+% |#2| will be used when displaying the last executed code label.
 %    \begin{macrocode}
-    \@@_if_usable:nF {#1}
-      { \@@_log_line:x { The~hook~is~not~declared. } }
-    \@@_if_disabled:nT {#1}
-      { \@@_log_line:x { The~hook~is~disabled. } }
-    \hook_if_empty:nTF {#1}
-      { #2 { The~hook~is~empty } }
+    \hook_if_empty:nF { #1 }
       {
         \@@_log_line:x { Code~chunks: }
-        \prop_if_empty:cTF { g_@@_#1_code_prop }
-          { \@@_log_line_indent:x { --- } }
+        \prop_if_empty:cF { g_@@_#1_code_prop }
           {
             \prop_map_inline:cn { g_@@_#1_code_prop }
               {
-                \exp_after:wN \cs_set:Npn \exp_after:wN \@@_tmp:w
-                  \c_@@_nine_parameters_tl {##2}
+                \exp_after:wN \cs_set:Npn \exp_after:wN \@@_info_log_nN:w
+                  \c_@@_nine_parameters_tl { ##2 }
                 \@@_log_line_indent:x
-                  { ##1~->~\cs_replacement_spec:N \@@_tmp:w }
+                  { '##1' ~->~\cs_replacement_spec:N \@@_info_log_nN:w }
               }
           }
-%    \end{macrocode}
-%
-%    If there is code in the |top-level| token list, print it:
-%    \begin{macrocode}
-        \@@_log_line:x
+        \@@_cs_if_empty:cF { @@_toplevel~#1 }
           {
-            Document-level~(top-level)~code
-            \@@_if_usable:nT {#1}
-              { ~(executed~\@@_if_reversed:nTF {#1} {first} {last} ) } :
+            \@@_log_line_indent:x
+              { 'top-level' ~->~ \cs_replacement_spec:c { @@_toplevel~#1 } }
           }
-        \@@_log_line_indent:x
+        \@@_cs_if_empty:cF { @@_next~#1 }
           {
-            \@@_cs_if_empty:cTF { @@_toplevel~#1 }
-              { --- }
-              { -> ~ \cs_replacement_spec:c { @@_toplevel~#1 } }
-          }
-%    \end{macrocode}
-%
-%    \begin{macrocode}
-        \@@_log_line:x { Extra~code~for~next~invocation: }
-        \@@_log_line_indent:x
-          {
-            \@@_cs_if_empty:cTF { @@_next~#1 }
-              { --- }
-%    \end{macrocode}
-%
-%    If the token list is not empty we want to display it but without
-%    the first tokens (the code to clear itself) so we call a helper
-%    command to  get rid of them.
-%    \begin{macrocode}
+            \@@_log_line_indent:x
               {
-                -> ~ \exp_last_unbraced:Nf \@@_log_next_code:w
+                next-only ~->~ \exp_last_unbraced:Nf \@@_log_next_code:w
                   { \cs_replacement_spec:c { @@_next~#1 } }
               }
           }
 %    \end{macrocode}
-%
-%   Loop through the rules in a hook and for every rule found, print it.
-%   If no rule is there, print |---|.  The boolean \cs{l_@@_tmpa_bool}
-%   here indicates if the hook has no rules.
+%   Loop through the default rules in a hook and for every rule found, print it.
+%   The boolean \cs{l_@@_tmpa_bool} here indicates if the hook has no default rules.
 %    \begin{macrocode}
-        \@@_log_line:x { Rules: }
-        \bool_set_true:N \l_@@_tmpa_bool
-        \@@_list_rules:nn {#1}
+        \cs_set:Npn \@@_info_log:nN:nw ##1 ##2 | ##3 \scan_stop:
           {
-            \bool_set_false:N \l_@@_tmpa_bool
-            \@@_log_line_indent:x
+            \l_@@_print_tl
+            \tl_clear:N \l_@@_print_tl
+            \str_case:nnF { ##1 }
               {
-                ##2~ with~
-                \str_if_eq:nnT {##3} {??} { default~ }
-                relation~ ##1
+                { xE } {
+                         \cs_set:cpn { @@.xE.##2 } {}
+                         \cs_set:cpn { @@.xE.##3 } {}
+                         \@@_log_line_indent:x
+                           { '##2'~incompatible-error~'##3' } }
+                { xW } {
+                         \cs_set:cpn { @@.xW.##2 } {}
+                         \cs_set:cpn { @@.xW.##3 } {}
+                         \@@_log_line_indent:x
+                           { '##2'~incompatible-warning~'##3' } }
+                { <  } { \@@_log_line_indent:x { '##2'~before~'##3' } }
+                { <- } { \@@_log_line_indent:x { '##2'~voids~ '##3' } }
+                {  > } { \@@_log_line_indent:x { '##2'~after~ '##3' } }
+                { -> } { \@@_log_line_indent:x { '##3'~voids~ '##2' } }
               }
+              { \@@_log_line_indent:x { '##2'~UNKNOWN(##1)~ '##3' } }
           }
-        \bool_if:NT \l_@@_tmpa_bool
-          { \@@_log_line_indent:x { --- } }
-%    \end{macrocode}
-%
-%   When the hook is declared (that is, the sorting algorithm is applied
-%   to that hook) and not empty
-%    \begin{macrocode}
-        \bool_lazy_and:nnTF
-            { \@@_if_usable_p:n {#1} }
-            { ! \hook_if_empty_p:n {#1} }
+        \tl_set:Nn \l_@@_print_tl
           {
             \@@_log_line:x
               {
-                Execution~order
-                \bool_if:NTF \l_@@_tmpa_bool
-                  { \@@_if_reversed:nT {#1} { ~(after~reversal) } }
-                  { ~(after~
-                    \@@_if_reversed:nT {#1} { reversal~and~ }
-                    applying~rules)
-                  } :
-              }
-            #2 % \tl_show:n
-              {
-                \@spaces
-                \clist_if_empty:cTF { g_@@_#1_labels_clist }
-                  { --- }
-                  { \clist_use:cn { g_@@_#1_labels_clist } { ,~ } }
+                Default~rules
+                \@@_if_reversed:nT { #1 } { ,~to~be~mirrored }:
               }
           }
+        \@@_list_rules:nn {#1}
+          {
+            \str_if_eq:nnT { ##3 } { ?? }
+              { \@@_info_log:nN:nw { ##1 } ##2 \scan_stop: }
+          }
+%    \end{macrocode}
+%   Loop through the rules in a hook and for every non default rule found, print
+%   it. The boolean \cs{l_@@_tmpa_bool} here indicates if the hook only has 
+%   default rules.
+%    \begin{macrocode}
+        \tl_set:Nn \l_@@_print_tl
+          { \@@_log_line:x { Rules: } }
+        \@@_list_rules:nn { #1 }
+          {
+            \str_if_eq:nnF { ##3 } { ?? }
+              { \@@_info_log:nN:nw { ##1 } ##2 \scan_stop: }
+          }
+%    \end{macrocode}
+%   When the hook is declared (that is, the sorting algorithm is applied
+%   to that hook)
+%    \begin{macrocode}
+        \@@_if_usable:nT { #1 }
           {
             \@@_log_line:x { Execution~order: }
+            \seq_clear:N \l_@@_info_seq
+            \@@_if_reversed:nT { #1 }
+              {
+                \@@_cs_if_empty:cF { @@_toplevel~#1 }
+                  { \seq_put_right:Nn \l_@@_info_seq { 'top-level' } }
+              }
+            \clist_if_empty:cF { g_@@_#1_labels_clist }
+              {
+                \clist_map_inline:cn { g_@@_#1_labels_clist }
+                  {
+%    \end{macrocode}
+% Mark with \enquote{\texttt{Error}} the labels that should not be there
+% due to an \texttt{incompatible-error} rule.
+% Mark with \enquote{\texttt{Warning}} the other labels involved in an
+% \texttt{incompatible-warning} rule.
+%    \begin{macrocode}
+                    \cs_if_exist:cT { @@.xE.##1 }
+                      {
+                        \seq_put_right:Nn \l_@@_info_seq { '##1'~(Error) }
+                        \cs_undefine:c { @@.xE.##1 }
+                        \cs_undefine:c { @@.xW.##1 }
+                        \use_none:nnnnnn
+                      }
+                    \cs_if_exist:cT { @@.xW.##1 }
+                      {
+                        \seq_put_right:Nn \l_@@_info_seq { '##1'~(Warning) }
+                        \cs_undefine:c { @@.xW.##1 }
+                        \use_none:nnn
+                      }
+                    \seq_put_right:Nn \l_@@_info_seq { '##1' }
+                  }
+              }
+            \@@_if_reversed:nF { #1 }
+              {
+                \@@_cs_if_empty:cF { @@_toplevel~#1 }
+                  { \seq_put_right:Nn \l_@@_info_seq { 'top-level' } }
+              }
+            \@@_cs_if_empty:cT { @@_next~#1 }
+              {
+                \seq_pop_right:NN \l_@@_info_seq \l_@@_print_tl
+                \use_none:nnn
+              }
+              \tl_set:Nn \l_@@_print_tl { next-only }
+            \seq_map_indexed_inline:Nn \l_@@_info_seq
+              { \@@_log_line_indent:x { ##1:~##2 } }
             #2
               {
-                \@spaces Not~set~because~the~hook~ \@@_if_usable:nTF {#1}
-                  { code~pool~is~empty }
-                  { is~\@@_if_disabled:nTF {#1} {disabled} {undeclared} }
+                \@spaces
+                \int_eval:n { \seq_count:N \l_@@_info_seq + 1 }
+                :~
+                \l_@@_print_tl
               }
+            \use_none:nn
           }
+        #2 { No~execution }
       }
   }
 %<latexrelease>\EndIncludeInRelease
@@ -6271,18 +6440,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@@_print_args:n}
+% \begin{macro}{\@@_print_args:nn}
 %    Pretty-prints the number of arguments of a hook.
+%    |#1| is a hook name, |#2| expands to a number.
 %    \begin{macrocode}
 \cs_new:Npn \@@_print_args:nn #1 #2
   {
-    \int_compare:nNnT {#2} > { 0 }
+    \int_compare:nNnT { #2 } > { 0 }
       {
-        \@@_if_declared:nT {#1} { \use_none:nnn }
-        \@@_if_cmd_hook:nT {#1}
-          { \use_i:nnn { ~ (unknown ~ } }
-        \use:n { ~ (#2 ~ }
-        argument \int_compare:nNnT {#2} > { 1 } { s } )
+        \@@_if_declared:nF { #1 } { \use_none:nn }
+        \use:n { #2 ~ argument \int_compare:nNnT { #2 } > { 1 } { s } }
       }
   }
 %    \end{macrocode}
@@ -6341,29 +6508,140 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\@@_debug_print_rules:n}
-%   A shorthand for debugging that prints similar to \cs{prop_show:N}.
+% \begin{macro}{\DebugPrintHook}
+%   Print detailed hook information.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_debug_print_rules:n #1
+\cs_new_protected:Npn \DebugPrintHook #1
   {
-    \iow_term:n { The~hook~#1~contains~the~rules: }
-    \cs_set_protected:Npn \@@_tmp:w ##1
+    \tl_set:Ne \l_@@_print_tl { #1 }
+    \@@_normalize_hook_args:Nn \@@_debug_print:n { #1 }
+  }
+\cs_new_protected:Npn \@@_debug_print:n #1
+  {
+    \@@_preamble_hook:n { #1 }
+    \exp_args:NV \str_if_eq:nnF \l_@@_print_tl { #1 }
       {
-        \@@_list_rules:nn {#1}
+        \iow_term:x { <<<~Hook:~'#1'(<- ~ '\l_@@_print_tl') }
+        \use_none:nn
+      }
+    \iow_term:n { <<<~Hook:~'#1' }
+    \iow_term:n { ...~Attributes: }
+    \cs_set:Npn \@@_tmp:w ##1
+      {
+        \iow_term:x
           {
-            \iow_term:x
+            ...~\space\space##1:~
+            \cs_if_exist_use:cF { @@_if_##1:nT }
+              { \use:c { hook_if_##1:nT } }
+              { #1 } { Y \use_none:n } N
+          }
+      }
+    \@@_tmp:w { deprecated_generic }
+    \@@_tmp:w { generic }
+    \@@_tmp:w { declared }
+    \@@_tmp:w { structure_exist }
+    \@@_tmp:w { usable }
+    \@@_tmp:w { disabled }
+    \@@_tmp:w { empty }
+    \@@_tmp:w { reversed }
+    \@@_tmp:w { generic_reversed }
+    \@@_tmp:w { execute_immediately }
+%    \end{macrocode}
+% Done with \cs[no-index]{@@_tmp:w}.
+%    \begin{macrocode}
+    \iow_term:x
+      {
+        ...~\space\space\c_hash_str\space~of~arguments:~
+        \int_eval:n { \str_count:e { \@@_parameter:n {#1} } / 3 }
+      }
+    \iow_term:n { ...~Code~chunks: }
+    \prop_map_inline:cn { g_@@_#1_code_prop }
+      {
+        \exp_after:wN \cs_set:Npn \exp_after:wN \@@_debug_print:n:w
+            \c_@@_nine_parameters_tl { ##2 }
+        \iow_term:x
+          {
+            ...~\space\space
+            '##1' ~->~\cs_replacement_spec:N \@@_debug_print:n:w
+          }
+      }
+    \iow_term:x
+      {
+        ...~\space\space'top~level'
+        \@@_cs_if_empty:cTF { @@_toplevel~#1 }
+          { ~ empty }
+          { ~ -> ~ \cs_replacement_spec:c { @@_toplevel~#1 } }
+      }
+    \iow_term:x
+      {
+        ...~\space\space next-only
+        \@@_cs_if_empty:cTF { @@_next~#1 }
+          { ~ empty }
+          {
+            ~ -> ~ \exp_last_unbraced:Nf \@@_log_next_code:w
+              { \cs_replacement_spec:c { @@_next~#1 } }
+          }
+      }
+    \iow_term:n { ...~Default~rules: }
+    \tl_set:Nn \l_@@_print_tl { \iow_term:x { ...~\space\space None } }
+    \@@_list_rules:nn {#1}
+      {
+        \str_if_eq:nnT {##3} {??}
+        {
+          \tl_set:Nn \l_@@_print_tl { ##2 }
+          \tl_if_in:NnTF \l_@@_print_tl { ^^J }
+            {
+              \tl_replace_once:Nnn \l_@@_print_tl { ^^J } { '~##1~' }
+            }
+            {
+              \tl_replace_once:Nnn \l_@@_print_tl { | } { '~##1~' }
+            }
+          \iow_term:x { ...~\space\space'\l_@@_print_tl' }
+          \tl_clear:N \l_@@_print_tl
+        }
+    }
+    \l_@@_print_tl
+    \iow_term:n { ...~Rules: }
+    \tl_set:Nn \l_@@_print_tl { \iow_term:x { ...~\space\space None } }
+    \@@_list_rules:nn {#1}
+      {
+        \str_if_eq:nnF {##3} {??}
+          {
+            \tl_set:Nn \l_@@_print_tl { ##2 }
+            \tl_if_in:NnTF \l_@@_print_tl { ^^J }
               {
-                > ##1 {####2} ##1 => ##1 {####1}
-                \str_if_eq:nnT {####3} {??} { ~(default) }
+                \tl_replace_once:Nnn \l_@@_print_tl { ^^J } { '~##1~' }
+              }
+              {
+                \tl_replace_once:Nnn \l_@@_print_tl { | } { '~##1~' }
+              }
+            \iow_term:x { ...~\space\space'\l_@@_print_tl' }
+            \tl_clear:N \l_@@_print_tl
+          }
+      }
+    \l_@@_print_tl
+    \iow_term:n { ...~Execution~order: }
+    \hook_if_empty:nF { #1 }
+      {
+        \clist_if_exist:cT { g_@@_#1_labels_clist }
+          {
+            \clist_if_empty:cF
+              { g_@@_#1_labels_clist }
+              {
+                \iow_term:x
+                  {
+                    ...~\space\space'
+                    \clist_use:cn { g_@@_#1_labels_clist } { ',~' }'
+                  }
+                \use_none:n
               }
           }
       }
-    \exp_args:No \@@_tmp:w { \use:nn { ~ } { ~ } }
+      { \iow_term:x { ...~\space\space None } }
+    \iow_term:n { >>> }
   }
 %    \end{macrocode}
 % \end{macro}
-%
-%
 %
 %
 %  \subsection{Specifying code for next invocation}
@@ -6992,7 +7270,12 @@
 %  \end{macro}
 %
 % \begin{macro}[pTF]{\@@_if_reversed:n}
-%   An internal conditional that checks if a hook is reversed.
+%   An internal conditional that checks if a hook is marked
+%   as reversed, which can be false for reversed hooks.
+%   For example, after a reversed hook has been
+%   consumed by a `\cs{UseOneTimeHook}` command, it is no longer
+%   marked as reversed. In that case, this test takes the true
+%   branch before `\cs{UseOneTimeHook}` and the false branch after.
 %    \begin{macrocode}
 \prg_new_conditional:Npnn \@@_if_reversed:n #1 { p , T , F , TF }
   {

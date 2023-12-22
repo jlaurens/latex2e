@@ -1,0 +1,445 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\documentclass{article}
+
+\input{regression-test}
+
+% There are many different hook profiles.
+
+\START
+
+\BEGINTEST{\ShowHook output}
+
+\ExplSyntaxOn
+\TESTIfMatchTermOutputTF {ABC} { \iow_term:n{ABC} }
+  { \TYPE { PASSED } } { \TYPE { FAILED } }
+\TESTIfMatchTermOutputTF {ABC} { \iow_term:x { \use:n {ABC} } }
+  { \TYPE { PASSED } } { \TYPE { FAILED } }
+\TESTIfMatchTermOutputTF {ACC} { \iow_term:n{ABC} }
+  { \TYPE { FAILED } } { \TYPE { PASSED } }
+\TESTIfMatchTermOutputTF {ACC} { \iow_term:x { \use:n {ABC} } }
+  { \TYPE { FAILED } } { \TYPE { PASSED } }
+\ExplSyntaxOff
+
+\ENDTEST
+
+\BEGINTEST{<<<<<<<<<< Compare old \ShowHook versus new \ShowHook}
+
+% Next lines contain sufficient definition for the `\ShowHook` command
+% once it was also used for testing. It is named `\OldShowHook`.
+% It allows to easily make the difference between old and new design,
+% with a minimum of effort.
+% This might be removed in a forthcoming release.
+\ExplSyntaxOn
+\makeatletter
+\cs_set_protected:Npn \OldShowHook { \hook_show_old:n }
+\cs_set_protected:Npn \hook_show_old:n #1
+  {
+    \cs_set_eq:NN \__hook_test_log_cmd:x \iow_term:x
+    \__hook_normalize_hook_args:Nn \__hook_test_log:nN {#1} \tl_show:x
+  }
+\cs_new_protected:Npn \__hook_test_log:nN #1 #2
+  {
+    \__hook_if_deprecated_generic:nT {#1}
+      {
+        \__hook_deprecated_generic_warn:n {#1}
+        \__hook_do_deprecated_generic:Nn \__hook_test_log:nN {#1} #2
+        \exp_after:wN \use_none:nnnnnnnnn \use_none:nnnnn
+      }
+    \__hook_preamble_hook:n {#1}
+    \__hook_test_log_cmd:x
+      {
+        ^^J ->~The~
+        \__hook_if_generic:nT {#1} { generic~ }
+        hook~'#1'
+        \__hook_if_disabled:nF {#1}
+          {
+            \exp_args:Nnf \__hook_test_print_args:nn {#1}
+              {
+                \int_eval:n
+                  { \str_count:e { \__hook_parameter:n {#1} } / 3 }
+              }
+          }
+        :
+      }
+    \__hook_if_usable:nF {#1}
+      { \__hook_test_log_line:x { The~hook~is~not~declared. } }
+    \__hook_if_disabled:nT {#1}
+      { \__hook_test_log_line:x { The~hook~is~disabled. } }
+    \hook_if_empty:nTF {#1}
+      { #2 { The~hook~is~empty } }
+      {
+        \__hook_test_log_line:x { Code~chunks: }
+        \prop_if_empty:cTF { g__hook_#1_code_prop }
+          { \__hook_test_log_line_indent:x { --- } }
+          {
+            \prop_map_inline:cn { g__hook_#1_code_prop }
+              {
+                \exp_after:wN \cs_set:Npn \exp_after:wN \__hook_tmp:w
+                  \c__hook_nine_parameters_tl {##2}
+                \__hook_test_log_line_indent:x
+                  { ##1~->~\cs_replacement_spec:N \__hook_tmp:w }
+              }
+          }
+%    \end{macrocode}
+%
+%    If there is code in the |top-level| token list, print it:
+%    \begin{macrocode}
+        \__hook_test_log_line:x
+          {
+            Document-level~(top-level)~code
+            \__hook_if_usable:nT {#1}
+              { ~(executed~\__hook_if_reversed:nTF {#1} {first} {last} ) } :
+          }
+        \__hook_test_log_line_indent:x
+          {
+            \__hook_cs_if_empty:cTF { __hook_toplevel~#1 }
+              { --- }
+              { -> ~ \cs_replacement_spec:c { __hook_toplevel~#1 } }
+          }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+        \__hook_test_log_line:x { Extra~code~for~next~invocation: }
+        \__hook_test_log_line_indent:x
+          {
+            \__hook_cs_if_empty:cTF { __hook_next~#1 }
+              { --- }
+%    \end{macrocode}
+%
+%    If the token list is not empty we want to display it but without
+%    the first tokens (the code to clear itself) so we call a helper
+%    command to  get rid of them.
+%    \begin{macrocode}
+              {
+                -> ~ \exp_last_unbraced:Nf \__hook_log_next_code:w
+                  { \cs_replacement_spec:c { __hook_next~#1 } }
+              }
+          }
+%    \end{macrocode}
+%
+%   Loop through the rules in a hook and for every rule found, print it.
+%   If no rule is there, print |---|.  The boolean \cs{l__hook_tmpa_bool}
+%   here indicates if the hook has no rules.
+%    \begin{macrocode}
+        \__hook_test_log_line:x { Rules: }
+        \bool_set_true:N \l__hook_tmpa_bool
+        \__hook_list_rules:nn {#1}
+          {
+            \bool_set_false:N \l__hook_tmpa_bool
+            \__hook_test_log_line_indent:x
+              {
+                ##2~ with~
+                \str_if_eq:nnT {##3} {??} { default~ }
+                relation~ ##1
+              }
+          }
+        \bool_if:NT \l__hook_tmpa_bool
+          { \__hook_test_log_line_indent:x { --- } }
+%    \end{macrocode}
+%
+%   When the hook is declared (that is, the sorting algorithm is applied
+%   to that hook) and not empty
+%    \begin{macrocode}
+        \bool_lazy_and:nnTF
+            { \__hook_if_usable_p:n {#1} }
+            { ! \hook_if_empty_p:n {#1} }
+          {
+            \__hook_test_log_line:x
+              {
+                Execution~order
+                \bool_if:NTF \l__hook_tmpa_bool
+                  { \__hook_if_reversed:nT {#1} { ~(after~reversal) } }
+                  { ~(after~
+                    \__hook_if_reversed:nT {#1} { reversal~and~ }
+                    applying~rules)
+                  } :
+              }
+            #2 % \tl_show:n
+              {
+                \@spaces
+                \clist_if_empty:cTF { g__hook_#1_labels_clist }
+                  { --- }
+                  { \clist_use:cn { g__hook_#1_labels_clist } { ,~ } }
+              }
+          }
+          {
+            \__hook_test_log_line:x { Execution~order: }
+            #2
+              {
+                \@spaces Not~set~because~the~hook~ \__hook_if_usable:nTF {#1}
+                  { code~pool~is~empty }
+                  { is~\__hook_if_disabled:nTF {#1} {disabled} {undeclared} }
+              }
+          }
+      }
+  }
+\cs_new:Npn \__hook_test_print_args:nn #1 #2
+  {
+    \int_compare:nNnT {#2} > { 0 }
+      {
+        \__hook_if_declared:nT {#1} { \use_none:nnn }
+        \__hook_if_cmd_hook:nT {#1}
+          { \use_i:nnn { ~ (unknown ~ } }
+        \use:n { ~ (#2 ~ }
+        argument \int_compare:nNnT {#2} > { 1 } { s } )
+      }
+  }
+\cs_new_protected:Npn \__hook_test_log_line:x #1
+  { \__hook_test_log_cmd:x { >~#1 } }
+\cs_new_protected:Npn \__hook_test_log_line_indent:x #1
+  { \__hook_test_log_cmd:x { >~\@spaces #1 } }
+\makeatother
+\ExplSyntaxOff
+
+% Record the actual `\ShowHook`
+\ExplSyntaxOn
+\cs_set_eq:NN \new_hook_log:n \hook_log:n
+\cs_set_eq:NN \new_hook_show:n \hook_show:n
+\ExplSyntaxOff
+
+\newcommand\TESTLHXCompareShow[1]{
+  \OldShowHook{#1}
+  \ShowHook{#1}
+  \TESTUseHook{#1}
+}
+
+\let\TESTUseHook\UseHook
+
+\BEGINTEST{<<<<< UNDECLARED}
+\def\TESTHook{UNDECLARED HOOK}
+
+\BEGINTEST{RAW}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{'UNDECLARED\ HOOK'}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ TOP LEVEL}
+\AddToHook{\TESTHook}{\typeout{<TOP-LEVEL>}}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{Code\schunks:}{\TESTHook}
+\ASSERTMatchShowHook{top-level}{\TESTHook}
+\ASSERTMatchShowHook{<TOP-LEVEL>}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL A}
+\AddToHook{\TESTHook}[LABEL A]{\typeout{<CODE A>}}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ A'}{\TESTHook}
+\ASSERTMatchShowHook{<CODE\ A>}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL B}
+\AddToHook{\TESTHook}[LABEL B]{\typeout{<CODE B>}}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ B'}{\TESTHook}
+\ASSERTMatchShowHook{<CODE\ B>}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL C}
+\AddToHook{\TESTHook}[LABEL C]{\typeout{<CODE C>}}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ C'}{\TESTHook}
+\ASSERTMatchShowHook{<CODE\ C>}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ NEXT}
+\AddToHookNext{\TESTHook}{\typeout{<NEXT-ONLY>}}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{[^']next-only[^']}{\TESTHook}
+\ASSERTMatchShowHook{<NEXT-ONLY>}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{LABEL C < LABEL A}
+\DeclareHookRule{\TESTHook}{LABEL C}{before}{LABEL A}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{Rules:}{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ A'}{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ C'}{\TESTHook}
+\ASSERTMatchShowHook{(?:before|after)}{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{DEFAULT LABEL B > LABEL C}
+\DeclareDefaultHookRule{LABEL B}{after}{LABEL C}
+\TESTLHXCompareShow{\TESTHook}
+\ASSERTMatchShowHook{Default\ rules:}{\TESTHook}
+\ASSERTMatchShowHook{'LABEL\ B'}{\TESTHook}
+\ENDTEST
+
+\TYPE{>>>>> UNDECLARED HOOK}
+\ENDTEST
+
+\BEGINTEST{<<<<< DECLARED HOOK}
+\def\TESTHook{DECLARED HOOK}
+\NewHook{\TESTHook}
+
+\BEGINTEST{EMPTY}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ TOP LEVEL}
+\AddToHook{\TESTHook}{\typeout{<TOP-LEVEL>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL A}
+\AddToHook{\TESTHook}[LABEL A]{\typeout{<CODE A>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL B}
+\AddToHook{\TESTHook}[LABEL B]{\typeout{<CODE B>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL C}
+\AddToHook{\TESTHook}[LABEL C]{\typeout{<CODE C>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ NEXT}
+\AddToHookNext{\TESTHook}{\typeout{<NEXT-ONLY>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{LABEL C < LABEL A}
+\DeclareHookRule{\TESTHook}{LABEL C}{before}{LABEL A}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{DEFAULT LABEL B > LABEL C}
+\DeclareDefaultHookRule{LABEL B}{after}{LABEL C}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\TYPE{>>>>> DECLARED HOOK}
+\ENDTEST
+
+\BEGINTEST{<<<<< DECLARED REVERSED}
+\def\TESTHook{DECLARED REVERSED}
+\NewReversedHook{\TESTHook}
+
+\BEGINTEST{RAW}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ TOP LEVEL}
+\AddToHook{\TESTHook}{\typeout{<TOP-LEVEL>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL A}
+\AddToHook{\TESTHook}[LABEL A]{\typeout{<CODE A>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL B}
+\AddToHook{\TESTHook}[LABEL B]{\typeout{<CODE B>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL C}
+\AddToHook{\TESTHook}[LABEL C]{\typeout{<CODE C>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ NEXT}
+\AddToHookNext{\TESTHook}{\typeout{<NEXT-ONLY>}}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ LABEL C < LABEL A}
+\DeclareHookRule{\TESTHook}{LABEL C}{before}{LABEL A}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\BEGINTEST{+ DEFAULT LABEL B > LABEL C}
+\DeclareDefaultHookRule{LABEL B}{after}{LABEL C}
+\TESTLHXCompareShow{\TESTHook}
+\ENDTEST
+
+\typeout{>>>>> DECLARED REVERSED}
+\ENDTEST
+
+\BEGINTEST{ENVIRONMENT}
+% Unknown
+\TESTLHXCompareShow{env/lthooks.regression test/before}
+\TESTLHXCompareShow{env/lthooks.regression test/after}
+% Known
+\NewDocumentEnvironment{lthooks.regression test}{}{}{}
+\TESTLHXCompareShow{env/lthooks.regression test/before}
+\TESTLHXCompareShow{env/lthooks.regression test/after}
+% Implicitly activated
+\AddToHook{env/lthooks.regression test/before}{\typeout{<BEFORE>}}
+\AddToHook{env/lthooks.regression test/after}{\typeout{<AFTER>}}
+\TESTLHXCompareShow{env/lthooks.regression test/before}
+\TESTLHXCompareShow{env/lthooks.regression test/after}
+\ENDTEST
+
+\BEGINTEST{GENERIC HOOK}
+% Unknown
+\def\TESTHook{GENERIC HOOK}
+\TESTLHXCompareShow{\TESTHook}
+\AddToHook{\TESTHook}[LABEL]{\typeout{<CODE>}}
+\TESTLHXCompareShow{\TESTHook}
+% activated
+\ActivateGenericHook{\TESTHook}
+\TESTLHXCompareShow{\TESTHook}
+% Disabled
+\DisableGenericHook{\TESTHook}
+\TESTLHXCompareShow{\TESTHook}
+
+\ENDTEST
+
+\BEGINTEST{HOOK WITH ARGUMENTS}
+\def\TESTHook{HOOK WITH ARGUMENTS}
+\def\TESTUseHook#1{
+  \UseHookWithArguments{\TESTHook}{2}{}{}
+}
+\TESTLHXCompareShow{\TESTHook}
+\NewHookWithArguments{\TESTHook}{2}
+\TESTLHXCompareShow{\TESTHook}
+
+\ENDTEST
+
+\BEGINTEST{<<<<< RULES}
+\def\TESTHook{RULES HOOK}
+\NewHook  {\TESTHook}
+\AddToHook{\TESTHook}[LABEL A]{\typeout{<CODE A>}}
+\AddToHook{\TESTHook}[LABEL B]{\typeout{<CODE B>}}
+\AddToHook{\TESTHook}[LABEL C]{\typeout{<CODE C>}}
+
+\def\TEST#1#2{
+  \BEGINTEST{#1 <relation> #2}
+  \def\TEST##1{
+    \SEPARATOR
+    \TYPE{=== <relation> <- ##1}
+    \DeclareHookRule{\TESTHook}{#1}{##1}{#2}
+    \TESTLHXCompareShow{\TESTHook}
+  }
+  \TEST{before}
+  \TEST{after}
+  \TEST{unrelated}
+  \TEST{incompatible-warning}
+  \TEST{incompatible-error}
+  \ENDTEST
+}
+
+\TEST{LABEL A}{top-level}
+\TEST{top-level}{LABEL B}
+\TEST{LABEL A}{LABEL B}
+\TEST{LABEL B}{LABEL A}
+
+\TYPE{>>>>> RULES}
+\ENDTEST
+
+\TYPE{>>>>>>>>>> Compare...}
+\ENDTEST
+
+\typeout{!!!! If this test changes the documentation needs updating !!!!}
+
+\END

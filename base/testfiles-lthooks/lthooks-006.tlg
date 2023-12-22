@@ -64,9 +64,47 @@ The sequence \g__hook_all_seq contains the items (without outer braces):
 >  {file/ngerman.sty/after}
 >  {file/underscore.sty/after}
 >  {xxx}.
-The hook xxx contains the rules:
->  {label2|label1}  =>  {xW}
->  {label3|label2}  =>  {<}
+Update code for hook 'xxx' on input line ...:
+  normal rule label2|label1: xW found
+LaTeX hooks Warning: Labels 'label2' and 'label1' are incompatible in hook
+(hooks)              'xxx'. You may see errors later.
+  normal rule label3|label2: < found
+Code labels for sorting:
+ label1, label2 and label3
+Data structure for label rules:
+ label1 = 0 -> 
+ label2 = 1 -> 
+ label3 = 0 -> label2
+Handled code for label1
+Handled code for label3
+Handled code for label2
+<<< Hook: 'xxx'(<- '')
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   # of arguments: 0
+... Code chunks:
+...   'label1' ->  foo1
+...   'label2' ->  foo2
+...   'label3' ->  foo3
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   'label2' xW 'label1'
+...   'label3' < 'label2'
+... Execution order:
+...   'label1', 'label3', 'label2'
+>>>
 Update code for hook 'para/before' on input line ...:
 Update code for hook 'para/after' on input line ...:
 Update code for hook 'para/begin' on input line ...:
