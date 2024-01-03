@@ -426,16 +426,15 @@
 % owner, hook users, label owners are the same \LaTeX\ object.
 %
 %
-% \section{Package writer interface}
+% \section{Developer interface}
 %
 %    The hook management system is offered as a set of CamelCase
 %    commands for traditional \LaTeXe{} packages (and for use in the
 %    document preamble if needed) as well as \texttt{expl3} commands
 %    for modern packages, that use the L3 programming layer of
-%    \LaTeX{}. Behind the scenes, a single set of data structures is
+%    \LaTeX{}. Behind the scene, a single set of data structures is
 %    accessed so that packages from both worlds can coexist and access
 %    hooks in other packages.
-%
 %
 % All operations that modify hooks take place at the global \TeX\
 % level, whereas hooks are executed in the
@@ -495,6 +494,218 @@
 % \meta{i}. The parameter tokens \enquote{\texttt{\#}$_6$} should be
 % doubled when not referring to actual arguments.
 % \end{arguments}
+%
+% \subsection{Managing labeled code chunks}
+%
+% Hooks have persistent code run every time they are executed.
+%
+% \begin{function}{
+%   \AddToHook,
+%   \hook_gput_code:nnn,
+% }
+%   \begin{syntax}
+%     \cs{AddToHook}\Arg{hook-spec}\oarg{label-spec}\Arg{code}
+%     \cs{hook_gput_code:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{code}
+%   \end{syntax}
+%    For one time hooks already consumed executes \meta{code}
+%    immediately (see \cs{UseOneTime...} commands).
+%    Otherwise persistently adds \meta{code} labeled after
+%    \meta{label-spec} to the specified hook.
+%    If the hook is never executed or never declared, when not
+%    generic or not disabled, \meta{code} will never be executed.
+%    There is no restriction on the hook prior to executing
+%    \cs{AddToHook}. This allows to modify the code for a hook
+%    defined by some package, even in documents that do not
+%    use the package.
+% \end{function}
+%
+%    For practical reasons, the addition is cumulative in the sense
+% that after
+%    \begin{lthooksCode}
+% \ROW\cs{AddToHook}|{myHook}[myLabel]|\Arg{code_1}\\
+% \ROW\cs{AddToHook}|{myHook}[myLabel]|\Arg{code_2}
+%    \end{lthooksCode}
+%    the code chunk is the same than after
+%    \begin{lthooksCode}
+% \ROW\cs{AddToHook}|{myHook}[myLabel]{|\meta{code_1}\meta{code_2}|}|
+%    \end{lthooksCode}
+%    and only the first effective addition is relevant in code ordering,
+%    see section \ref{sec:Ordering-code-execution}.
+%
+%    As a consequence, it is not straightforward to replace or
+%    remove just one \meta{code}, the \cs{RemoveFromHook} command
+%    will empty the whole code chunk at once.
+%    Also, it is not possible to reorder dynamically the various code
+%    in a code chunk. In order to gain more control, one technique
+%    is to prepare the code beforehands with L3 |tl| commands.
+%    Another technique consists of using a supplemental private hook:
+%    \begin{lthooksCode}
+% \ROW\cs{DeclareHook}|{myHook/private}|\\
+% \ROW\cs{AddToHook}|{myHook/private}[myLabel|$_1$|]|\Arg{code_1}\\
+% \ROW|...|\\
+% \ROW\cs{AddToHook}|{myHook/private}[myLabel|$_n$|]|\Arg{code_n}\\
+% \ROW\cs{AddToHook}|{theHook}[myLabel]{\UseHook{myHook/private}}|
+%    \end{lthooksCode}
+%
+% \begin{function}{
+%   \RemoveFromHook,
+%   \hook_gremove_code:nn,
+% }
+%   \begin{syntax}
+%     \cs{RemoveFromHook}\Arg{hook-spec}\oarg{label-spec}
+%     \cs{hook_gremove_code:nn} \Arg{hook-spec} \Arg{label-spec}
+%   \end{syntax}
+%    Removes the code chunk with the specified label from the specified
+%    hook if any, otherwise a warning is issued and the command aborts.
+%
+%    When the optional \meta{label-spec} argument is not provided,
+%    it defaults to \enquote{|.|} and is replaced by
+%    the \META{current name}, generally the package name,
+%    the class name or the keyword \enquote{\texttt{top-level}}
+%    depending on the execution context
+%    (see sections~\ref{sec:Command-arguments} and
+%    \ref{sec:Managing-the-current-name}).
+%    If the label is \enquote{|*|}, then all code chunks are
+%    undistinctively removed which may break things badly. 
+%    This last feature should only be used with private hooks that are
+%    under complete control.
+%
+% \end{function}
+%    In general, \cs{RemoveFromHook} should only be used when
+%    no third party code may be involved.
+%    Typically, some package adds code to a private hook,
+%    then definitely removes it later on,
+%    or the programmer adds code to a public hook under a private label
+%    then definitely removes it later on, like in the example below.
+% 
+% \medskip
+%    The command \cs{RemoveFromHook} can be used to replace a single
+%    code chunk, with some side effects though. Running
+% \begin{lthooksCode}[lineno]
+% \ROW\cs{NewHook}|{MyName}|\\
+% \ROW\cs{AddToHook}|{MyName}[labelA]{\typeout{A}}|\\
+% \ROW\cs{AddToHook}|{MyName}[labelB]{\typeout{B}}|\\
+% \ROW\cs{RemoveFromHook}|{MyName}{labelA}|\\
+% \ROW\cs{AddToHook}|{MyName}[labelA]{\typeout{A alt}}|\\
+% \ROW\cs{ShowHook}|{MyName}|\\
+% \end{lthooksCode}
+% gives the terminal output
+% \begin{lthooksCode}
+% \ROW|==> Hook: 'MyName'|\\
+% \ROW|> Code chunks:|\\
+% \ROW|>   'labelA' -> \typeout {A}|\\
+% \ROW|>   'labelB' -> \typeout {B}|\\
+% \ROW|> Execution order:|\\
+% \ROW|>   1: 'labelB'|\\
+% \ROW|>   2: 'labelA'.|\\
+% \end{lthooksCode}
+%    In order to recover exactly the original ordering,
+%    next rules is declared:
+%\begin{lthooksCode}
+%   \ROW\cs{DeclareHookRule}|{MyName}{label_A}{before}{label_B}|\\
+%\end{lthooksCode}
+%
+% \medskip
+% Next example shows how to safely add temporary code to hooks while
+% inside the document body.
+%\begin{lthooksCode}
+%   \ROW\cs{AddToHook}|{env/quote/begin}{\small}|\\
+%   \ROW|\begin{quote}|\\
+%   \ROW\TAB A quote set in a smaller typeface\\
+%   \ROW|\end{quote}|\\
+%   \ROW...\\
+%   \ROW\cs{RemoveFromHook}|{env/quote/begin}|\\
+%   \ROW... |% now back to normal for further quotes|
+%\end{lthooksCode}
+% No code label was provided either to add nor remove command:
+% the \enquote{\texttt{top-level}} keyword is used by default
+% for the label such that no other code is accidentally removed.
+%
+% Note that you can't cancel the font size command with
+%\begin{lthooksCode}
+%   \ROW\cs{AddToHook}|{env/quote/begin}{}|
+%\end{lthooksCode}
+% because it only adds a further empty chunk of code to
+% the hook. Adding |\normalsize| would result in the hook
+% containing |\small\normalsize| which is not efficient code.
+%
+%    In order to temporarily disable some code, \cs{RemoveFromHook}
+%    is not suitable because it deletes stored code which is difficult
+%    to undo. Instead, use the |voids| rule to prevent code execution
+%    followed by a different rule to enable that code again
+%    (see section~\ref{sec:rules}).
+%
+% If the goal is to typeset in a smaller typeface only one quote
+% here and there and not several consecutive quotes,
+% \cs{AddToHookNext} should be preferred because the 	added code is
+% automatically deleted once executed.
+%
+% \subsection{Extra code for next use only}
+% \label{sec:Updating-code-for-hooks}
+% \label{sec:Extra-code}
+% Hooks also have transient code executed only on next use,
+% and discarded afterwards.
+% \begin{function}{
+%   \AddToHookNext,
+%   \hook_gput_next_code:nn,
+% }
+%   \begin{syntax}
+%     \cs{AddToHookNext}\Arg{hook-spec}\Arg{code}
+%    \cs{hook_gput_next_code:nn} \Arg{hook-spec} \Arg{code}
+%   \end{syntax}
+%    The extra \meta{code} is appended to a dedicated transient pool
+%    of the specified hook\footnotemark. On next use of the hook,
+%    all the code from the transient pool is removed,
+%    then executed in due time and finally deleted.
+%
+%    For one time hooks already used at least once,
+%    \meta{code} will never execute because using a consumed hook
+%    is a do nothing operation.
+%
+%    The specified hook need not be declared prior to any code addition.
+%    If such a hook is never declared, \meta{code} will never be
+%    executed.
+% \end{function}\footnotetext{In order to reorder or delete transient code chunks,
+%  use an auxiliary hook.}
+%    
+% Next example shows how to safely add temporary code to hooks while
+% inside the document body.
+%\begin{lthooksCode}
+%   \ROW\cs{AddToHookNext}|{env/quote/begin}{\small}|\\
+%   \ROW|\begin{quote}|\\
+%   \ROW\TAB A quote set in a smaller typeface\\
+%   \ROW|\end{quote}|\\
+%   \ROW... |% back to normal for further quotes|
+%\end{lthooksCode}
+% See command \cs{AddToHook} when several consecutive quote
+% must be typeset in a smaller typeface.
+%
+% For practical reasons, the addition is cumulative like for
+% \cs{AddToHook}. Moreover, it is possible to nest
+% \cs{AddToHookNext} commands: for a normal hook,
+%   \begin{lthooksCode}
+%     \ROW\cs{AddToHookNext}\Arg{hook-spec}\verb={=\meta{code_1}^^A
+%         \cs{AddToHookNext}\Arg{hook-spec}\Arg{code_2}\verb=}=
+%   \end{lthooksCode}
+%    results in \meta{code_1} being executed the next time the hook
+%    is used, and \meta{code_2} being executed the next time after.
+%
+% \begin{function}{
+%   \ClearHookNext,
+%   \hook_gclear_next_code:n,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{ClearHookNext}\Arg{hook-spec}}^^A
+%\RIGHT{\cs{hook_gclear_next_code:n} \Arg{hook-spec}}
+%   \end{syntax}
+%    Removes all code for the next use only.
+%    \cs{ClearHookNext} can be used when the next use occurs in a
+%    different situation than expected making previous code obsolete,
+%    for example, when discarding a page with \cs{DiscardShipoutBox}
+%    (but even then not always). This is a sensible command that needs
+%    enough control on the execution flow.
+% \end{function}
+%
 %
 %
 % \subsection{Managing the \protect\meta{current name}}
@@ -836,33 +1047,6 @@
 %
 % \subsubsection{Updating code for hooks}
 %
-% \begin{function}{\AddToHook}
-%   \begin{syntax}
-%     \cs{AddToHook}\Arg{hook-spec}\oarg{label-spec}\Arg{code}
-%   \end{syntax}
-%    Adds to the hook specified by \meta{hook-spec} the \meta{code} labeled after \meta{label-spec}.
-%    When the optional argument \meta{label} is not provided, the
-%    \meta{default label} is used (see sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}).
-%    If \cs{AddToHook} is used in a package/class, the
-%    \meta{default label} is the package/class name, otherwise it is
-%    \hook{top-level} (the \hook{top-level} label is treated
-%    differently:  see section~\ref{sec:top-level}).
-%
-%    If there already exists code under the \meta{label} then the new
-%    \meta{code} is appended to the existing one (even if this is a reversed hook).
-%    If you want to replace existing code under the
-%    \meta{label}, first apply \cs{RemoveFromHook}.
-%
-%    The hook doesn't have to exist for code to be added to
-%    it. However, if it is not declared, then obviously the
-%    added \meta{code} will never be executed.  This
-%    allows for hooks to work regardless of package loading order and
-%    enables packages to add to hooks from other packages without
-%    worrying whether they are actually used in the current document.
-%    See section~\ref{sec:querying}.
-% \end{function}
-%
 % \begin{function}{\AddToHookWithArguments}
 %   \begin{syntax}
 %     \cs{AddToHookWithArguments}\Arg{hook-spec}\oarg{label-spec}\Arg{\# code}
@@ -887,109 +1071,6 @@
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
 % \end{function}
 %
-% \begin{function}{\RemoveFromHook}
-%   \begin{syntax}
-%     \cs{RemoveFromHook} \Arg{hook-spec}\oarg{label-spec}
-%   \end{syntax}
-%    Removes any code labeled after \meta{label-spec} from the hook.
-%    When the optional argument \meta{label-spec} is not provided, the
-%    \meta{default label} is used (see sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}).
-%
-%    If there is in the hook no code under the \meta{label-name} built after \Arg{hook-spec},
-%    or if the hook does not exist, a warning is issued when
-%    you attempt to \cs{RemoveFromHook}, and the command is ignored.
-%    \cs{RemoveFromHook} should be used only when you know exactly what
-%    labels are in a hook. Typically this will be when some code gets added to a hook 
-%    by a package, then later this code is removed by that same package.
-%    If you want to prevent the execution of code from another
-%    package, use the |voids| rule instead (see section~\ref{sec:rules}).
-%
-%    If the optional \meta{label} argument is \texttt{*}, then all code chunks are
-%    removed. This is rather dangerous as it may well drop code from other
-%    packages (that one may not know about); it should therefore not be used
-%    in packages but only in document preambles!
-% \end{function}
-%
-% \medskip
-%
-% In contrast to the \texttt{voids} relationship between two labels
-% in a \cs{DeclareHookRule} this is a destructive operation as the
-% labeled code is removed from the hook data structure, whereas the
-% relationship setting can be undone by providing a different
-% relationship later.
-%
-% A useful application for this declaration inside the document body
-% is when one wants to temporarily add code to hooks and later remove
-% it again, e.g.,
-% \begin{lthooksCode}
-% \ROW\cs{AddToHook}|{env/quote/before}{\small}|\\
-% \ROW|\begin{quote}|\\
-% \ROW~~\meta{A quote set in a smaller typeface}\\
-% \ROW|\end{quote}|\\
-% \ROW...\\
-% \ROW\cs{RemoveFromHook}|{env/quote/before}|\\
-% \ROW...|%| \IT{now back to normal for further quotes}
-% \end{lthooksCode}
-% Note that you can't cancel the setting with
-% \begin{lthooksCode}
-% \ROW\cs{AddToHook}|{env/quote/before}{}|
-% \end{lthooksCode}
-% because that only \enquote{adds} a further empty chunk of code to
-% the hook. Adding \cs{normalsize} would work but that means the hook
-% then contained \cs{small}\cs{normalsize} which means two font size
-% changes for no good reason.
-%
-% The above is only needed if one wants to typeset several quotes in a
-% smaller typeface. If the hook is only needed once then
-% \cs{AddToHookNext} is simpler, because it resets itself after one use.
-%
-%
-% \begin{function}{\AddToHookNext}
-%   \begin{syntax}
-%     \cs{AddToHookNext} \Arg{hook-spec}\Arg{code}
-%   \end{syntax}
-%    Adds \meta{code} to the next invocation of the hook.
-%    The code is executed after the normal hook code has finished and
-%    it is executed only once, i.e. it is deleted after it was used.
-%
-%    Using this declaration is a global operation, i.e., the code is
-%    not lost even if the declaration is used inside a group and the
-%    next invocation of the hook happens after the end of that group. 
-%    If the declaration is
-%    used several times before the hook is executed then all code is
-%    executed in the order in which it was declared.\footnotemark
-%
-%    If this declaration is used with a one-time hook then the code 
-%    is only ever used if the declaration comes before the hook’s 
-%    invocation.  This is because, in contrast 
-%    to \cs{AddToHook}, the code in this declaration is not 
-%    executed immediately in the case when the invocation of the hook
-%    has already happened---in other words, this code will truly execute
-%    only on the next invocation of the hook (and in the case of a
-%    one-time hook there is no such \enquote{next invocation}).  
-%    This gives you a choice: should my code execute
-%    always, or should it execute only at the point where the
-%    one-time hook is used (and not at all if this is impossible)? For
-%    both of these possibilities there are use cases.
-%
-%    It is possible to nest this declaration using the same hook (or
-%    different hooks): e.g.,
-%   \begin{lthooksCode}
-%     \ROW\cs{AddToHookNext}\Arg{hook}\verb={=\meta{code-1}^^A
-%     \cs{AddToHookNext}\Arg{hook}\Arg{code-2}\verb=}=
-%   \end{lthooksCode}
-%    will execute \meta{code-1} next time the \meta{hook} is used and at
-%    that point puts \meta{code-2} into  the \meta{hook} so that it gets
-%    executed on following time the hook is run.
-%
-%    A hook doesn't have to exist for code to be added to it.  This
-%    allows for hooks to work regardless of package loading
-%    order.
-%    See section~\ref{sec:querying}.
-% \end{function}\footnotetext{There is
-%    no mechanism to reorder such code chunks (or delete them).}
-%
 % \begin{function}{\AddToHookNextWithArguments}
 %   \begin{syntax}
 %     \cs{AddToHookNextWithArguments} \Arg{hook-spec}\Arg{\# code}
@@ -998,21 +1079,6 @@
 %    contain references to the arguments of the hook as described
 %    for \cs{AddToHookWithArguments} above.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-% \end{function}
-%
-%
-%
-% \begin{function}{\ClearHookNext}
-%   \begin{syntax}
-%     \cs{ClearHookNext}\Arg{hook-spec}
-%   \end{syntax}
-%    Normally \cs{AddToHookNext} is only used when you know precisely
-%    where it will apply and why you want some extra code at that
-%    point. However, there are a few use cases in which such a
-%    declaration needs to be canceled, for example, when
-%    discarding a page with \cs{DiscardShipoutBox} (but even then not
-%    always), and in such situations \cs{ClearHookNext} can be
-%    used.
 % \end{function}
 %
 %
@@ -1420,11 +1486,9 @@
 % \end{function}
 %
 % \begin{function}{
-%     \hook_gput_code:nnn,
 %     \hook_gput_code_with_args:nnn
 %   }
 %   \begin{syntax}
-%     \cs{hook_gput_code:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{code}
 %     \cs{hook_gput_code_with_args:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{\# code}
 %   \end{syntax}
 %    Adds a chunk of \meta{\# code} to the specified hook labeled after
@@ -1445,11 +1509,9 @@
 % \end{function}
 %
 % \begin{function}{
-%     \hook_gput_next_code:nn,
 %     \hook_gput_next_code_with_args:nn,
 %   }
 %   \begin{syntax}
-%     \cs{hook_gput_next_code:nn} \Arg{hook-spec} \Arg{code}
 %     \cs{hook_gput_next_code_with_args:nn} \Arg{hook-spec} \Arg{\# code}
 %   \end{syntax}
 %    Adds a chunk of \meta{code} for use only in the next invocation of the
@@ -1467,32 +1529,6 @@
 %    i.e., after all standard code for the hook got executed.
 %    Thus if one needs to undo what the standard does one has to do
 %    that as part of \meta{code} or \meta{\# code}.
-% \end{function}
-%
-%
-% \begin{function}{\hook_gclear_next_code:n}
-%   \begin{syntax}
-%     \cs{hook_gclear_next_code:n} \Arg{hook-spec}
-%   \end{syntax}
-%   Undo any earlier \cs{hook_gput_next_code:nn}.
-% \end{function}
-%
-%
-%
-%  \begin{function}{\hook_gremove_code:nn}
-%   \begin{syntax}
-%     \cs{hook_gremove_code:nn} \Arg{hook-spec} \Arg{label-spec}
-%   \end{syntax}
-%    Removes any code for the specified hook with the specified label.
-%
-%    If there is no code under this label in the hook,
-%    or if the hook does not exist, a warning is issued when
-%    you attempt to use \cs{hook_gremove_code:nn}, and the command is ignored.
-%
-%    If the second argument is \texttt{*}, then all code chunks are
-%    removed. This is rather dangerous as it drops code from other
-%    packages one may not know about, so think twice before using
-%    that!
 % \end{function}
 %
 %
@@ -1553,6 +1589,7 @@
 %
 %
 % \subsection{On the order of hook code execution} \label{sec:order}
+% \label{sec:Ordering-code-execution}
 %
 %    Chunks of code for a hook under different labels are supposed
 %    to be independent if there are no special rules set up that
