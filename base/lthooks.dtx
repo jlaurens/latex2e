@@ -196,7 +196,7 @@
 % \begin{lthooks.code}[lineno]
 % \ROW{|\documentclass{article}|}\\
 % \ROW{|\begin{document}|}\\
-% \ROW{\cs{DeclareHook}|{MyName}       %|}
+% \ROW{\cs{NewHook}|{MyName}       %|}
 % \IT{Declare a hook named }|"MyName"|\\
 % \ROW{\cs{AddToHook}|{MyName}         %|}
 % \IT{Add to the hook named }|"MyName"...|\\
@@ -445,7 +445,7 @@
 %    is to prepare the code beforehands with L3 |tl| commands.
 %    Another technique consists of using a supplemental private hook:
 %    \begin{lthooks.code}
-% \ROW\cs{DeclareHook}|{myHook/private}|\\
+% \ROW\cs{NewHook}|{myHook/private}|\\
 % \ROW\cs{AddToHook}|{myHook/private}[myLabel_1]|\Arg{code_1}\\
 % \ROW|...|\\
 % \ROW\cs{AddToHook}|{myHook/private}[myLabel_n]|\Arg{code_n}\\
@@ -613,11 +613,11 @@
 % compatibility.
 %
 % \begin{function}[added=0001-01-01]{
-%   \DeclareHook,
+%   \NewHook,
 %   \hook_declare:n,
 % }
 %   \begin{syntax}
-% \LEFT{\cs{DeclareHook}\Arg{hook}}^^A
+% \LEFT{\cs{NewHook}\Arg{hook}}^^A
 %\RIGHT{\cs{hook_declare:n} \Arg{hook}}
 %   \end{syntax}
 % Declares a hook named after \meta{hook}. If a hook was already
@@ -632,7 +632,7 @@
 % \LEFT{\cs{DeclareReversedHook}\Arg{hook}}^^A
 %\RIGHT{\cs{hook_declare_reversed:n} \Arg{hook}}
 %   \end{syntax}
-%    Declares a hook like \cs{DeclareHook}, except that
+%    Declares a hook like \cs{NewHook}, except that
 %    when used, code chunks of the hooks are executed in
 %    the reverse order.
 %    More precisions in section~\ref{sec:Ordering-code-execution}.
@@ -647,7 +647,7 @@
 %     \cs{hook_declare_pair:nn} \Arg{hook_1} \Arg{hook_2}
 %   \end{syntax}
 %     A shorthand for
-%    \cs{DeclareHook}\texttt{\Arg{hook_1}}^^A
+%    \cs{NewHook}\texttt{\Arg{hook_1}}^^A
 %    \cs{DeclareReversedHook}\texttt{\Arg{hook_2}}.
 % \end{function}
 %
@@ -710,7 +710,7 @@
 % whichever command is executed first, but with more flexibility:
 % \begin{lthooks.code}
 % \ROW|\newcommand{\MyCmd}{|\FILL{20}^^A
-% \SEP\cs{DeclareHook}|{MyCmdInit}|\\
+% \SEP\cs{NewHook}|{MyCmdInit}|\\
 % \ROW\TAB\cs{UseOneTimeHook}|{MyCmdInit}|\FILL{28}^^A
 % \SEP\cs{AddToHook}|{MyCmdInit}{|\\
 % \ROW\TAB|...|\FILL{5}^^A
@@ -808,14 +808,14 @@
 % at the end of a component.
 %
 % \begin{function}[added=0001-01-01]{
-%   \DeclareHookWithArguments,
+%   \NewHookWithArguments,
 %   \hook_declare_with_args:nn,
 % }
 %   \begin{syntax}
-%    \cs{DeclareHookWithArguments}\Arg{hook}\Arg{n}
+%    \cs{NewHookWithArguments}\Arg{hook}\Arg{n}
 %    \cs{hook_declare_with_args:nn} \Arg{hook} \Arg{n}
 %   \end{syntax}
-%    Declares a hook like \cs{DeclareHook} does except that added
+%    Declares a hook like \cs{NewHook} does except that added
 %    code chunks can refer to \meta{n} arguments
 %    \texttt{\#1}, \texttt{\#2},... \texttt{\#\meta{n}},
 %    where \meta{n} is at most 9.
@@ -844,7 +844,7 @@
 %     \cs{hook_declare_pair_with_args:nnn} \Arg{hook_1} \Arg{hook_2} \Arg{n}
 %   \end{syntax}
 %    A shorthand for
-%    \cs{DeclareHookWithArguments}\texttt{\Arg{hook_1}}\Arg{n}\\
+%    \cs{NewHookWithArguments}\texttt{\Arg{hook_1}}\Arg{n}\\
 %    \cs{DeclareReversedHookWithArguments}\texttt{\Arg{hook_2}}\Arg{n}.% \end{function}
 %
 % \medskip
@@ -864,7 +864,7 @@
 %    Works like \cs{AddToHook}, except that \meta{\#\ code} can
 %    access the arguments passed to the hook using \verb|#1|, \verb|#2|,
 %    \ldots, \texttt{\#\meta{n}} where \meta{n} is exactly
-%    the argument of the corresponding \cs{DeclareHookWithArguments} or
+%    the argument of the corresponding \cs{NewHookWithArguments} or
 %    similar command.
 % \end{function}
 %
@@ -879,7 +879,7 @@
 %    Next example defines a greetings command in a hook of
 %    the document body, with \cs{AddToHook}:
 %\begin{lthooks.code}[lineno]
-%   \ROW\cs{DeclareHook}|{./greetings}|\\
+%   \ROW\cs{NewHook}|{./greetings}|\\
 %   \ROW...\\
 %   \ROW\cs{AddToHook}|{./greetings}|\\
 %   \ROW[format=\bfseries,mark=$\to$\;,
@@ -892,7 +892,7 @@
 %   notice how \cs[no-index]{greetings} definition is different
 %   on lines 4 above and below.
 %\begin{lthooks.code}[lineno]
-%   \ROW\cs{DeclareHookWithArguments}|{./greetings/#Hello}{1}|\\
+%   \ROW\cs{NewHookWithArguments}|{./greetings/#Hello}{1}|\\
 %   \ROW...\\
 %   \ROW\cs{AddToHookWithArguments}|{./greetings/#Hello}|\\
 %   \ROW[format=\bfseries,mark=$\to$\;,
@@ -915,7 +915,7 @@
 %    Works like \cs{AddToHookNext}, except that \meta{\#\ code} can
 %    access the arguments passed to the hook using \verb|#1|, \verb|#2|,
 %    \ldots, \texttt{\#\meta{n}} where \meta{n} is exactly
-%    the argument of the corresponding \cs{DeclareHookWithArguments} or
+%    the argument of the corresponding \cs{NewHookWithArguments} or
 %    similar command.
 % \end{function}
 %
@@ -1516,7 +1516,7 @@
 % \begin{comment}
 %
 %^^A   % Code for the listing below:
-%^^A   \DeclareHook{example-hook}
+%^^A   \NewHook{example-hook}
 %^^A   \AddToHook{example-hook}{[code from 'top-level']}
 %^^A   \AddToHook{example-hook}[foo]{[code from package 'foo']}
 %^^A   \AddToHook{example-hook}[bar]{[from package 'bar']}
@@ -1794,7 +1794,7 @@
 %    environment has been processed, it will only be executed if the
 %    environment appears again and if that doesn't happen the code
 %    will never get executed.}  In contrast to other hooks there is
-%    also no need to declare them using \cs{DeclareHook}.
+%    also no need to declare them using \cs{NewHook}.
 %
 %    \medskip
 %    Largely to support some code written for \pkg{etoolbox} package,
@@ -2141,13 +2141,13 @@
 % \begin{tabular}{|l|l|}
 % \hline
 % Old & New since 0001-01-01\\\hline
-% \Row{NewHook}                     {DeclareHook}
+% \Row{NewHook}                     {NewHook}
 % \Row{hook_new:n}                  {hook_declare:n}
 % \Row{NewReversedHook}             {DeclareReversedHook}
 % \Row{hook_new_reversed:n}         {hook_declare_reversed:n}
 % \Row{NewMirroredHookPair}         {DeclareMirroredHookPair}
 % \Row{hook_new_pair:nn}            {hook_declare_pair:nn}
-% \Row{NewHookWithArguments}        {DeclareHookWithArguments}
+% \Row{NewHookWithArguments}        {NewHookWithArguments}
 % \Row{hook_new_with_args:nn}       {hook_declare_with_args:nn}
 % \Row{NewReversedHookWithArguments}{DeclareReversedHookWithArguments}
 % \Row{hook_new_reversed_with_args:nn}{hook_declare_reversed_with_args:nn}
