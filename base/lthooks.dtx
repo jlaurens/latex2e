@@ -707,6 +707,50 @@
 % \end{function}
 %
 %
+% \subsection{Declaring and using normal hooks}
+%
+%  Except for generic hooks detailed in section~\ref{sec:LaTeX-generic-hooks},
+%  hooks have to be declared before they can be used effectively.
+%  Here we see hooks without arguments, either direct or reversed.
+%
+% \begin{function}{
+%   \NewHook,
+%   \hook_new:n,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{NewHook}\Arg{hook-spec}}^^A
+%\RIGHT{\cs{hook_new:n} \Arg{hook-spec}}
+%   \end{syntax}
+% Builds a \meta{hook-name} from \meta{hook-spec}.
+% If a hook was already declared with that name, an error is raised
+% and the command aborts, otherwise a new hook is declared.
+% \end{function}
+%
+% \begin{function}{
+%   \UseHook,
+%   \hook_use:n,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{UseHook}\Arg{hook name\LHXStar}}^^A
+%\RIGHT{\cs{hook_use:n} \Arg{hook name\LHXStar}}
+%   \end{syntax}
+%    A hook is usable means that it is either declared or a generic
+%    hook not disabled.
+%    This command does nothing if there is no usable hook for
+%   \meta{hook name\LHXStar} or if the hook has already been consumed by
+%    \cs{UseOneTimeHook} or similar functions.
+%    Otherwise it makes an ordered copy of all the code chunks
+%    previously added for \meta{hook name\LHXStar} and executes it.
+%    Managing the order of execution of the various code chunks
+%    is detailed in section \ref{sec:Ordering-code-execution}.
+%    \emph{Executing} a hook means executing one of the
+%    \cs[no-index]{Use...} commands, we may also say that a hook is
+%    \cs[no-index]{Use...}'d.
+%
+%    Notice that executing a hook after |\begin{document}| is faster than before.
+%
+% \end{function}
+%
 %
 % \subsection{Managing the \protect\meta{current name}}
 % \label{sec:Managing-the-current-name}
@@ -853,15 +897,6 @@
 %  environments (executed at \cs{begin} and \cs{end}), and the
 %  hooks run when loading files (see section~\ref{sec:generic}).
 %
-% \begin{function}{\NewHook}
-%   \begin{syntax}
-%     \cs{NewHook} \Arg{hook-spec}
-%   \end{syntax}
-%   Declare a new hook named after \meta{hook-spec}.
-%   If the hook name is already taken, an error is raised.
-%   See section \ref{sec:Collaborative-work} to properly choose a hook name.
-% \end{function}
-%
 % \begin{function}{\NewReversedHook}
 %   \begin{syntax}
 %     \cs{NewReversedHook} \Arg{hook-spec}
@@ -971,19 +1006,6 @@
 %
 % \subsubsection{Using hooks in code}
 %
-%
-% \begin{function}{\UseHook}
-%   \begin{syntax}
-%     \cs{UseHook} \Arg{hook-name\LHXStar}
-%   \end{syntax}
-%    Execute the code stored in the hook with the given name.
-%
-%    Before \verb=\begin{document}= the fast execution code for a hook
-%    is not set up, so in order to use a hook there it is explicitly
-%    initialized first. As that involves assignments using a hook at
-%    those times is not 100\% the same as using it after
-%    \verb=\begin{document}=.
-% \end{function}
 %
 % \begin{function}{\UseHookWithArguments}
 %   \begin{syntax}
@@ -1390,12 +1412,10 @@
 %
 %
 % \begin{function}{
-%     \hook_new:n,
 %     \hook_new_reversed:n,
 %     \hook_new_pair:nn
 %   }
 %   \begin{syntax}
-%     \cs{hook_new:n} \Arg{hook-spec}
 %     \cs{hook_new_reversed:n} \Arg{hook-spec}
 %     \cs{hook_new_pair:nn} \Arg{hook-spec_1} \Arg{hook-spec_2}
 %   \end{syntax}
@@ -1454,9 +1474,8 @@
 % \end{function}
 %
 %
-% \begin{function}{\hook_use:n,\hook_use:nnw}
+% \begin{function}{\hook_use:nnw}
 %   \begin{syntax}
-%     \cs{hook_use:n} \Arg{hook-name}
 %     \cs{hook_use:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
 %    Executes the hook code followed (if set up) by the code for next
@@ -2095,6 +2114,7 @@
 %
 %
 % \section{\LaTeXe{} commands and environments augmented by hooks}
+% \label{sec:LaTeX-generic-hooks}
 %
 %    In this section we describe the standard hooks that are now
 %    offered by \LaTeX{}, or give pointers to other documents in which
