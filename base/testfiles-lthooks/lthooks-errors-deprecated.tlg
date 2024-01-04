@@ -98,7 +98,7 @@ Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
 ! LaTeX hooks Error: You cannot change the default label for 'top-level'.
 (hooks)              Illegal
-(hooks)                \SetDefaultHookLabel{my-document}
+(hooks)                \SetHookCurrentName{my-document}
 (hooks)              on line ....
 Type <return> to continue.
  ...                                              
@@ -116,7 +116,7 @@ The 'top-level' label is meant for user code only, and should only be used
 package, or another suitable label.
 ! LaTeX hooks Error: You cannot change the default label to 'top-level'.
 (hooks)              Illegal
-(hooks)                \SetDefaultHookLabel{top-level}
+(hooks)                \SetHookCurrentName{top-level}
 (hooks)              on line ....
 Type <return> to continue.
  ...                                              

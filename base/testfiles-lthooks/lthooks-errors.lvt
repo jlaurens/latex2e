@@ -12,20 +12,27 @@
 
 \NewReversedHook{yyy}
 
-% activate-error
+\BEGINTEST{activate-error}
 \DisableGenericHook{yyy}
+\ENDTEST
 
-% activate-disabled
+\BEGINTEST{activate-disabled}
 \ActivateGenericHook{yyy}
+\ENDTEST
 
-% hook-disabled
+\BEGINTEST{hook-disabled}
 \AddToHook{yyy}{error}
+\ENDTEST
 
-% empty-label
+\BEGINTEST{empty-label}
 \AddToHook{yyy}[]{error}
+\ENDTEST
 
-% no-default-label
-\PushDefaultHookLabel{}
+\BEGINTEST{no-default-label}
+\PushHookCurrentName{}
+\ENDTEST
+
+\BEGINTEST{Rules}
 
 \AddToHook{xxx}[label1]{ foo1}
 \AddToHook{xxx}[label2]{ foo2}
@@ -33,39 +40,51 @@
 \AddToHook{xxx}[label4]{ foo3}
 \AddToHook{xxx}[label5]{ foo5}
 
-% unknown-rule
+\BEGINTEST{Error: unknown-rule}
 \DeclareHookRule {xxx} {label1} {unknown} {label2}
+\ENDTEST
 
-% labels-incompatible warning
+\BEGINTEST{Warning: labels-incompatible}
 \DeclareHookRule {xxx} {label3} {incompatible-warning} {label4}
+\ENDTEST
 
-% labels-incompatible error
+\BEGINTEST{Error: labels-incompatible}
 \DeclareHookRule {xxx} {label1} {incompatible-error} {label5}
+\ENDTEST
 
 \DebugPrintHook{xxx}
+
+\ENDTEST
+
 
 \makeatletter
 \@expl@@@filehook@file@pop@@
 
-% set-top-level
-\SetDefaultHookLabel{my-document}
+\BEGINTEST{Error: set-top-level}
+\SetHookCurrentName{my-document}
+\ENDTEST
 
 \AddToHook{begindocument}[top-level]{\TIMO\typeout{allowed}\OMIT}
-\PushDefaultHookLabel{my-document}
-  % top-level not allowed with other labels
-  % misused-top-level
+\BEGINTEST{top-level not allowed with other labels}
+\PushHookCurrentName{my-document}
+\BEGINTEST{Error: misused-top-level}
   \AddToHook{begindocument}[top-level]{not allowed}
-  % set-top-level
-  \SetDefaultHookLabel{top-level}
-\PopDefaultHookLabel
+\ENDTEST
+\BEGINTEST{Error: set-top-level}
+  \SetHookCurrentName{top-level}
+\ENDTEST
+\PopHookCurrentName
+\ENDTEST
 
-% extra-pop-label
-\PopDefaultHookLabel
+\BEGINTEST{Error type: extra-pop-label}
+\PopHookCurrentName
+\ENDTEST
 
-% missing-pop-label
-\PushDefaultHookLabel{error}
-\PushDefaultHookLabel{should}
-\PushDefaultHookLabel{this}
+\BEGINTEST{Error type: missing-pop-label (Checked at \end{document})}
+\PushHookCurrentName{error}
+\PushHookCurrentName{should}
+\PushHookCurrentName{this}
+\ENDTEST
 
 \OMIT
 \begin{document}

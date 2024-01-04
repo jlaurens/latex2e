@@ -1,0 +1,127 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+! LaTeX hooks Error: You cannot change the default label for 'top-level'.
+(hooks)              Illegal
+(hooks)                \SetHookCurrentName{foo}
+(hooks)              on line ....
+Type <return> to continue.
+ ...                                              
+l. ...\SetHookCurrentName{foo}
+                              % RAISE
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
+============================================================
+TEST 15: Expected current name == 'bar'
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 16: Expected current name == 'baz'
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 17: Expected current name == 'bar'
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 18: Expected current name == 'foo'
+============================================================
+PASSED
+============================================================
+! LaTeX hooks Error: You cannot change the default label to 'top-level'.
+(hooks)              Illegal
+(hooks)                \SetHookCurrentName{top-level}
+(hooks)              on line ....
+Type <return> to continue.
+ ...                                              
+l. ...\SetHookCurrentName{top-level}
+                                    % RAISE
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
+============================================================
+TEST 19: Expected current name == 'baz'
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 20: Expected current name == 'top-level'
+============================================================
+PASSED
+============================================================
+! LaTeX hooks Error: You cannot change the default label for 'top-level'.
+(hooks)              Illegal
+(hooks)                \SetHookCurrentName{foo}
+(hooks)              on line ....
+Type <return> to continue.
+ ...                                              
+l. ...\SetHookCurrentName{foo}
+                               % RAISE
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
+============================================================
+TEST 21: Expected current name == 'top-level'
+============================================================
+PASSED
+============================================================
+! LaTeX hooks Error: You cannot change the default label for 'top-level'.
+(hooks)              Illegal
+(hooks)                \SetHookCurrentName{top-level}
+(hooks)              on line ....
+Type <return> to continue.
+ ...                                              
+l. ...\SetHookCurrentName{top-level}
+                                     % RAISE
+LaTeX does not know anything more about this error, sorry.
+Try typing <return> to proceed.
+If that doesn't work, type X <return> to quit.
+============================================================
+TEST 22: Expected current name == 'top-level'
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 23: \DebugPrintHook 
+============================================================
+dot syntax: '.' -> PASSED
+dot syntax: './foo' -> PASSED
+dot syntax: '..' -> PASSED
+dot syntax: '.foo' -> PASSED
+dot syntax: '../foo' -> PASSED
+dot syntax: '/.foo' -> PASSED
+dot syntax: './.foo' -> PASSED
+dot syntax: '{.}' -> PASSED
+============================================================
+============================================================
+TEST 24: hook/label-spec
+============================================================
+PASSED
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 25: hook/label-spec no current name
+============================================================
+PASSED
+PASSED
+============================================================
+PASSED
+============================================================
+LaTeX hooks Warning: Cannot remove chunk 'DOT/LABEL' from hook './HOOK'
+(hooks)              because it does not exist in that hook.
+PASSED
+============================================================
+LaTeX hooks Warning: Cannot remove chunk 'DOT/LABEL' from hook './HOOK'
+(hooks)              because it does not exist in that hook.
+PASSED
+============================================================
+==> Hook: './HOOK'
+>   empty.
+<recently read> }
+l. ...\ShowHook{{./HOOK}}
+PASSED
+============================================================

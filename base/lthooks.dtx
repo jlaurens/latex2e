@@ -156,6 +156,7 @@
 %
 % \ExplSyntaxOff
 %
+% \providecommand\LHXStar{$^{\text{*}}$}
 % \providecommand\LHXLabel[1]{\texttt{#1}}
 % \providecommand\hook[1]{\texttt{#1}}
 %
@@ -176,7 +177,6 @@
 % \author{Frank Mittelbach\thanks{Code improvements for speed and other goodies by Phelype Oleinik}}
 %
 % \maketitle
-%
 %
 % \tableofcontents
 %
@@ -349,6 +349,7 @@
 % actual code as illustrated in section \ref{sec:Generic-hooks-for-commands}.
 %
 % \subsection{Collaborative work}
+% \label{sec:Collaborative-work}
 %
 % \LaTeX\ hooks are managed at the global \TeX\ level, therefore
 % great care should be taken such that no code breaks unintentionally.
@@ -388,11 +389,6 @@
 % \item \enquote{\texttt{top-level}} if the owner is a document.
 % \end{itemize}
 % That way, the owner of a hook or a label is clearly identified.
-% To simplify code, \meta{hook} and \meta{label} command arguments
-% below can include a leading dot \enquote{|.|} as shortcut to the owner's
-% name through the \META{default label}, see section
-% \ref{sec:default-label}.
-%
 %
 % Hooks intended for public use should be properly documented and
 % changing their name in new versions should come with a deprecation
@@ -441,6 +437,201 @@
 %    hooks in other packages.
 %
 %
+% All operations that modify hooks take place at the global \TeX\
+% level, whereas hooks are executed in the
+% current \TeX\ group.
+%
+% \subsection{Conventions and command arguments}
+% \label{sec:Command-arguments}
+% In the sequel
+% \begin{arguments}
+% \item[\meta{hook}] denotes a string with only inner space characters,
+%   It represents a \emph{hook name}.
+%   The special value \enquote{|??|} stands for \emph{any hook name}.
+% \item[\meta{label}] also denotes a string with only inner space characters.
+%   It represents a \emph{code chunk label}.
+%   The special values \enquote{|top-level|} and \enquote{|*|} are detailed below
+%   whereas \enquote{|0|} is reserved for internal use.
+% \end{arguments}
+% 
+% The command arguments are mainly one of the following.
+% \begin{arguments}
+% \item[\meta{hook-name}:] on execution, outer spaces are trimmed,
+% then full expansion occurs until only spaces and character tokens
+% remain, including unicode characters.
+% The result is the hook name denoted by \meta{hook}.
+% If a non-expandable non-character token still remains,
+% a low-level \TeX{} error is raised.
+% If you need names with heading or trailing spaces,
+% use |\space| or another brace level.
+%
+% \item[\meta{hook-name\LHXStar}:] same as \meta{hook-name},
+% except than for speed, outer spaces are not trimmed.
+%
+% \item[\meta{hook-spec}:] a hook name specifier.
+% The argument is first treated like \meta{hook-name}.
+% If the result is a single dot \enquote{|.|} or starts with
+% \enquote{|./|} the leading dot is replaced by the
+% \meta{current name}, which is generally the package name,
+% the class name or the reserved keyword \enquote{|top-level|}.
+% A \enquote{|.|} anywhere else is treated literally and is not
+% replaced. See section \ref{sec:Managing-the-current-name} to manage the
+%  \meta{current name}.
+% The end result is the hook name denoted by \meta{hook}.
+%
+%
+% \item[\meta{label-spec}:] a code chunk label specifier,
+% treated exactly like \meta{hook-spec} on execution.
+% The result is the code chunk label denoted by \meta{label}.
+% This argument is required for L3 commands
+% but optional for \LaTeXe\ commands. It then defaults to
+% \enquote{|.|} which is replaced by \meta{current name}.
+% We therefore suggest to use the leading dot shortcut detailed for
+% above \meta{hook-spec} whenever possible.
+%
+% \item[\meta{code}:] any \LaTeX\ code chunk.
+% \item[\meta{\#\ code}:] any \LaTeX\ code chunk where
+% \enquote{\texttt{\#\meta{i}}} refers to actual argument number
+% \meta{i}. The parameter tokens \enquote{\texttt{\#}$_6$} should be
+% doubled when not referring to actual arguments.
+% \end{arguments}
+%
+%
+% \subsection{Managing the \protect\meta{current name}}
+% \label{sec:Managing-the-current-name}
+%
+% As explained in section \ref{sec:Command-arguments}, a single
+% leading \enquote{|.|} in a \meta{hook-spec} or \meta{label-spec} argument is
+% replaced by the \meta{current name}, which is generally a
+% package name, the class name or \enquote{|top-level|},
+% depending on the execution context.
+% This is also the default value of the optional \meta{label-spec} argument
+% when not provided.
+% For example,
+% inside the package \texttt{mypackage.sty}, the current name is
+% \enquote{\hook{mypackage}}, so the instructions:
+% \begin{lthooksCode}
+%   \ROW|\NewHook   {./hook}|\\
+%   \ROW|\AddToHook {./hook}[.]{code}     % |\IT{Same as }|\AddToHook{./hook}{code}|\\
+%   \ROW|\AddToHook {./hook}[./sub]{code}|\\
+%   \ROW|\DeclareHookRule{begindocument}{.}{before}{babel}|\\
+%   \ROW|\AddToHook {file/foo.tex/after}{code}|\\
+% \end{lthooksCode}
+%    are equivalent to:
+% \begin{lthooksCode}
+%   \ROW|\NewHook   {mypackage/hook}|\\
+%   \ROW|\AddToHook {mypackage/hook}[mypackage]{code}|\\
+%   \ROW|\AddToHook {mypackage/hook}[mypackage/sub]{code}|\\
+%   \ROW|\DeclareHookRule{begindocument}{mypackage}{before}{babel}|\\
+%   \ROW|\AddToHook {file/foo.tex/after}{code}                  % |\IT{unchanged}
+% \end{lthooksCode}
+% If you definitely want a single literal leading \enquote{\hook{.}},
+% let the whole \meta{hook-spec} or \meta{label-spec} be enclosed in two
+% pairs of braces like in
+% \begin{lthooksCode}
+%   \ROW|\NewHook   {{./hook}}|\\
+%   \ROW|\AddToHook {{./hook}}[{{.}}]{code}|\\
+%   \ROW|\AddToHook {{./hook}}[{{./sub}}]{code}|\\
+%   \ROW|\DeclareHookRule{begindocument}{{.}}{before}{babel}|\\
+% \end{lthooksCode}
+%
+% Internally, \LaTeX\ manages a stack of names, starting with the
+% reserved \enquote{|top-level|} name.
+% The top element of this stack is the \meta{current name}.
+% Next commands interact with this stack.
+%
+% \begin{function}[added = 2024-01-01]{
+%   \PushHookCurrentName,
+%   \PopHookCurrentName,
+%   \hook_current_name_push:n,
+%   \hook_current_name_pop:,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{PushHookCurrentName}\Arg{name}}^^A
+%\RIGHT{\cs{hook_current_name_push:n} \Arg{name}}
+% \LEFT{\TAB\meta{code}}^^A
+%\RIGHT{\TAB\meta{code}}
+% \LEFT{\cs{PopHookCurrentName}}^^A
+%\RIGHT{\cs{hook_current_name_pop:}}
+%   \end{syntax}
+%   \cs{PushHookCurrentName} pushes \meta{name} to the top of the
+%   name stack such that it becomes the \meta{current name}.
+%   \cs{PopHookCurrentName} pops the top value from the stack such
+%   that the \meta{current name} falls back to its previous value.
+%   Both commands must be properly balanced.
+%   An error is raised if the \meta{name} argument expands to the value
+%   \enquote{|top-level|} which is reserved to the main document.
+% \end{function}
+%
+%   \medskip
+%   Loading a class or a package is like running
+%   \begin{lthooksCode}
+%     \ROW\cs{PushHookCurrentName}|{|\meta{package/class name}|}| \\
+%     \ROW ~~\meta{whole package/class code}\\
+%     \ROW\cs{PopHookCurrentName}
+%   \end{lthooksCode}
+%   and inside a package or class, the \meta{current name} is
+%   initially the package or class name.
+%
+% Notice that when, for example, a package defines a hook inside a
+% command body, this command may be executed after the package
+% has loaded. In that case, the \meta{current name} has changed
+% and the leading dot no longer refers to the original package,
+% it may be replaced by the wrong value causing unexpected
+% results.
+%
+%   The \LaTeX\ kernel commands related to file input like \cs{input}
+%   and \cs{include} do not set the \meta{current name}.
+%   Files inherit the \meta{current name} from the calling context,
+%   and pass its value back to the caller when processed.
+%
+%   Packages that provide their own package-like interfaces
+%   (Ti\textit{k}Z's \cs{usetikzlibrary}, for example) can use
+%   \cs{PushHookCurrentName} and \cs{PopHookCurrentName} to set
+%   dedicated labels and to emulate \cs{usepackage}-like hook behavior
+%   within those contexts.
+%
+% \begin{function}[added = 2024-01-01]{
+%   \SetHookCurrentName,
+%   \hook_current_name_set:n,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{SetHookCurrentName}\Arg{name}}^^A
+%\RIGHT{\cs{hook_current_name_set:n} \Arg{name}}
+%   \end{syntax}
+%   Replaces the top element of the name stack with \meta{name}
+%   expanded value, such that it becomes the \meta{current name}.
+%   The \meta{name} argument cannot expand to the value
+%   \enquote{|top-level|} which is reserved to the main document.
+%   Raises an error when directly used in the main document,
+%   however it can be used there between balancing calls to
+%   \cs{PushHookCurrentLabel} and \cs{PopHookCurrentLabel}.
+%
+%   This command is useful when a large package is composed of several
+%   smaller packages, but all should share the same default hook or label name, so
+%   \cs{SetHookCurrentName} can be used at the beginning of each
+%   smaller package file.
+% \end{function}
+%
+% \begin{function}[added = 2024-01-01]{
+%   \DebugHookCurrentName,
+% }
+%   \begin{syntax}
+% \cs{DebugHookCurrentName}
+%   \end{syntax}
+%   Expand to the \meta{current name}.
+%   This function is not protected,
+%   it is mainly usefull for debugging and testing purposes.
+% \end{function}
+%
+% \medskip
+%
+%   Prior to version 2024-01-01, these commands were named
+%   \cs{PushHookCurrentLabel}, \cs{PopHookCurrentLabel} and
+%   \cs{SetHookCurrentLabel}. Old commands are still available but will
+%   be deprecated in a forthcoming release.
+%   No \LaTeX3 function was exposed.
+%
 %
 % \subsection{\LaTeXe\ interfaces}
 %
@@ -453,38 +644,28 @@
 %
 % \begin{function}{\NewHook}
 %   \begin{syntax}
-%     \cs{NewHook} \Arg{hook}
+%     \cs{NewHook} \Arg{hook-spec}
 %   \end{syntax}
-%   Creates a new \meta{hook}.
-%    If this hook is declared within a package it is suggested
-%    that its name is always structured as follows:
-%    \meta{package-name}\texttt{/}\meta{hook-name}. If necessary you
-%    can further subdivide the name by adding more \texttt{/} parts.
-%    If a hook name is already taken, an error is raised and the hook
-%    is not created.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
+%   Declare a new hook named after \meta{hook-spec}.
+%   If the hook name is already taken, an error is raised.
+%   See section \ref{sec:Collaborative-work} to properly choose a hook name.
 % \end{function}
 %
 % \begin{function}{\NewReversedHook}
 %   \begin{syntax}
-%     \cs{NewReversedHook} \Arg{hook}
+%     \cs{NewReversedHook} \Arg{hook-spec}
 %   \end{syntax}
-%     Like \cs{NewHook} declares a new \meta{hook}.
-%     the difference is that the code chunks for this hook are in
+%     Like \cs{NewHook} declares a new hook.
+%     The difference is that the code chunks for this hook are in
 %     reverse order by default (those added last are executed first).
 %     Any rules for the hook are applied after the default ordering.
 %     See sections~\ref{sec:order} and \ref{sec:reversed-order}
 %    for further details.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\NewMirroredHookPair}
 %   \begin{syntax}
-%     \cs{NewMirroredHookPair} \Arg{hook-1} \Arg{hook-2}
+%     \cs{NewMirroredHookPair} \Arg{hook-spec_1} \Arg{hook-spec_2}
 %   \end{syntax}
 %     A shorthand for
 % \begin{lthooksCode}
@@ -492,37 +673,32 @@
 % \ROW\cs{NewReversedHook}\Arg{hook-2}\\
 % \end{lthooksCode}
 %    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
+%    the current package name. See sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}.
 % \end{function}
-%
 %
 % \begin{function}{\NewHookWithArguments}
 %   \begin{syntax}
-%     \cs{NewHookWithArguments} \Arg{hook} \Arg{number}
+%     \cs{NewHookWithArguments} \Arg{hook-spec} \Arg{number}
 %   \end{syntax}
-%   Creates a new \meta{hook} whose code takes \meta{number} arguments,
+%   Declares a new hook which code takes \meta{number} arguments,
 %   and otherwise works exactly like \cs{NewHook}.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\NewReversedHookWithArguments}
 %   \begin{syntax}
-%     \cs{NewReversedHookWithArguments} \Arg{hook} \Arg{number}
+%     \cs{NewReversedHookWithArguments} \Arg{hook-spec} \Arg{number}
 %   \end{syntax}
-%   Like \cs{NewReversedHook}, but creates a hook whose code takes
+%   Like \cs{NewReversedHook}, but declares a hook which code takes
 %   \meta{number} arguments.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\NewMirroredHookPairWithArguments}
 %   \begin{syntax}
-%     \cs{NewMirroredHookPairWithArguments} \Arg{hook-1} \Arg{hook-2} \Arg{number}
+%     \cs{NewMirroredHookPairWithArguments}
+%     ~~\Arg{hook spec_1} \Arg{hook spec_2} \Arg{number}
 %   \end{syntax}
 %   A shorthand for
 % \begin{lthooksCode}
@@ -532,7 +708,8 @@
 %%   Section~\ref{sec:hook-args} explains hooks with arguments.
 %
 %    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
+%    the current package name. See sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}.
 % \end{function}
 %
 %
@@ -546,9 +723,9 @@
 %
 % \begin{function}{\DisableGenericHook}
 %   \begin{syntax}
-%     \cs{DisableGenericHook} \Arg{hook}
+%     \cs{DisableGenericHook} \Arg{hook-spec}
 %   \end{syntax}
-%    After this declaration\footnotemark{} the \meta{hook} is no longer
+%    After this declaration\footnotemark{} the hook named after \meta{hook-spec} is no longer
 %    usable: Any further attempt to add code to it will result in an
 %    error and any use, e.g., via \cs{UseHook}, will simply do nothing.
 %
@@ -557,8 +734,6 @@
 %    command such generic hooks may be unusable. If that is known, a
 %    package developer can disable such hooks up front.
 %
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}\footnotetext{In the 2020/06 release this command was
 %    called \cs{DisableHook}, but that name was misleading as it
 %    shouldn't be used to disable non-generic hooks.}
@@ -566,7 +741,7 @@
 %
 % \begin{function}{\ActivateGenericHook}
 %   \begin{syntax}
-%     \cs{ActivateGenericHook} \Arg{hook}
+%     \cs{ActivateGenericHook} \Arg{hook-spec}
 %   \end{syntax}
 %    This declaration activates a generic hook provided by a package/class
 %    (e.g., one used in code with \cs{UseHook} or
@@ -588,39 +763,33 @@
 %
 % \begin{function}{\UseHook}
 %   \begin{syntax}
-%     \cs{UseHook} \Arg{hook}
+%     \cs{UseHook} \Arg{hook-name\LHXStar}
 %   \end{syntax}
-%    Execute the code stored in the \meta{hook}.
+%    Execute the code stored in the hook with the given name.
 %
 %    Before \verb=\begin{document}= the fast execution code for a hook
 %    is not set up, so in order to use a hook there it is explicitly
 %    initialized first. As that involves assignments using a hook at
 %    those times is not 100\% the same as using it after
 %    \verb=\begin{document}=.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 % \begin{function}{\UseHookWithArguments}
 %   \begin{syntax}
-%     \cs{UseHookWithArguments} \Arg{hook} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
+%     \cs{UseHookWithArguments} \Arg{hook-name\LHXStar} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
-%    Execute the code stored in the \meta{hook} and pass the arguments
+%    Execute the code stored in the hook with the given name passing the arguments
 %    \Arg{arg_1} through \Arg{arg_n} to the \meta{hook}.  Otherwise, it
 %    works exactly like \cs{UseHook}.
 %    The \meta{number} should be the number of arguments declared for
 %    the hook.  If the hook is not declared, this command does nothing
 %    and it will remove \meta{number} items from the input.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 % \begin{function}{\UseOneTimeHook}
 %   \begin{syntax}
-%     \cs{UseOneTimeHook} \Arg{hook}
+%     \cs{UseOneTimeHook} \Arg{hook-name\LHXStar}
 %   \end{syntax}
 %    Some hooks are only used (and can be only used) in one place, for
 %    example, those in \verb=\begin{document}= or
@@ -637,27 +806,23 @@
 %    executing the code to be added immediately.
 %
 %    Using \cs{UseOneTimeHook} several times with the same
-%    \Arg{hook} means that it only executes the first time it is used.
+%    \meta{hook-name} means that it only executes the first time it is used.
 %    For example, if it is used in a command that can be called several times
 %    then the hook executes during only the \emph{first} invocation of that
 %    command; this allows its use as an \enquote{initialization hook}.
 %
 %    Mixing \cs{UseHook} and \cs{UseOneTimeHook} for the same
-%    \Arg{hook} should be avoided, but if this is done then neither will execute
+%    \meta{hook-name} should be avoided, but if this is done then neither will execute
 %    after the first \cs{UseOneTimeHook}.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.    See
-%    section~\ref{sec:default-label} for details.
-%
 % \end{function}
 %
 % \begin{function}{\UseOneTimeHookWithArguments}
 %   \begin{syntax}
-%     \cs{UseOneTimeHookWithArguments} \Arg{hook} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
+%     \cs{UseOneTimeHookWithArguments}
+%     ~~\Arg{hook-name\LHXStar} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
 %    Works exactly like \cs{UseOneTimeHook}, but passes arguments
-%    \Arg{arg_1} through \Arg{arg_n} to the \meta{hook}.
+%    \meta{arg_1} through \meta{arg_n} to the hook with the given name.
 %    The \meta{number} should be the number of arguments declared for
 %    the hook.  If the hook is not declared, this command does nothing
 %    and it will remove \meta{number} items from the input.
@@ -666,11 +831,6 @@
 %    longer possible to use \cs{AddToHookWithArguments} or similar with
 %    that hook.  \cs{AddToHook} continues to work as normal.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.    See
-%    section~\ref{sec:default-label} for details.
-%
 % \end{function}
 %
 %
@@ -678,11 +838,12 @@
 %
 % \begin{function}{\AddToHook}
 %   \begin{syntax}
-%     \cs{AddToHook} \Arg{hook}\oarg{label}\Arg{code}
+%     \cs{AddToHook}\Arg{hook-spec}\oarg{label-spec}\Arg{code}
 %   \end{syntax}
-%    Adds \meta{code} to the \meta{hook} labeled by \meta{label}.
+%    Adds to the hook specified by \meta{hook-spec} the \meta{code} labeled after \meta{label-spec}.
 %    When the optional argument \meta{label} is not provided, the
-%    \meta{default label} is used (see section~\ref{sec:default-label}).
+%    \meta{default label} is used (see sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}).
 %    If \cs{AddToHook} is used in a package/class, the
 %    \meta{default label} is the package/class name, otherwise it is
 %    \hook{top-level} (the \hook{top-level} label is treated
@@ -700,20 +861,16 @@
 %    enables packages to add to hooks from other packages without
 %    worrying whether they are actually used in the current document.
 %    See section~\ref{sec:querying}.
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\AddToHookWithArguments}
 %   \begin{syntax}
-%     \cs{AddToHookWithArguments} \Arg{hook}\oarg{label}\Arg{code}
+%     \cs{AddToHookWithArguments}\Arg{hook-spec}\oarg{label-spec}\Arg{\# code}
 %   \end{syntax}
-%    Works exactly like \cs{AddToHook}, except that the \meta{code} can
+%    Works exactly like \cs{AddToHook}, except that the \meta{\#\ code} can
 %    access the arguments passed to the hook using \verb|#1|, \verb|#2|,
 %    \ldots, \verb|#n| (up to the number of arguments declared for the
-%    hook).  If the \meta{code} should contain \emph{parameter tokens}
+%    hook).  If the \meta{\#\ code} should contain \emph{parameter tokens}
 %    (\verb|#|) that are not supposed to be understood as the arguments
 %    of the hook, such tokens should be doubled.  For example, with
 %    \cs{AddToHook} one can write:
@@ -728,22 +885,19 @@
 %    because in the latter case, \verb|#1| refers to the first argument
 %    of the hook \hook{myhook}.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\RemoveFromHook}
 %   \begin{syntax}
-%     \cs{RemoveFromHook} \Arg{hook}\oarg{label}
+%     \cs{RemoveFromHook} \Arg{hook-spec}\oarg{label-spec}
 %   \end{syntax}
-%    Removes any code labeled by \meta{label} from the \meta{hook}.
-%    When the optional argument \meta{label} is not provided, the
-%    \meta{default label} is used (see section~\ref{sec:default-label}).
+%    Removes any code labeled after \meta{label-spec} from the hook.
+%    When the optional argument \meta{label-spec} is not provided, the
+%    \meta{default label} is used (see sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}).
 %
-%    If there is no code under the \meta{label} in the \meta{hook},
-%    or if the \meta{hook} does not exist, a warning is issued when
+%    If there is in the hook no code under the \meta{label-name} built after \Arg{hook-spec},
+%    or if the hook does not exist, a warning is issued when
 %    you attempt to \cs{RemoveFromHook}, and the command is ignored.
 %    \cs{RemoveFromHook} should be used only when you know exactly what
 %    labels are in a hook. Typically this will be when some code gets added to a hook 
@@ -755,10 +909,6 @@
 %    removed. This is rather dangerous as it may well drop code from other
 %    packages (that one may not know about); it should therefore not be used
 %    in packages but only in document preambles!
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \medskip
@@ -797,9 +947,9 @@
 %
 % \begin{function}{\AddToHookNext}
 %   \begin{syntax}
-%     \cs{AddToHookNext} \Arg{hook}\Arg{code}
+%     \cs{AddToHookNext} \Arg{hook-spec}\Arg{code}
 %   \end{syntax}
-%    Adds \meta{code} to the next invocation of the \meta{hook}.
+%    Adds \meta{code} to the next invocation of the hook.
 %    The code is executed after the normal hook code has finished and
 %    it is executed only once, i.e. it is deleted after it was used.
 %
@@ -837,30 +987,24 @@
 %    allows for hooks to work regardless of package loading
 %    order.
 %    See section~\ref{sec:querying}.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name.  See section~\ref{sec:default-label}.
 % \end{function}\footnotetext{There is
 %    no mechanism to reorder such code chunks (or delete them).}
 %
 % \begin{function}{\AddToHookNextWithArguments}
 %   \begin{syntax}
-%     \cs{AddToHookNextWithArguments} \Arg{hook}\Arg{code}
+%     \cs{AddToHookNextWithArguments} \Arg{hook-spec}\Arg{\# code}
 %   \end{syntax}
-%    Works exactly like \cs{AddToHookNext}, but the \meta{code} can
-%    contain references to the arguments of the \meta{hook} as described
+%    Works exactly like \cs{AddToHookNext}, but the \meta{\# code} can
+%    contain references to the arguments of the hook as described
 %    for \cs{AddToHookWithArguments} above.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name.  See section~\ref{sec:default-label}.
 % \end{function}
 %
 %
 %
 % \begin{function}{\ClearHookNext}
 %   \begin{syntax}
-%     \cs{ClearHookNext}\Arg{hook}
+%     \cs{ClearHookNext}\Arg{hook-spec}
 %   \end{syntax}
 %    Normally \cs{AddToHookNext} is only used when you know precisely
 %    where it will apply and why you want some extra code at that
@@ -872,187 +1016,8 @@
 % \end{function}
 %
 %
-%
-%
-%
-% \subsubsection{Hook names and default labels}
-% \label{sec:default-label}
-%
-% It is best practice to use \cs{AddToHook} in packages or classes
-% \emph{without specifying a \meta{label}} because then the package
-% or class name is automatically used, which is helpful if rules are
-% needed, and avoids mistyping the \meta{label}.
-%
-% Using an explicit \meta{label} is only necessary in very specific
-% situations, e.g., if you want to add several chunks of code into a
-% single hook and have them placed in different parts of the hook
-% (by providing some rules).
-%
-% The other case is when you develop a larger package with several
-% sub-packages. In that case you may want to use the same
-% \meta{label} throughout the sub-packages in order to avoid
-% that the labels change if you internally reorganize your code.
-%
-% Except for \cs{UseHook}, \cs{UseOneTimeHook} and \cs{IfHookEmptyTF}
-% (and their \pkg{expl3} interfaces \cs{hook_use:n},
-% \cs{hook_use_once:n} and \cs{hook_if_empty:nTF}), all \meta{hook}
-% and \meta{label} arguments are processed in the same way: first,
-% spaces are trimmed around the argument, then it is fully expanded
-% until only character tokens remain.  If the full expansion of the
-% \meta{hook} or \meta{label} contains a non-expandable non-character
-% token, a low-level \TeX{} error is raised (namely, the \meta{hook} is
-% expanded using \TeX's \cs{csname}\ldots\cs{endcsname}, as such,
-% Unicode characters are allowed in \meta{hook} and \meta{label}
-% arguments).  The arguments of \cs{UseHook}, \cs{UseOneTimeHook}, and
-% \cs{IfHookEmptyTF} are
-% processed much in the same way except that spaces are not trimmed
-% around the argument, for better performance.
-%
-% It is not enforced, but highly recommended that the hooks defined by
-% a package, and the \meta{labels} used to add code to other hooks
-% contain the package name to easily identify the source of the code
-% chunk and to prevent clashes.  This should be the standard practice,
-% so this hook management code provides a shortcut to refer to the
-% current package in the name of a \meta{hook} and in a \meta{label}.
-% If the \meta{hook} name or the \meta{label} consist just of a single dot
-% (|.|), or starts with a dot followed by a slash (|./|) then the dot
-% denotes the \meta{default label} (usually the current package or class
-% name---see~\cs{SetDefaultHookLabel}).
-% A \enquote{|.|} or \enquote{|./|} anywhere else in a \meta{hook} or in
-% \meta{label} is treated literally and is not replaced.
-%
-% For example,
-% inside the package \texttt{mypackage.sty}, the default label is
-% \texttt{mypackage}, so the instructions:
-% \begin{lthooksCode}
-%   \ROW|\NewHook   {./hook}|\\
-%   \ROW|\AddToHook {./hook}[.]{code}     % |\IT{Same as }|\AddToHook{./hook}{code}|\\
-%   \ROW|\AddToHook {./hook}[./sub]{code}|\\
-%   \ROW|\DeclareHookRule{begindocument}{.}{before}{babel}|\\
-%   \ROW|\AddToHook {file/foo.tex/after}{code}|\\
-% \end{lthooksCode}
-%    are equivalent to:
-% \begin{lthooksCode}
-%   \ROW|\NewHook   {mypackage/hook}|\\
-%   \ROW|\AddToHook {mypackage/hook}[mypackage]{code}|\\
-%   \ROW|\AddToHook {mypackage/hook}[mypackage/sub]{code}|\\
-%   \ROW|\DeclareHookRule{begindocument}{mypackage}{before}{babel}|\\
-%   \ROW|\AddToHook {file/foo.tex/after}{code}                  % |\IT{unchanged}
-% \end{lthooksCode}
-%
-% The \meta{default label} is automatically set equal to the name of the
-% current package or class at the time the package is loaded.  If the
-% hook command is used outside of a package, or the current file wasn't
-% loaded with \cs{usepackage} or \cs{documentclass}, then the
-% \texttt{top-level} is used as the \meta{default label}.  This may have
-% exceptions---see \cs{PushDefaultHookLabel}.
-%
-% This syntax is available in all \meta{label} arguments and most
-% \meta{hook} arguments, both in the \LaTeXe{} interface, and the \LaTeX3
-% interface described in section~\ref{sec:l3hook-interface}.
-%
-% Note,\marginpar{\raggedleft\rightskip5pt\itshape \textbf{Important:}\break The dot-syntax
-% is \textbf{not} available with
-% \cs{UseHook} and some other commands that are typically used within code!}
-% however, that the replacement of |.| by the \meta{default label}
-% takes place when the hook command is executed, so actions that are
-% somehow executed after the package ends will have the wrong
-% \meta{default label} if the dot-syntax is used.  For that reason,
-% this syntax is not available in \cs{UseHook} (and \cs{hook_use:n})
-% because the hook is most of the time used outside of the package file
-% in which it was defined. This syntax is also not available in the hook
-% conditionals \cs{IfHookEmptyTF} (and \cs{hook_if_empty:nTF}), because these
-% conditionals are used in some performance-critical parts of the hook
-% management code, and because they are usually used to refer to other
-% package's hooks, so the dot-syntax doesn't make much sense.
-%
-% In some cases, for example in large packages, one may want to separate
-% the code in logical parts, but still use the main package name as the
-% \meta{label}, then the \meta{default label} can be set using
-% \cs{PushDefaultHookLabel}\verb={...}=\,\ldots\cs{PopDefaultHookLabel}
-% or \cs{SetDefaultHookLabel}\verb={...}=.
-%
-% \begin{function}{\PushDefaultHookLabel,\PopDefaultHookLabel}
-%   \begin{syntax}
-%     \cs{PushDefaultHookLabel} \Arg{default label}
-%     \quad \meta{code}
-%     \cs{PopDefaultHookLabel}
-%   \end{syntax}
-%   \cs{PushDefaultHookLabel} sets the current \meta{default label} to
-%   be used in \meta{label} arguments, or when replacing a leading
-%   ``|.|'' (see above).  \cs{PopDefaultHookLabel} reverts the
-%   \meta{default label} to its previous value.
-%
-%   Inside a package or class, the \meta{default label} is equal to the
-%   package or class name, unless explicitly changed.  Everywhere else,
-%   the \meta{default label} is |top-level| (see
-%   section~\ref{sec:top-level}) unless explicitly changed.
-%
-%   The effect of \cs{PushDefaultHookLabel} holds until the next
-%   \cs{PopDefaultHookLabel}.  \cs{usepackage} (and \cs{RequirePackage}
-%   and \cs{documentclass}) internally use
-%   \begin{lthooksCode}
-%     \ROW\cs{PushDefaultHookLabel}\Arg{package name}\\
-%     \ROW\ROW\meta{package code}\\
-%     \ROW\cs{PopDefaultHookLabel}\\
-%   \end{lthooksCode}
-%   to set the \meta{default label} for the package or class file.
-%   Inside the \meta{package code} the \meta{default label} can also be
-%   changed with \cs{SetDefaultHookLabel}.  \cs{input} and other
-%   file input-related commands from the \LaTeX{} kernel do not use
-%   \cs{PushDefaultHookLabel}, so code within files loaded by these
-%   commands does \emph{not} get a dedicated \meta{label}! (that is, the
-%   \meta{default label} is the current active one when the file was
-%   loaded.)
-%
-%   Packages that provide their own package-like interfaces
-%   (Ti\textit{k}Z's \cs{usetikzlibrary}, for example) can use
-%   \cs{PushDefaultHookLabel} and \cs{PopDefaultHookLabel} to set
-%   dedicated labels and to emulate \cs{usepackage}-like hook behavior
-%   within those contexts.
-%
-%   The |top-level| label is treated differently, and is reserved to the
-%   user document, so it is not allowed to change the
-%   \meta{default label} to |top-level|.
-% \end{function}
-%
-% \begin{function}{\SetDefaultHookLabel}
-%   \begin{syntax}
-%     \cs{SetDefaultHookLabel} \Arg{default label}
-%   \end{syntax}
-%   Similarly to \cs{PushDefaultHookLabel},
-%   sets the current \meta{default label} to
-%   be used in \meta{label} arguments, or when replacing a leading
-%   ``|.|''. The effect holds until the label is changed again or until
-%   the next \cs{PopDefaultHookLabel}.  The difference between
-%   \cs{PushDefaultHookLabel} and \cs{SetDefaultHookLabel} is that the
-%   latter does not save the current \meta{default label}.
-%
-%   This command is useful when a large package is composed of several
-%   smaller packages, but all should have the same \meta{label}, so
-%   \cs{SetDefaultHookLabel} can be used at the beginning of each
-%   package file to set the correct label.
-%
-%   \cs{SetDefaultHookLabel} is not allowed in the main document, where
-%   the \meta{default label} is |top-level| and there is no
-%   \cs{PopDefaultHookLabel} to end its effect.
-%   It is also not allowed to change the \meta{default label} to
-%   |top-level|.
-% \end{function}
-%
 % \subsubsection{The \texttt{top-level} label}
 % \label{sec:top-level}
-%
-% The |top-level| label, assigned to code added from the main document,
-% is different from other labels.  Code added to hooks (usually
-% \cs{AtBeginDocument}) in the preamble is almost always to change
-% something defined by a package, so it should go at the very end of the
-% hook.
-%
-% Therefore, code added in the |top-level| is always executed at the end
-% of the hook, regardless of where it was declared.  If the hook is
-% reversed (see \cs{NewReversedHook}), the |top-level| chunk is executed
-% at the very beginning instead.
 %
 % Rules regarding |top-level| have no effect:  if a user wants to have a
 % specific set of rules for a code chunk, they should use a different
@@ -1060,6 +1025,7 @@
 %
 % The |top-level| label is exclusive for the user, so trying to add code
 % with that label from a package results in an error.
+%
 %
 % \subsubsection{Defining relations between hook code}
 % \label{sec:rules}
@@ -1084,28 +1050,29 @@
 %
 % \begin{function}{\DeclareHookRule}
 %   \begin{syntax}
-%     \cs{DeclareHookRule} \Arg{hook}\Arg{label1}\Arg{relation}\Arg{label2}
+%     \cs{DeclareHookRule} \Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
 %   \end{syntax}
-%    Defines a relation between \meta{label1} and \meta{label2} for a
-%    given \meta{hook}. If \meta{hook} is \texttt{??} this defines a default
+%    Defines a relation between \meta{label_1} and \meta{label_2}
+%    built from \meta{label-spec_1} and \meta{label-spec_2} for the
+%    specified hook. If \meta{hook-spec} is \texttt{??} this defines a default
 %    relation for all hooks that use the two labels, i.e., that have
-%    chunks of code labeled with \meta{label1} and \meta{label2}.
+%    chunks of code labeled with \meta{label_1} and \meta{label_2}.
 %    Rules specific to a given hook take precedence over default
-%    rules that use \texttt{??} as the \meta{hook}.
+%    rules that use \texttt{??} as the \meta{hook-spec}.
 %
 %    Currently, the supported relations are the following:
 %    \begin{itemize}
 %
 %    \item[\texttt{before} or \texttt{\string<}]
 %
-%      Code for \meta{label1} comes before code for \meta{label2}.
+%      Code for \meta{label_1} comes before code for \meta{label_2}.
 %
 %    \item[\texttt{after} or \texttt{\string>}]
-%      Code for \meta{label1} comes after code for \meta{label2}.
+%      Code for \meta{label_1} comes after code for \meta{label_2}.
 %
 %    \item[\texttt{incompatible-warning}]
 %
-%      Only code for either \meta{label1} or \meta{label2} can appear
+%      Only code for either \meta{label_1} or \meta{label_2} can appear
 %      for that hook (a way to say that two packages---or parts of
 %      them---are incompatible). A warning is raised if both labels
 %      appear in the same hook.
@@ -1118,7 +1085,7 @@
 %
 %    \item[\texttt{voids}]
 %
-%      Code for \meta{label1} overwrites code for \meta{label2}. More
+%      Code for \meta{label_1} overwrites code for \meta{label_2}. More
 %      precisely, code for \meta{label2} is dropped for that
 %      hook. This can be used, for example if one package is a
 %      superset in functionality of another one and therefore wants to
@@ -1126,7 +1093,7 @@
 %
 %    \item[\texttt{unrelated}]
 %
-%       The order of code for \meta{label1} and \meta{label2} is
+%       The order of code for \meta{label_1} and \meta{label_2} is
 %      irrelevant. This rule is there to undo an incorrect rule
 %      specified earlier.
 %
@@ -1135,41 +1102,35 @@
 %    given hook,
 %    i.e., a later \cs{DeclareHookRule} overwrites any previous
 %    declaration.
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
-%
 % \end{function}
 %
 %
 % \begin{function}{\ClearHookRule}
 %   \begin{syntax}
-%     \cs{ClearHookRule}\Arg{hook}\Arg{label1}\Arg{label2}
+%     \cs{ClearHookRule}\Arg{hook-spec}\Arg{label-spec_1}\Arg{label-spec_2}
 %   \end{syntax}
-%    Syntactic sugar for saying that \meta{label1} and \meta{label2}
-%    are unrelated for the given \meta{hook}.
+%    Syntactic sugar for saying that \meta{label_1} and \meta{label_2}
+%    built from \meta{label-spec_1} and \meta{label-spec_2}
+%    are |unrelated| for the specified hook.
 % \end{function}
 %
 %
 %
 % \begin{function}{\DeclareDefaultHookRule}
 %   \begin{syntax}
-%     \cs{DeclareDefaultHookRule}\Arg{label1}\Arg{relation}\Arg{label2}
+%     \cs{DeclareDefaultHookRule}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
 %   \end{syntax}
-%   This sets up a relation between \meta{label1} and \meta{label2}
+%   This sets up a relation between \meta{label_1} and \meta{label_2}
+%    built from \meta{label-spec_1} and \meta{label-spec_2}
 %    for all hooks unless overwritten by a specific rule for a hook.
 %    Useful for cases where one package has a specific relation to
 %    some other package, e.g., is \texttt{incompatible} or always
 %    needs a special ordering \texttt{before} or \texttt{after}.
 %    (Technically it is just a shorthand for using \cs{DeclareHookRule}
-%    with \texttt{??} as the hook name.)
+%    with \texttt{??} as the hook specifier.)
 %
 %    Declaring default rules is only supported in the document
 %    preamble.\footnotemark{}
-%
-%    The \meta{label} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}\footnotetext{Trying to do so, e.g., via
 %    \cs{DeclareHookRule} with \texttt{??}  has bad side-effects and
 %    is not supported (though not explicitly caught for performance
@@ -1216,16 +1177,13 @@
 %
 % \begin{function}[EXP]{\IfHookEmptyTF}
 %   \begin{syntax}
-%     \cs{IfHookEmptyTF} \Arg{hook} \Arg{true code} \Arg{false code}
+%     \cs{IfHookEmptyTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
 %   \end{syntax}
-%   Tests if the \meta{hook} is empty (\emph{i.e.}, no code was added to
+%   Tests if the specified hook is empty (\emph{i.e.}, no code was added to
 %   it using either \cs{AddToHook} or \cs{AddToHookNext}) or such code
 %    was removed again (via \cs{RemoveFromHook}), and
 %   branches to either \meta{true code} or \meta{false code} depending
 %   on the result.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 %
@@ -1238,10 +1196,10 @@
 %
 % \begin{function}{\ShowHook,\LogHook}
 %   \begin{syntax}
-%     \cs{ShowHook} \Arg{hook}
-%     \cs{LogHook}  \Arg{hook}
+%     \cs{ShowHook} \Arg{hook-spec}
+%     \cs{LogHook}  \Arg{hook-spec}
 %   \end{syntax}
-%   Displays information about the \meta{hook} such as
+%   Displays information about the specified hook such as
 %   \begin{itemize}
 %   \item
 %      the code chunks (and their labels) added to it,
@@ -1259,7 +1217,8 @@
 %   \TeX's prompt (only in \cs{errorstopmode}) to wait for user action.
 %
 %    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
+%    the current package name. See sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}.
 %
 %^^A   % Code for the listing below:
 %^^A   \NewHook{example-hook}
@@ -1345,7 +1304,7 @@
 %
 % \begin{function}{\DebugPrintHook}
 %   \begin{syntax}
-%     \cs{DebugPrintHook} \Arg{hook}
+%     \cs{DebugPrintHook} \Arg{hook-spec}
 %   \end{syntax}
 %    Prints information about the hook. The output is rather coarse and
 %      primarily intended for debugging or testing purposes.
@@ -1370,18 +1329,15 @@
 %     \hook_new_pair:nn
 %   }
 %   \begin{syntax}
-%     \cs{hook_new:n} \Arg{hook}
-%     \cs{hook_new_reversed:n} \Arg{hook}
-%     \cs{hook_new_pair:nn} \Arg{hook-1} \Arg{hook-2}
+%     \cs{hook_new:n} \Arg{hook-spec}
+%     \cs{hook_new_reversed:n} \Arg{hook-spec}
+%     \cs{hook_new_pair:nn} \Arg{hook-spec_1} \Arg{hook-spec_2}
 %   \end{syntax}
-%   Creates a new \meta{hook} with normal or reverse ordering of code
+%   Creates a new hook with normal or reverse ordering of code
 %    chunks. \cs{hook_new_pair:nn} creates a pair of such hooks with
-%    \Arg{hook-2} being a reversed hook.
+%    \Arg{hook-spec_2} being a reversed hook.
 %    If a hook name is already taken, an error is raised and the hook
 %    is not created.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{
@@ -1390,42 +1346,36 @@
 %     \hook_new_pair_with_args:nnn
 %   }
 %   \begin{syntax}
-%     \cs{hook_new_with_args:nn} \Arg{hook} \Arg{number}
+%     \cs{hook_new_with_args:nn} \Arg{hook-spec} \Arg{number}
 %     \cs{hook_new_reversed_with_args:nn} \Arg{hook} \Arg{number}
-%     \cs{hook_new_pair_with_args:nnn} \Arg{hook-1} \Arg{hook-2} \Arg{number}
+%     \cs{hook_new_pair_with_args:nnn} \Arg{hook-spec_1} \Arg{hook-spec_2} \Arg{number}
 %   \end{syntax}
-%   Creates a new \meta{hook} with normal or reverse ordering of code
+%   Creates a new hook with normal or reverse ordering of code
 %    chunks, that takes \meta{number} arguments from the input stream
 %    when it is used. \cs{hook_new_pair_with_args:nn} creates a pair of
-%    such hooks with \Arg{hook-2} being a reversed hook.
+%    such hooks with \Arg{hook-spec_2} being a reversed hook.
 %    If a hook name is already taken, an error is raised and the hook
 %    is not created.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 %
 %
 % \begin{function}{\hook_disable_generic:n}
 %   \begin{syntax}
-%     \cs{hook_disable_generic:n} \Arg{hook}
+%     \cs{hook_disable_generic:n} \Arg{hook-spec}
 %   \end{syntax}
-%    Marks \Arg{hook} as disabled. Any further attempt to add code to
+%    Marks the specified hook as disabled. Any further attempt to add code to
 %    it or declare it, will result in an error and any call to
 %    \cs{hook_use:n} will simply do nothing.
 %
 %    This declaration is intended for use with generic hooks that are
 %    known not to work (see \texttt{ltcmdhooks-doc}) if they receive
 %    code.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\hook_activate_generic:n}
 %   \begin{syntax}
-%     \cs{hook_activate_generic:n} \Arg{hook}
+%     \cs{hook_activate_generic:n} \Arg{hook-spec}
 %   \end{syntax}
 %    This is like \cs{hook_new:n} but it does nothing if the hook was previously
 %    declared with \cs{hook_new:n}.  This declaration should be used
@@ -1440,10 +1390,10 @@
 %
 % \begin{function}{\hook_use:n,\hook_use:nnw}
 %   \begin{syntax}
-%     \cs{hook_use:n} \Arg{hook}
-%     \cs{hook_use:nnw} \Arg{hook} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
+%     \cs{hook_use:n} \Arg{hook-name}
+%     \cs{hook_use:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
-%    Executes the \Arg{hook} code followed (if set up) by the code for next
+%    Executes the hook code followed (if set up) by the code for next
 %    invocation only, then empties that next invocation code.
 %    \cs{hook_use:nnw} should be used for hooks declared with arguments,
 %    and should be followed by as many brace groups as the declared
@@ -1451,28 +1401,22 @@
 %    The \meta{number} should be the number of arguments declared for
 %    the hook.  If the hook is not declared, this command does nothing
 %    and it will remove \meta{number} items from the input.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 % \begin{function}{\hook_use_once:n,\hook_use_once:nnw}
 %   \begin{syntax}
-%     \cs{hook_use_once:n} \Arg{hook}
-%     \cs{hook_use_once:nnw} \Arg{hook} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
+%     \cs{hook_use_once:n} \Arg{hook-name}
+%     \cs{hook_use_once:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
-%     Changes the \Arg{hook} status so that from now on any addition to
+%     Changes the status of the given hook so that from now on any addition to
 %     the hook code is executed immediately. Then execute any
-%     \Arg{hook} code already set up.
+%     hook code already set up.
 %    \cs{hook_use_once:nnw} should be used for hooks declared with arguments,
 %    and should be followed by as many brace groups as the declared
 %    number of arguments.
 %    The \meta{number} should be the number of arguments declared for
 %    the hook.  If the hook is not declared, this command does nothing
 %    and it will remove \meta{number} items from the input.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 % \begin{function}{
@@ -1480,28 +1424,24 @@
 %     \hook_gput_code_with_args:nnn
 %   }
 %   \begin{syntax}
-%     \cs{hook_gput_code:nnn} \Arg{hook} \Arg{label} \Arg{code}
-%     \cs{hook_gput_code_with_args:nnn} \Arg{hook} \Arg{label} \Arg{code}
+%     \cs{hook_gput_code:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{code}
+%     \cs{hook_gput_code_with_args:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{\# code}
 %   \end{syntax}
-%    Adds a chunk of \meta{code} to the \meta{hook} labeled
-%    \meta{label}. If the label already exists the \meta{code} is
+%    Adds a chunk of \meta{\# code} to the specified hook labeled after
+%    \meta{label-spec}. If the specified label already exists the \meta{code} is
 %    appended to the already existing code.
 %
-%    If \cs{hook_gput_code_with_args:nnn} is used, the \meta{code}
+%    If \cs{hook_gput_code_with_args:nnn} is used, the \meta{\# code}
 %    can access the arguments passed to \cs{hook_use:nnw}
 %    (or~\cs{hook_use_once:nnw}) with \verb|#1|, \verb|#2|, \ldots,
 %    \verb|#n| (up to the number of arguments declared for the hook).
 %    In that case, if an actual parameter token should be added to the
 %    code, it should be doubled.
 %
-%    If code is added to an external \meta{hook} (of the kernel or
+%    If code is added to an external hook (of the kernel or
 %    another package) then the convention is to use the package name
-%    as the \meta{label} not some internal module name or some other
+%    as the \meta{label-spec} not some internal module name or some other
 %    arbitrary string.
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{
@@ -1509,12 +1449,13 @@
 %     \hook_gput_next_code_with_args:nn,
 %   }
 %   \begin{syntax}
-%     \cs{hook_gput_next_code:nn} \Arg{hook} \Arg{code}
+%     \cs{hook_gput_next_code:nn} \Arg{hook-spec} \Arg{code}
+%     \cs{hook_gput_next_code_with_args:nn} \Arg{hook-spec} \Arg{\# code}
 %   \end{syntax}
 %    Adds a chunk of \meta{code} for use only in the next invocation of the
-%    \meta{hook}. Once used it is gone.
+%    specified hook. Once used it is gone.
 %
-%    If \cs{hook_gput_next_code_with_args:nn} is used, the \meta{code}
+%    If \cs{hook_gput_next_code_with_args:nn} is used, the \meta{\# code}
 %    can access the arguments passed to \cs{hook_use:nnw}
 %    (or~\cs{hook_use_once:nnw}) with \verb|#1|, \verb|#2|, \ldots,
 %    \verb|#n| (up to the number of arguments declared for the hook).
@@ -1525,16 +1466,13 @@
 %    appended to the hook in the order of declaration at the very end,
 %    i.e., after all standard code for the hook got executed.
 %    Thus if one needs to undo what the standard does one has to do
-%    that as part of \meta{code}.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
+%    that as part of \meta{code} or \meta{\# code}.
 % \end{function}
 %
 %
 % \begin{function}{\hook_gclear_next_code:n}
 %   \begin{syntax}
-%     \cs{hook_gclear_next_code:n} \Arg{hook}
+%     \cs{hook_gclear_next_code:n} \Arg{hook-spec}
 %   \end{syntax}
 %   Undo any earlier \cs{hook_gput_next_code:nn}.
 % \end{function}
@@ -1543,61 +1481,52 @@
 %
 %  \begin{function}{\hook_gremove_code:nn}
 %   \begin{syntax}
-%     \cs{hook_gremove_code:nn} \Arg{hook} \Arg{label}
+%     \cs{hook_gremove_code:nn} \Arg{hook-spec} \Arg{label-spec}
 %   \end{syntax}
-%    Removes any code for \meta{hook} labeled \meta{label}.
+%    Removes any code for the specified hook with the specified label.
 %
-%    If there is no code under the \meta{label} in the \meta{hook},
-%    or if the \meta{hook} does not exist, a warning is issued when
+%    If there is no code under this label in the hook,
+%    or if the hook does not exist, a warning is issued when
 %    you attempt to use \cs{hook_gremove_code:nn}, and the command is ignored.
 %
 %    If the second argument is \texttt{*}, then all code chunks are
 %    removed. This is rather dangerous as it drops code from other
 %    packages one may not know about, so think twice before using
 %    that!
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
 % \end{function}
 %
 %
 %  \begin{function}{\hook_gset_rule:nnnn}
 %   \begin{syntax}
-%     \cs{hook_gset_rule:nnnn} \Arg{hook} \Arg{label1} \Arg{relation} \Arg{label2}
+%     \cs{hook_gset_rule:nnnn} \Arg{hook-spec} \Arg{label-spec_1} \Arg{relation} \Arg{label-spec_2}
 %   \end{syntax}
-%    Relate \meta{label1} with \meta{label2} when used in \meta{hook}.
+%    Relate \meta{label_1} with \meta{label_2}
+%    built from \meta{label-spec_1} and \meta{label-spec_2}
+%    when used in the specified hook.
 %    See \cs{DeclareHookRule} for the allowed \meta{relation}s.
-%    If \meta{hook} is \texttt{??} a default rule is specified.
-%
-%    The \meta{hook} and \meta{label} can be specified using the
-%    dot-syntax to denote the current package name.
-%    See section~\ref{sec:default-label}.
-%    The dot-syntax is parsed in both \meta{label} arguments, but it
-%    usually makes sense to be used in only one of them.
+%    If \meta{hook-spec} is \texttt{??} a default rule is specified.
 % \end{function}
 %
 % \begin{function}[pTF]{\hook_if_empty:n}
 %   \begin{syntax}
-%     \cs{hook_if_empty:nTF} \Arg{hook} \Arg{true code} \Arg{false code}
+%     \cs{hook_if_empty:nTF} \Arg{hook-name} \Arg{true code} \Arg{false code}
 %   \end{syntax}
-%   Tests if the \meta{hook} is empty (\emph{i.e.}, no code was added to
+%   Tests if the named hook is empty (\emph{i.e.}, no code was added to
 %   it using either \cs{AddToHook} or \cs{AddToHookNext}), and
 %   branches to either \meta{true code} or \meta{false code} depending
 %   on the result.
-%
-%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
-%    A leading |.| is treated literally.
 % \end{function}
 %
 %
 % \begin{function}{\hook_show:n,\hook_log:n}
 %   \begin{syntax}
-%     \cs{hook_show:n} \Arg{hook}
-%     \cs{hook_log:n}  \Arg{hook}
+%     \cs{hook_show:n} \Arg{hook-spec}
+%     \cs{hook_log:n}  \Arg{hook-spec}
 %   \end{syntax}
-%   Displays information about the \meta{hook} such as
+%   Displays information about the specified hook such as
 %   \begin{itemize}
+%   \item
+%      the status of the hook,
 %   \item
 %      the code chunks (and their labels) added to it,
 %   \item
@@ -1611,9 +1540,6 @@
 %   \cs{hook_log:n} prints the information to the |.log| file, and
 %   \cs{hook_show:n} prints them to the terminal/command window and starts
 %   \TeX's prompt (only if \cs{errorstopmode}) to wait for user action.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See section~\ref{sec:default-label}.
 % \end{function}
 %
 % \begin{function}{\hook_debug_on:,\hook_debug_off:}
@@ -1628,7 +1554,7 @@
 %
 % \subsection{On the order of hook code execution} \label{sec:order}
 %
-%    Chunks of code for a \meta{hook} under different labels are supposed
+%    Chunks of code for a hook under different labels are supposed
 %    to be independent if there are no special rules set up that
 %    define a relation between the chunks. This means that you can't
 %    make assumptions about the order of execution!
@@ -1923,7 +1849,7 @@
 %
 %    A hook with arguments must be declared as such (before it is first
 %    used, as all regular hooks) using
-%    \cs{NewHookWithArguments}\Arg{hook}\Arg{number}.  All code added to
+%    \cs{NewHookWithArguments}\Arg{hook-spec}\Arg{number}.  All code added to
 %    that hook can then use \verb|#1| to access the first argument,
 %    \verb|#2| to access the second, and so forth up to the number of
 %    arguments declared.  However, it is still possible to add code with
@@ -2074,9 +2000,9 @@
 %
 % \begin{function}{\AtBeginDocument}
 %   \begin{syntax}
-%     \cs{AtBeginDocument} \oarg{label} \Arg{code}
+%     \cs{AtBeginDocument} \oarg{label-spec} \Arg{code}
 %   \end{syntax}
-%   If used without the optional argument \meta{label}, it works essentially
+%   If used without the optional argument \meta{label-spec}, it works essentially
 %    like before, i.e., it is adding \meta{code} to the hook
 %    \hook{begindocument}
 %    (which is executed inside \verb=\begin{document}=).
@@ -2084,7 +2010,7 @@
 %    \hook{top-level} (see section~\ref{sec:top-level})
 %    if done outside of a package or class or with the
 %    package/class name if called inside such a file
-%    (see section~\ref{sec:default-label}).
+%    (see sections~\ref{sec:Command-arguments} and \ref{sec:Managing-the-current-name}).
 %
 %    This way one can add code to the hook using
 %    \cs{AddToHook} or \cs{AtBeginDocument} using a different label
@@ -2250,30 +2176,31 @@
 %
 % \begin{function}{\BeforeBeginEnvironment}
 %   \begin{syntax}
-%     \cs{BeforeBeginEnvironment} \oarg{label} \Arg{env} \Arg{code}
+%     \cs{BeforeBeginEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
 %   This declaration adds to the \hook{env/\meta{env}/before} hook
-%    using the \meta{label}.  If \meta{label} is not given, the
-%    \meta{default label} is used (see section~\ref{sec:default-label}).
+%    using the \meta{label}.  If \meta{label-spec} is not given, the
+%    \meta{current name} is used (see sections~\ref{sec:Command-arguments}
+% and \ref{sec:Managing-the-current-name}).
 % \end{function}
 %
 % \begin{function}{\AtBeginEnvironment}
 %   \begin{syntax}
-%     \cs{AtBeginEnvironment} \oarg{label} \Arg{env} \Arg{code}
+%     \cs{AtBeginEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
 %   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/begin} hook.
 % \end{function}
 %
 % \begin{function}{\AtEndEnvironment}
 %   \begin{syntax}
-%     \cs{AtEndEnvironment} \oarg{label} \Arg{env} \Arg{code}
+%     \cs{AtEndEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
 %   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/end} hook.
 % \end{function}
 %
 % \begin{function}{\AfterEndEnvironment}
 %   \begin{syntax}
-%     \cs{AfterEndEnvironment} \oarg{label} \Arg{env} \Arg{code}
+%     \cs{AfterEndEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
 %   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/after} hook.
 % \end{function}
@@ -2593,6 +2520,7 @@
 %
 % \section{The Implementation}
 %
+% In the sequel \meta{hook} stands for a hook name.
 %
 %    \begin{macrocode}
 %<@@=hook>
@@ -2871,11 +2799,11 @@
 %    package names that add code to the hook, but it is possible
 %    for packages to define other keys.
 %
-%    \item[{\cs[no-index]{g_@@_\meta{hook}_rule_\meta{label1}\string|\meta{label2}_tl}}]
-%    A token list holding the relation between \meta{label1} and
-%    \meta{label2} in the \meta{hook}.  The \meta{labels} are lexically
+%    \item[{\cs[no-index]{g_@@_\meta{hook}_rule_\meta{label_1}\string|\meta{label_2}_tl}}]
+%    A token list holding the relation between \meta{label_1} and
+%    \meta{label_2} in the hook.  The \meta{labels} are lexically
 %    (reverse) sorted to ensure that two labels always point to the same
-%    token list.  For global rules, the \meta{hook} name is \texttt{??}.
+%    token list.  For global rules, \meta{hook} is \texttt{??}.
 %
 %    \item[\cs{@@\textvisiblespace\meta{hook}}] The code that is actually executed
 %    when the hook is called in the document is stored in this token
@@ -3037,7 +2965,7 @@
 %  }
 %  \begin{macro}{\@@_new:nn}
 %    The \cs{hook_new:n} declaration declares a new hook and expects
-%    the hook \meta{name} as its argument, e.g.,
+%    the \meta{hook-name} as its argument, e.g.,
 %    \hook{begindocument}.
 % \changes{v1.1a}{2023/04/06}
 %         {Add \cs{hook_new_with_args:nn} (hook-args).}
@@ -3196,7 +3124,7 @@
 %    there have been a few of them and they have been added to
 %    using \cs{g@addto@macro}. If there exists such a macro matching
 %    the name of the new hook, i.e.,
-%    \verb+\@+\meta{hook-name}\texttt{hook} and it is not empty then
+%    \cs[no-index]{@\meta{hook}hook} and it is not empty then
 %    we add its contents as a code chunk under the label \texttt{legacy}.
 %    \begin{quote}
 %       \textbf{Warning: this support will vanish in future releases!}
@@ -3724,14 +3652,14 @@
 % \end{macro}
 % \end{macro}
 %
-% \begin{macro}{\@@_curr_name_push:n,\@@_curr_name_push_aux:n}
-% \begin{macro}{\@@_curr_name_pop:}
+% \begin{macro}{\hook_current_name_push:n,\@@_curr_name_push_aux:n}
+% \begin{macro}{\hook_current_name_pop:}
 % \begin{macro}{\@@_end_document_label_check:}
 %   The token list \cs{g_@@_hook_curr_name_tl} stores the name of the
 %   current package/file to be used as the default label in hooks.
 %   Providing a consistent interface is tricky because packages can
 %   be loaded within packages, and some packages may not use
-%   \cs{SetDefaultHookLabel} to change the default label (in which
+%   \cs{SetHookCurrentName} to change the default label (in which
 %   case \cs{@currname} is used).
 %
 %   To pull that one off, we keep a stack that contains the default
@@ -3776,10 +3704,10 @@
 %    \end{macrocode}
 %
 %   Two commands keep track of the stack: when a file is input,
-%   \cs{@@_curr_name_push:n} pushes the current default label onto the
+%   \cs{hook_current_name_push:n} pushes the current default label onto the
 %   stack and sets the new default label (all in one go):
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_curr_name_push:n #1
+\cs_new_protected:Npn \hook_current_name_push:n #1
   { \exp_args:Nx \@@_curr_name_push_aux:n { \@@_make_name:n {#1} } }
 \cs_new_protected:Npn \@@_curr_name_push_aux:n #1
   {
@@ -3802,7 +3730,7 @@
 %   since that label will not be used again, and \cs{g_@@_hook_curr_name_tl}
 %   is updated to equal the now topmost item of the stack:
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_curr_name_pop:
+\cs_new_protected:Npn \hook_current_name_pop:
   {
     \seq_gpop:NNTF \g_@@_name_stack_seq \l_@@_return_tl
       { \tl_gset_eq:NN \g_@@_hook_curr_name_tl \l_@@_return_tl }
@@ -3811,7 +3739,7 @@
 %    \end{macrocode}
 %
 %   At the end of the document we want to check if there was no
-%   \cs{@@_curr_name_push:n} without a matching \cs{@@_curr_name_pop:}
+%   \cs{hook_current_name_push:n} without a matching \cs{hook_current_name_pop:}
 %   (not a critical error, but it might indicate that something else is
 %   not quite right):
 %    \begin{macrocode}
@@ -3832,27 +3760,27 @@
 %   The token list \cs{g_@@_hook_curr_name_tl} is but a mirror of the
 %   top of the stack.
 %
-% \begin{macro}{\@@_set_default_hook_label:n,\@@_set_default_label:n}
+% \begin{macro}{\hook_current_name_set:n,\@@_gset_curr_name:n}
 %   Now define a wrapper that replaces the top of the stack with the
 %   argument, and updates \cs{g_@@_hook_curr_name_tl} accordingly.
 %    \begin{macrocode}
-\cs_new_protected:Npn \@@_set_default_hook_label:n #1
+\cs_new_protected:Npn \hook_current_name_set:n #1
   {
     \seq_if_empty:NTF \g_@@_name_stack_seq
       {
         \msg_error:nnnnn { hooks } { set-top-level }
-          { for } { SetDefaultHookLabel } {#1}
+          { for } { SetHookCurrentName } {#1}
       }
       {
-        \exp_args:Nx \@@_set_default_label:n { \@@_make_name:n {#1} }
+        \exp_args:Nx \@@_gset_curr_name:n { \@@_make_name:n {#1} }
       }
   }
-\cs_new_protected:Npn \@@_set_default_label:n #1
+\cs_new_protected:Npn \@@_gset_curr_name:n #1
   {
     \str_if_eq:nnTF {#1} { top-level }
       {
         \msg_error:nnnnn { hooks } { set-top-level }
-          { to } { SetDefaultHookLabel } {#1}
+          { to } { SetHookCurrentName } {#1}
       }
       { \tl_gset:Nn \g_@@_hook_curr_name_tl {#1} }
   }
@@ -3873,9 +3801,9 @@
 %     \@@_prop_gput_labeled_do:Nnnn
 %    }
 %
-%    With \cs{hook_gput_code:nnn}\Arg{hook}\Arg{label}\Arg{code} a
-%    chunk of \meta{code} is added to an existing \meta{hook} labeled
-%    with \meta{label}.
+%    With \cs{hook_gput_code:nnn}\Arg{hook-spec}\Arg{label-spec}\Arg{code} a
+%    chunk of \meta{code} is added to an existing hook labeled
+%    after \meta{label-spec}.
 % \changes{v1.0o}{2021/07/22}{Do not queue removals (gh/625)}
 % \changes{v1.1a}{2023/04/06}
 %         {Add \cs{hook_gput_code_with_args:nnn} (hook-args).}
@@ -4662,8 +4590,9 @@
 % \begin{macro}{\hook_gremove_code:nn}
 % \begin{macro}{\@@_gremove_code:nn}
 %
-%    With \cs{hook_gremove_code:nn}\Arg{hook}\Arg{label} any code
-%    for \meta{hook} stored under \meta{label} is removed.
+%    With \cs{hook_gremove_code:nn}\Arg{hook-spec}\Arg{label-spec} any code
+%    for the \meta{hook-name} built after \meta{hook-spec}
+%    stored under the \meta{label-name} built after \meta{label-spec} is removed.
 % \changes{v1.0o}{2021/07/22}{Do not queue removals (gh/625)}
 % \changes{v1.1a}{2023/04/06}
 %         {Changes to add hook arguments (hook-args).}
@@ -5337,11 +5266,11 @@
 %  \begin{macro}{\hook_gset_rule:nnnn}
 %  \begin{macro}{\@@_gset_rule:nnnn}
 %    With
-%    \cs{hook_gset_rule:nnnn}\Arg{hook}\Arg{label1}\Arg{relation}\Arg{label2}
-%    a relation is defined between the two code labels for the given
-%    \meta{hook}.  The special hook \texttt{??} stands for \emph{any}
+%    \cs{hook_gset_rule:nnnn}\Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
+%    a relation is defined between the two code labels for the specified
+%    hook.  The special hook \texttt{??} stands for \emph{any}
 %    hook, which sets a default rule (to be used if no other relation
-%    between the two hooks exist).
+%    between the two labels exist).
 %    \begin{macrocode}
 \cs_new_protected:Npn \hook_gset_rule:nnnn #1#2#3#4
   {
@@ -5826,7 +5755,7 @@
 %    \meta{hook-next-code-tl},
 %    \meta{hook-ordered-labels-clist} and \meta{hook-name} (the latter
 %    is only used for debugging---the \meta{hook-rule-plist} is accessed
-%    using the \meta{hook-name}).
+%    using the \meta{hook}).
 %
 %    The additional complexity compared to Don's algorithm is that we
 %    do not use simple positive integers but have arbitrary
@@ -6114,7 +6043,7 @@
 %    \cs{g_@@_\meta{hook}_rule_\#2\string|\#1_tl}.  This also saves a great deal
 %    of time since we only need to check the order of the labels once.
 %
-%    The arguments here are \meta{label1}, \meta{label2}, \meta{hook}, and
+%    The arguments here are \meta{label_1}, \meta{label_2}, \meta{hook}, and
 %    \meta{hook-code-plist}.  We are about to apply the next rule and
 %    enter it into the data structure.  \cs{@@_apply_label_pair:nnn} will
 %    just call \cs{@@_label_if_exist_apply:nnnF} for the \meta{hook}, and
@@ -6158,6 +6087,7 @@
   }
 %    \end{macrocode}
 %  \end{macro}
+%  \JLNote{Update the rule separator}
 %
 %
 %
@@ -6166,7 +6096,7 @@
 %    This is the code executed in steps T2 and T3 while looping through
 %    the matrix  This is part of step T3. We are about to apply the next
 %    rule and enter it into the data structure. The arguments are
-%    \meta{label1}, \meta{label2}, \meta{hook-name}, and \meta{hook-code-plist}.
+%    \meta{label_1}, \meta{label_2}, \meta{hook}, and \meta{hook-code-plist}.
 %    \begin{macrocode}
 \cs_new_protected:Npn \@@_apply_rule:nnn #1#2#3
   {
@@ -6176,6 +6106,7 @@
       {#1} {#2} {#3}
   }
 %    \end{macrocode}
+%  \JLNote{3 or 4 arguments?}
 % \end{macro}
 %
 %  \begin{macro}{\@@_apply_rule_<:nnn,\@@_apply_rule_>:nnn}
@@ -6690,8 +6621,8 @@
 % \begin{macro}{\@@_list_rules:nn}
 % \begin{macro}{\@@_list_one_rule:nnn,\@@_list_if_rule_exists:nnnF}
 %   This macro takes a \meta{hook} and an \meta{inline function} and
-%   loops through each pair of \meta{labels} in the \meta{hook}, and if
-%   there is a relation between this pair of \meta{labels}, the
+%   loops through each pair of labels in the hook, and if
+%   there is a relation between this pair of labels, the
 %   \meta{inline function} is executed with |#1|${}={}$\meta{relation},
 %   |#2|${}={}$\meta{label_1}\verb=|=\meta{label_2},
 %   and |#3|${}={}$\meta{hook} (the latter may be the argument |#1| to
@@ -7992,14 +7923,11 @@
 %    \end{macrocode}
 %  \end{macro}
 %
-% \begin{macro}{\SetDefaultHookLabel}
-% \begin{macro}{\PushDefaultHookLabel}
-% \begin{macro}{\PopDefaultHookLabel}
 %   Now define a wrapper that replaces the top of the stack with the
 %   argument, and updates \cs{g_@@_hook_curr_name_tl} accordingly.
 %    \begin{macrocode}
 \NewDocumentCommand \SetDefaultHookLabel { m }
-  { \@@_set_default_hook_label:n {#1} }
+  { \hook_current_name_set:n {#1} }
 %
 %   The label is only automatically updated with \cs{@onefilewithoptions}
 %   (\cs{usepackage} and \cs{documentclass}), but some packages, like
@@ -8011,9 +7939,9 @@
 %   high-level access to the default label stack.
 %    \begin{macrocode}
 \NewDocumentCommand \PushDefaultHookLabel { m }
-  { \@@_curr_name_push:n {#1} }
+  { \hook_current_name_push:n {#1} }
 \NewDocumentCommand \PopDefaultHookLabel { }
-  { \@@_curr_name_pop: }
+  { \hook_current_name_pop: }
 %    \end{macrocode}
 %
 %   The current label stack holds the labels for all files but the
@@ -8023,19 +7951,44 @@
 %   \cs{@currname} is set, so we need to look ahead to get the
 %   \cs{@currname} for the label.  \pkg{expl3} also requires the current
 %   file in \cs{@pushfilename}, so here we abuse
-%   \cs{@expl@push@filename@aux@@@@} to do \cs{@@_curr_name_push:n}.
+%   \cs{@expl@push@filename@aux@@@@} to do \cs{hook_current_name_push:n}.
 %    \begin{macrocode}
 \cs_gset_protected:Npn \@expl@push@filename@aux@@@@ #1#2#3
   {
-    \@@_curr_name_push:n {#3}
+    \hook_current_name_push:n {#3}
     \str_gset:Nx \g_file_curr_name_str {#3}
     #1 #2 {#3}
   }
 %    \end{macrocode}
-% \end{macro}
-% \end{macro}
-% \end{macro}
+% Now the consistent new \LaTeXe\ API.
+% \begin{macro}
+%   {
+%     \SetHookCurrentName,
+%     \PushHookCurrentName,
+%     \PopHookCurrentName,
+%     \DebugHookCurrentName,
+%     \hook_current_name_set:n,
+%     \hook_current_name_push:n,
+%     \hook_current_name_pop:n,
+%   }
+%    \begin{macrocode}
+\NewDocumentCommand \SetHookCurrentName { m }
+  { \hook_current_name_set:n {#1} }
+%    \end{macrocode}
+%    \begin{macrocode}
+\NewDocumentCommand \PushHookCurrentName { m }
+  { \hook_current_name_push:n {#1} }
+%    \end{macrocode}
+%    \begin{macrocode}
+\NewDocumentCommand \PopHookCurrentName { }
+  { \hook_current_name_pop: }
+%    \end{macrocode}
+%    \begin{macrocode}
+\cs_new:Npn \DebugHookCurrentName
+  { \g_@@_hook_curr_name_tl }
+%    \end{macrocode}
 %
+% \end{macro}
 %
 %
 %
@@ -8269,7 +8222,7 @@
 %
 %    \begin{macrocode}
 \cs_new_eq:NN \@expl@@@hook@curr@name@pop@@
-              \__hook_curr_name_pop:
+              \hook_current_name_pop:
 %    \end{macrocode}
 % \InternalDetectionOn
 %  \end{macro}

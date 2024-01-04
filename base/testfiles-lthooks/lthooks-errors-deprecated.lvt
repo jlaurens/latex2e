@@ -7,6 +7,10 @@
 
 \input{regression-test}
 
+\let \PushDefaultHookLabel \PushHookCurrentName
+\let \PopDefaultHookLabel \PopHookCurrentName
+\let \SetDefaultHookLabel \SetHookCurrentName
+
 \START
 
 \NewHook{xxx}

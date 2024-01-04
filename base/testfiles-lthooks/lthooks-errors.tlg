@@ -1,6 +1,17 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
+============================================================
+TEST 1: activate-error
+============================================================
+============================================================
+============================================================
+TEST 2: activate-disabled
+============================================================
 LaTeX hooks Warning: Cannot activate hook 'yyy' because it is disabled!
+============================================================
+============================================================
+TEST 3: hook-disabled
+============================================================
 ! LaTeX hooks Error: Cannot add code to disabled hook 'yyy'.
 For immediate help type H <return>.
  ...                                              
@@ -8,6 +19,10 @@ l. ...\AddToHook{yyy}{error}
 The hook 'yyy' you tried to add code to was previously disabled with
 \hook_disable_generic:n or \DisableGenericHook, so it cannot have code added
 to it.
+============================================================
+============================================================
+TEST 4: empty-label
+============================================================
 ! Use of \??? doesn't match its definition.
 <argument> \???  
                  ! LaTeX hooks Error: Empty code label on line .... Using 'to...
@@ -23,14 +38,25 @@ l. ...\AddToHook{yyy}[]{error}
 The hook 'yyy' you tried to add code to was previously disabled with
 \hook_disable_generic:n or \DisableGenericHook, so it cannot have code added
 to it.
+============================================================
+============================================================
+TEST 5: no-default-label
+============================================================
 ! LaTeX hooks Error: Missing (empty) default label on line ....
 (hooks)              This command was ignored.
 Type <return> to continue.
  ...                                              
-l. ...\PushDefaultHookLabel{}
+l. ...\PushHookCurrentName{}
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
+============================================================
+============================================================
+TEST 6: Rules
+============================================================
+============================================================
+TEST 7: Error: unknown-rule
+============================================================
 ! LaTeX hooks Error: Unknown relationship 'unknown' between labels 'label1'
 (hooks)              and 'label2'  in hook 'xxx'. Perhaps a misspelling?
 For immediate help type H <return>.
@@ -39,6 +65,15 @@ l. ......HookRule {xxx} {label1} {unknown} {label2}
 The relation used not known to the system. Allowed values are 'before' or '<',
 'after' or '>', 'incompatible-warning', 'incompatible-error', 'voids' or
 'unrelated'.
+============================================================
+============================================================
+TEST 8: Warning: labels-incompatible
+============================================================
+============================================================
+============================================================
+TEST 9: Error: labels-incompatible
+============================================================
+============================================================
 <<< Hook: 'xxx'
 ... Attributes:
 ...   deprecated_generic: N
@@ -68,6 +103,7 @@ The relation used not known to the system. Allowed values are 'before' or '<',
 ... Execution order:
 ...   None
 >>>
+============================================================
 ! LaTeX kernel Error: This should not happen. Tried to pop from an empty file
 (kernel)              name stack.
 (kernel)              Please report at https://github.com/latex3/latex2e.
@@ -77,16 +113,26 @@ l. ...\@expl@@@filehook@file@pop@@
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
+============================================================
+TEST 10: Error: set-top-level
+============================================================
 ! LaTeX hooks Error: You cannot change the default label for 'top-level'.
 (hooks)              Illegal
-(hooks)                \SetDefaultHookLabel{my-document}
+(hooks)                \SetHookCurrentName{my-document}
 (hooks)              on line ....
 Type <return> to continue.
  ...                                              
-l. ...\SetDefaultHookLabel{my-document}
+l. ...\SetHookCurrentName{my-document}
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
+============================================================
+============================================================
+TEST 11: top-level not allowed with other labels
+============================================================
+============================================================
+TEST 12: Error: misused-top-level
+============================================================
 ! LaTeX hooks Error: Illegal use of \AddToHook{begindocument}[top-level]{...}.
 (hooks)              'top-level' is reserved for the user's document.
 For immediate help type H <return>.
@@ -95,24 +141,38 @@ l. ......ook{begindocument}[top-level]{not allowed}
 The 'top-level' label is meant for user code only, and should only be used
 (sparingly) in the main document. Use the default label 'my-document' for this
 package, or another suitable label.
+============================================================
+============================================================
+TEST 13: Error: set-top-level
+============================================================
 ! LaTeX hooks Error: You cannot change the default label to 'top-level'.
 (hooks)              Illegal
-(hooks)                \SetDefaultHookLabel{top-level}
+(hooks)                \SetHookCurrentName{top-level}
 (hooks)              on line ....
 Type <return> to continue.
  ...                                              
-l. ...  \SetDefaultHookLabel{top-level}
+l. ...  \SetHookCurrentName{top-level}
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
+============================================================
+============================================================
+============================================================
+TEST 14: Error type: extra-pop-label
+============================================================
 ! LaTeX hooks Error: Extra \PopDefaultHookLabel.
 (hooks)              This command will be ignored.
 Type <return> to continue.
  ...                                              
-l. ...\PopDefaultHookLabel
+l. ...\PopHookCurrentName
 LaTeX does not know anything more about this error, sorry.
 Try typing <return> to proceed.
 If that doesn't work, type X <return> to quit.
+============================================================
+============================================================
+TEST 15: Error type: missing-pop-label (Checked at \end {document})
+============================================================
+============================================================
 allowed
 ! LaTeX hooks Error: Missing \PopDefaultHookLabel.
 (hooks)              The label 'this' was pushed but never popped. Something

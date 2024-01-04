@@ -434,7 +434,55 @@
 \TEST{LABEL A}{LABEL B}
 \TEST{LABEL B}{LABEL A}
 
-\TYPE{>>>>> RULES}
+\ENDTEST
+
+\BEGINTEST{LEADING DOT}
+
+\NewHook{./HOOK}
+\AddToHook{./HOOK}[./labelA]{\typeout{A}}
+\AddToHook{./HOOK}[./labelB]{\typeout{B}}
+\AddToHook{./HOOK}[./labelC]{\typeout{C}}
+
+\OldShowHook{./HOOK}
+\ShowHook{./HOOK}
+
+\NewHook{{./HOOK}}
+\AddToHook{{./HOOK}}[{{./labelA}}]{\typeout{A}}
+\AddToHook{{./HOOK}}[{{./labelB}}]{\typeout{B}}
+\AddToHook{{./HOOK}}[{{./labelC}}]{\typeout{C}}
+
+\OldShowHook{{./HOOK}}
+\ShowHook{{./HOOK}}
+
+\ExplSyntaxOn
+
+\hook_gput_code:nnn {{./HOOK}}{{./labelD}}{\typeout{D}}
+
+\OldShowHook{{./HOOK}}
+\ShowHook{{./HOOK}}
+
+\ExplSyntaxOff
+
+\SEPARATOR
+
+\RemoveFromHook{{./HOOK}}[{{./labelA}}]
+\RemoveFromHook{{./HOOK}}[{{./labelB}}]
+\RemoveFromHook{{./HOOK}}[{{./labelC}}]
+
+\OldShowHook{{./HOOK}}
+\ShowHook{{./HOOK}}
+
+\ExplSyntaxOn
+
+\SEPARATOR
+
+\hook_gremove_code:nn {{./HOOK}}{{./labelD}}
+
+\OldShowHook{{./HOOK}}
+\ShowHook{{./HOOK}}
+
+\ExplSyntaxOff
+
 \ENDTEST
 
 \TYPE{>>>>>>>>>> Compare...}

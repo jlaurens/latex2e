@@ -1,0 +1,197 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\documentclass{article}
+
+\input{regression-test}
+
+\OMIT
+
+\ExplSyntaxOn
+\def\MyExpectCurrentName#1
+  {
+    \exp_args:Nx\TEST
+      { Expected~current~name~==~'#1' }
+      {
+        \ASSERTSTR { \DebugHookCurrentName } { #1 }
+      }
+  }
+\ExplSyntaxOff
+
+\begin{filecontents}{lthooks-current-name-A.sty}
+\MyExpectCurrentName{lthooks-current-name-A}
+\SetHookCurrentName{foo}
+\MyExpectCurrentName{foo}
+\usepackage{lthooks-current-name-B}
+\MyExpectCurrentName{foo}
+\SetHookCurrentName{top-level} % RAISE
+\end{filecontents}
+
+\begin{filecontents}{lthooks-current-name-B.sty}
+\MyExpectCurrentName{lthooks-current-name-B}
+\SetHookCurrentName{top-level} % RAISE
+
+\bgroup
+\SetHookCurrentName{HOOK-foo}
+\MyExpectCurrentName{HOOK-foo}
+\egroup
+\MyExpectCurrentName{HOOK-foo}
+
+\input{lthooks-current-name-C.tex}
+\MyExpectCurrentName{HOOK-bar}
+\SetHookCurrentName{HOOK-foo}
+\MyExpectCurrentName{HOOK-foo}
+\include{lthooks-current-name-C.tex}
+\MyExpectCurrentName{HOOK-bar}
+
+\end{filecontents}
+
+\begin{filecontents}{lthooks-current-name-C.tex}
+\MyExpectCurrentName{HOOK-foo}
+\SetHookCurrentName{HOOK-bar}
+\MyExpectCurrentName{HOOK-bar}
+\end{filecontents}
+
+\TIMO
+
+\ExplSyntaxOn
+\tl_new:N \l__lthooks_ans_tl
+\def\MyAns { \l__lthooks_ans_tl }
+\def\MyAnsClear { \tl_clear:N \l__lthooks_ans_tl }
+\def\MyAnsSet { \tl_set:Nn \l__lthooks_ans_tl }
+\def\MyAnsSetX { \tl_set:Nx \l__lthooks_ans_tl }
+\def\MyAnsAppend { \tl_put_right:Nn \l__lthooks_ans_tl }
+\def\MyAnsAppendX { \tl_put_right:Nx \l__lthooks_ans_tl }
+\def\MyAnsExpect #1
+  {
+    \exp_args:NV \ASSERT \l__lthooks_ans_tl { #1 }
+    \MyAnsClear
+  }
+\def\MyTestCsExist
+  {
+    \ExplSyntaxOn
+    \_MyTestCsExist
+  }
+\def\_MyTestCsExist #1 #2
+  {
+    \BEGINTEST { #1 }
+    \clist_map_inline:nn { #2 }
+      {
+        \cs_if_exist:NTF ##1
+          { \TYPE { Exists~\token_to_str:N ##1~->~YES} }
+          { \TYPE { Exists~\token_to_str:N ##1~->~NO} }
+      }
+    \ExplSyntaxOff
+    \ENDTEST
+  }
+\ExplSyntaxOff
+
+\MyTestCsExist { Preflight }
+  {
+    \PushHookCurrentName,
+    \PopHookCurrentName,
+    \SetHookCurrentName,
+    \DebugHookCurrentName,
+    \hook_current_name_push:n,
+    \hook_current_name_pop:,
+    \hook_current_name_set:n,
+  }
+
+\usepackage{lthooks-current-name-A}
+
+\START
+
+\SetHookCurrentName{foo}% RAISE
+\PushHookCurrentName{bar}
+\MyExpectCurrentName{bar}
+\PushHookCurrentName{baz}
+\MyExpectCurrentName{baz}
+\PopHookCurrentName
+\MyExpectCurrentName{bar}
+\SetHookCurrentName{foo}
+\MyExpectCurrentName{foo}
+\SetHookCurrentName{top-level}% RAISE
+\SetHookCurrentName{baz}
+\MyExpectCurrentName{baz}
+\PopHookCurrentName
+\MyExpectCurrentName{top-level}
+\SetHookCurrentName{foo} % RAISE
+\MyExpectCurrentName{top-level}
+\SetHookCurrentName{top-level} % RAISE
+\MyExpectCurrentName{top-level}
+
+\BEGINTEST{\DebugPrintHook}
+\ExplSyntaxOn
+\cs_set_eq:NN \iow_term:n \MyAnsAppend
+\cs_set_eq:NN \iow_term:x \MyAnsAppendX
+\def\TEST#1#2
+  {
+    \MyAnsClear
+    \DebugPrintHook{#1}
+    \exp_args:NnV \regex_match:nnTF { #2 } \l__lthooks_ans_tl
+      { \TYPE{dot~syntax:~'#1'~->~PASSED } }
+      { \TYPE{dot~syntax:~'#1'~->~FAILED (\l__lthooks_ans_tl) } }
+  }
+\ExplSyntaxOff
+\TEST{.}{'top-level'\s*\(<-\s*'\.'\)}
+\TEST{./foo}{'top-level/foo'\s*\(<-\s*'\./foo'\)}
+\TEST{..}{'\.\.'\s*[^\(]}
+\TEST{.foo}{'\.foo'\s*[^\(]}
+\TEST{../foo}{'\.\./foo'\s*[^\(]}
+\TEST{/.foo}{'/\.foo'\s*[^\(]}
+\TEST{./.foo}{'top-level/.foo'\s*\(<-\s*'\./\.foo'\)}
+\TEST{{.}}{'.'\s*\(<-\s*'\{\.\}'\)}
+\ENDTEST
+
+\BEGINTEST{hook/label-spec}
+
+\PushHookCurrentName{DOT}
+\NewHook{./HOOK}
+\AddToHook{./HOOK}{\MyAnsSet{DO}}
+\AddToHook{./HOOK}[./LABEL]{\MyAnsAppend{NE}}
+\UseHook{DOT/HOOK}
+\MyAnsExpect{DONE}
+\RemoveFromHook{./HOOK}
+\UseHook{DOT/HOOK}
+\MyAnsExpect{NE}
+\RemoveFromHook{./HOOK}[./LABEL]
+\UseHook{DOT/HOOK}
+\MyAnsExpect{}
+\PopHookCurrentName
+
+\ENDTEST
+
+\BEGINTEST{hook/label-spec~no~current~name}
+
+\PushHookCurrentName{DOT}
+\NewHook{{./HOOK}}
+\AddToHook{{./HOOK}}{\MyAnsSet{DO}}
+\AddToHook{{./HOOK}}[{{./LABEL}}]{\MyAnsAppend{NE}}
+\UseHook{./HOOK}
+\MyAnsExpect{DONE}
+\MyAnsExpect{}
+\SEPARATOR
+\RemoveFromHook{{./HOOK}}
+\UseHook{./HOOK}
+\MyAnsExpect{NE}
+\SEPARATOR
+\RemoveFromHook{{./HOOK}}[./LABEL]
+\UseHook{./HOOK}
+\MyAnsExpect{NE}
+\SEPARATOR
+\RemoveFromHook{{./HOOK}}[{./LABEL}]
+\UseHook{./HOOK}
+\MyAnsExpect{NE}
+\SEPARATOR
+\RemoveFromHook{{./HOOK}}[{{./LABEL}}]
+\ShowHook{{./HOOK}}
+\UseHook{./HOOK}
+\MyAnsExpect{}
+\PopHookCurrentName
+
+\ENDTEST
+
+\END

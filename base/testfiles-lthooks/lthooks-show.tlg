@@ -1724,7 +1724,121 @@ LaTeX found two incompatible labels in the same hook. This indicates an
 incompatibility between packages.
 <CODE C>
 ============================================================
->>>>> RULES
+============================================================
+============================================================
+TEST 38: LEADING DOT
+============================================================
+-> The hook 'top-level/HOOK':
+> Code chunks:
+>     top-level/labelA -> \typeout {A}
+>     top-level/labelB -> \typeout {B}
+>     top-level/labelC -> \typeout {C}
+> Document-level (top-level) code (executed last):
+>     ---
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     top-level/labelA, top-level/labelB, top-level/labelC.
+<recently read> }
+l. ...\OldShowHook{./HOOK}
+==> Hook: 'top-level/HOOK'
+> Code chunks:
+>   'top-level/labelA' -> \typeout {A}
+>   'top-level/labelB' -> \typeout {B}
+>   'top-level/labelC' -> \typeout {C}
+> Execution order:
+>   1: 'top-level/labelA'
+>   2: 'top-level/labelB'
+>   3: 'top-level/labelC'.
+<recently read> }
+l. ...\ShowHook{./HOOK}
+-> The hook './HOOK':
+> Code chunks:
+>     ./labelA -> \typeout {A}
+>     ./labelB -> \typeout {B}
+>     ./labelC -> \typeout {C}
+> Document-level (top-level) code (executed last):
+>     ---
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ./labelA, ./labelB, ./labelC.
+<recently read> }
+l. ...\OldShowHook{{./HOOK}}
+==> Hook: './HOOK'
+> Code chunks:
+>   './labelA' -> \typeout {A}
+>   './labelB' -> \typeout {B}
+>   './labelC' -> \typeout {C}
+> Execution order:
+>   1: './labelA'
+>   2: './labelB'
+>   3: './labelC'.
+<recently read> }
+l. ...\ShowHook{{./HOOK}}
+-> The hook './HOOK':
+> Code chunks:
+>     ./labelA -> \typeout {A}
+>     ./labelB -> \typeout {B}
+>     ./labelC -> \typeout {C}
+>     ./labelD -> \typeout {D}
+> Document-level (top-level) code (executed last):
+>     ---
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ./labelA, ./labelB, ./labelC, ./labelD.
+<recently read> }
+l. ...\OldShowHook{{./HOOK}}
+==> Hook: './HOOK'
+> Code chunks:
+>   './labelA' -> \typeout {A}
+>   './labelB' -> \typeout {B}
+>   './labelC' -> \typeout {C}
+>   './labelD' -> \typeout {D}
+> Execution order:
+>   1: './labelA'
+>   2: './labelB'
+>   3: './labelC'
+>   4: './labelD'.
+<recently read> }
+l. ...\ShowHook{{./HOOK}}
+============================================================
+-> The hook './HOOK':
+> Code chunks:
+>     ./labelD -> \typeout {D}
+> Document-level (top-level) code (executed last):
+>     ---
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ./labelD.
+<recently read> }
+l. ...\OldShowHook{{./HOOK}}
+==> Hook: './HOOK'
+> Code chunks:
+>   './labelD' -> \typeout {D}
+> Execution order:
+>   1: './labelD'.
+<recently read> }
+l. ...\ShowHook{{./HOOK}}
+============================================================
+-> The hook './HOOK':
+> The hook is empty.
+<recently read> }
+l. ...\OldShowHook{{./HOOK}}
+==> Hook: './HOOK'
+>   empty.
+<recently read> }
+l. ...\ShowHook{{./HOOK}}
 ============================================================
 >>>>>>>>>> Compare...
 ============================================================
