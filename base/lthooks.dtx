@@ -1005,6 +1005,204 @@
 %    that hook as soon as \meta{n}$>0$. \cs{AddToHook} continues to work as normal.
 % \end{function}
 %
+% \subsection{Reversed hooks and mirrored hook pairs}
+%   \label{sec:reversed-order}
+%
+%   Mirrored hook pairs solve a problem related to \LaTeX\ environments
+%   and more generally to grouping. For example the contrived
+%   package \pkg{mycolor} can typeset all the \env{quote} environments in blue, with
+%\begin{lthooksCode}
+%\ROW|\RequirePackage{color}|\\
+%\ROW|\AddToHook{env/quote/begin}[begin{color}]{\begin{color}{blue}}|\\
+%\ROW|\AddToHook{env/quote/end}  [end{color}]{\end{color}}|\\
+%\end{lthooksCode}
+%   |\begin{color}{blue}| is executed at the beginning of each \env{quote}
+%   environment whereas |\end{color}| is executed at the end.
+%   In parallel, contrived package \pkg{myitshape} can typeset all the \env{quote}
+%   environments in italic, with
+%\begin{lthooksCode}
+%\ROW|\AddToHook{env/quote/begin}[begin{itshape}]{\begin{itshape}}|\\
+%\ROW|\AddToHook{env/quote/end}  [end{itshape}]{\end{itshape}}|\\
+%\end{lthooksCode}
+%   If we load \pkg{mycolor} then \pkg{myitshape}, typesetting a \env{quote} environment
+%   stops on the error
+%\begin{lthooksCode}
+%\ROW|! LaTeX Error: \begin{itshape} on input line ... ended by \end{color}.|\\
+%\end{lthooksCode}
+%   The \cs{ShowHook} command applied to each hook clearly explains the error,
+%   the carefully chosen code chunk labels fitting that purpose,
+%\begin{lthooksCode}
+%\ROW|==> Hook: 'env/quote/begin'|\FILL{27}
+%\SEP|==> Hook: 'env/quote/end'|\\
+%\ROW|> ...|\FILL{5}
+%\SEP|> ...|\\
+%\ROW|> Execution order:|\FILL{18}
+%\SEP|> Execution order:|\\
+%\ROW|> 1: 'begin{color}'|\FILL{19}
+%\SEP|> 1: 'end{color}'|\\
+%\ROW|> 2: 'begin{itshape}'|\FILL{21}
+%\SEP|> 2: 'end{itshape}'|\\
+%\end{lthooksCode}
+% The sequence of execution is
+%\begin{lthooksCode}
+%\ROW|...\begin{color}{blue}...\begin{itshape}...\end{color}...\end{itshape}...|\\
+%\end{lthooksCode}
+% Whereas it should be
+%\begin{lthooksCode}
+%\ROW|...\begin{color}{blue}...\begin{itshape}...\end{itshape}...\end{color}...|\\
+%\end{lthooksCode}
+% meaning that the second hook should be executed in reverse order.
+% Loading \pkg{myitshape} before \pkg{mycolor} does not help: the error simply becomes
+%\begin{lthooksCode}
+%\ROW|! LaTeX Error: \begin{color} on input line ... ended by \end{itshape}.|\\
+%\end{lthooksCode}
+%
+% In that situation, instead of \hook{env/quote/begin}
+% and \hook{env/quote/end}, the generic hooks \hook{env/quote/before}
+% and \hook{env/quote/after}, should be used because they form a
+% \emph{pair of mirrored hooks}, the first one being \emph{normal}
+% and the last one being \emph{reversed}.
+%
+%
+% \subsubsection{Reversed hooks}
+%
+% \begin{function}{
+%   \NewReversedHook,
+%   \hook_new_reversed:n
+% }
+%   \begin{syntax}
+%\LEFT{\cs{NewReversedHook} \Arg{hook-spec}}^^A
+%\RIGHT{\cs{hook_new_reversed:n} \Arg{hook-spec}}
+%   \end{syntax}
+%     Declares a new hook like \cs{NewHook} and marks it
+%     as \emph{reversed}.
+%     Its labelled code chunks are in reverse order by default
+%     (those added last are executed first).
+% \end{function}
+%
+% \begin{function}{
+%  \NewReversedHookWithArguments,
+%  \hook_new_reversed_with_args:nn,
+% }
+%   \begin{syntax}
+%     \cs{NewReversedHookWithArguments} \Arg{hook-spec} \Arg{n}
+%     \cs{hook_new_reversed_with_args:nn} \Arg{hook-spec} \Arg{n}
+%   \end{syntax}
+%     Declares a new hook like \cs{NewHookWithArguments} and marks it
+%     as \emph{reversed}.
+%     Section~\ref{sec:Hooks-with-arguments} explains hooks with arguments.
+% \end{function}
+%
+% \subsubsection{Mirrored hook pairs}
+%
+% A \emph{mirrored hook pair} binds a normal hook with a reversed hook,
+% each one \emph{matching} the other. The reversed hook is always
+% executed balancing a previous execution of the normal hook.
+% Both hooks have the same owner and are not meant to be
+% \cs[no-index]{Use...}'d by any other object.
+% In general they are not one-time hooks, but that is not a requirement.
+% Finally, two mirrored hook pairs cannot contain the same hook.
+%
+% Many mirrored hook pairs are built into \LaTeX. They are name
+% \hook{\meta{...}/before} and \hook{\meta{...}/after}, as
+% detailed in section \ref{sec:LaTeX-hooks}.
+% Following this naming convention is good practice.
+%
+% \begin{function}{\NewMirroredHookPair,\hook_new_pair:nn}
+%   \begin{syntax}
+%     \cs{NewMirroredHookPair} \Arg{hook-spec} \Arg{mirror hook-spec}
+%     \cs{hook_new_pair:nn} \Arg{hook-spec} \Arg{mirror hook-spec}
+%   \end{syntax}
+%     Executes
+% \begin{lthooksCode}
+% \ROW\cs{NewHook}\Arg{hook-spec}\\
+% \ROW\cs{NewReversedHook}\Arg{mirror hook-spec}\\
+% \end{lthooksCode}
+% and binds the hooks together as a mirrored hook pair.
+% \end{function}
+%
+% \begin{function}{\NewMirroredHookPairWithArguments,\hook_new_pair_with_args:nnn,}
+%   \begin{syntax}
+%     \cs{NewMirroredHookPairWithArguments}
+%     ~~\Arg{hook-spec} \Arg{mirror hook-spec} \Arg{n}
+%     \cs{hook_new_pair_with_args:nnn}
+%     ~~\Arg{hook-spec} \Arg{mirror hook-spec} \Arg{n}
+%   \end{syntax}
+%   Executes
+% \begin{lthooksCode}
+% \ROW\cs{NewHookWithArguments}\Arg{hook-spec}\Arg{n}\\
+% \ROW\cs{NewReversedHookWithArguments}\Arg{mirror hook-spec}\Arg{n}\\
+% \end{lthooksCode}
+% and binds the hooks together as a mirrored hook pair.
+%   Section~\ref{sec:Hooks-with-arguments} explains hooks with arguments.
+% \end{function}
+%
+% \medskip
+%
+% Hooks pertaining to mirrored hook pairs are generally managed in
+% parallel for a stronger code design.
+%
+% \begin{function}[added = 2024-01-01]{
+%   \AddToHookPair,
+%   \hook_pair_gput_code:nnnn,
+%   \AddToHookPairWithArguments,
+%   \hook_pair_gput_code_with_args:nnnn
+% }
+% \begin{syntax}
+%   \cs{AddToHookPair}\Arg{hook-spec}\oarg{label-spec}
+%   \TAB\Arg{code}\Arg{other code}
+%   \cs{hook_pair_gput_code:nnnn} \Arg{hook-spec} \Arg{label-spec}
+%   \TAB\Arg{code} \Arg{other code}
+%   \cs{AddToHookPairWithArguments}\Arg{hook-spec}\oarg{label-spec}
+%   \TAB\Arg{code\LHXStar}\Arg{other code\LHXStar}
+%   \cs{hook_pair_gput_code_with_args:nnnn} \Arg{hook-spec} \Arg{label-spec}
+%   \TAB\Arg{code\LHXStar} \Arg{other code\LHXStar}
+% \end{syntax}
+% If the specified hook does not belong to a mirrored hook pair,
+% an error is raised.
+% Otherwise these are shortcuts to
+% \begin{lthooksCode}
+% \ROW \cs{AddToHook}\Arg{hook-spec}\oarg{label-spec}\Arg{code}\\
+% \ROW \cs{AddToHook}\Arg{other hook-spec}\oarg{label-spec}\Arg{other code}\\
+% \end{lthooksCode}
+% and
+% \begin{lthooksCode}
+% \ROW \cs{AddToHookWithArguments}\Arg{hook-spec}\oarg{label-spec}\Arg{code\LHXStar}\\
+% \ROW \cs{AddToHookWithArguments}\Arg{other hook-spec}\oarg{label-spec}\Arg{other code\LHXStar}\\
+% \end{lthooksCode}
+% where \meta{other hook-spec} specifies the other element of the mirrored hook pair.
+
+% By symmetry, this is equivalent to
+% \begin{lthooksCode}
+% \ROW \cs{AddToHookPair}\Arg{other hook-spec}\oarg{label-spec}\Arg{other code}\Arg{code}\\
+% \end{lthooksCode}
+% and the same holds with arguments.
+%
+% 
+% \end{function}
+%
+% \begin{function}[added = 2024-01-01]{
+%   \RemoveFromHookPair,
+%   \hook_pair_gremove_code:nn
+% }
+% \begin{syntax}
+%   \cs{RemoveFromHookPair}\Arg{hook-spec}\oarg{label-spec}
+%   \cs{hook_pair_gremove_code:nn}\Arg{hook-spec}\Arg{label-spec}
+% \end{syntax}
+% If the specified hook does not belong to a mirrored hook pair,
+% an error is raised.
+% Otherwise this is a shortcut to
+% \begin{lthooksCode}
+% \ROW \cs{RemoveFromHook}\Arg{hook-spec}\oarg{label-spec}\\
+% \ROW \cs{RemoveFromHook}\Arg{other hook-spec}\oarg{label-spec}\\
+% \end{lthooksCode}
+% where \meta{other hook-spec} specifies the other element of the mirrored hook pair.
+% By symmetry, this is equivalent to
+% \begin{lthooksCode}
+% \ROW \cs{RemoveFromHookPair}\Arg{other hook-spec}\oarg{label-spec}\\
+% \end{lthooksCode}
+% \end{function}
+%
 %
 % \subsection{Managing the \protect\meta{current name}}
 % \label{sec:Managing-the-current-name}
@@ -1143,68 +1341,6 @@
 %
 %
 % \subsection{\LaTeXe\ interfaces}
-%
-% \subsubsection{Declaring hooks}
-%
-%  With a few exceptions, hooks have to be declared before they can
-%  be used. The exceptions are the generic hooks for commands and
-%  environments (executed at \cs{begin} and \cs{end}), and the
-%  hooks run when loading files (see section~\ref{sec:generic}).
-%
-% \begin{function}{\NewReversedHook}
-%   \begin{syntax}
-%     \cs{NewReversedHook} \Arg{hook-spec}
-%   \end{syntax}
-%     Like \cs{NewHook} declares a new hook.
-%     The difference is that the code chunks for this hook are in
-%     reverse order by default (those added last are executed first).
-%     Any rules for the hook are applied after the default ordering.
-%     See sections~\ref{sec:order} and \ref{sec:reversed-order}
-%    for further details.
-% \end{function}
-%
-% \begin{function}{\NewMirroredHookPair}
-%   \begin{syntax}
-%     \cs{NewMirroredHookPair} \Arg{hook-spec_1} \Arg{hook-spec_2}
-%   \end{syntax}
-%     A shorthand for
-% \begin{lthooksCode}
-% \ROW\cs{NewHook}\Arg{hook-spec_1}\\
-% \ROW\cs{NewReversedHook}\Arg{hook-spec_2}\\
-% \end{lthooksCode}
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}.
-% \end{function}
-%
-%
-% \begin{function}{\NewReversedHookWithArguments}
-%   \begin{syntax}
-%     \cs{NewReversedHookWithArguments} \Arg{hook-spec} \Arg{number}
-%   \end{syntax}
-%   Like \cs{NewReversedHook}, but declares a hook which code takes
-%   \meta{number} arguments.
-%   Section~\ref{sec:Hooks-with-arguments} explains hooks with arguments.
-% \end{function}
-%
-% \begin{function}{\NewMirroredHookPairWithArguments}
-%   \begin{syntax}
-%     \cs{NewMirroredHookPairWithArguments}
-%     ~~\Arg{hook spec_1} \Arg{hook spec_2} \Arg{number}
-%   \end{syntax}
-%   A shorthand for
-% \begin{lthooksCode}
-% \ROW\cs{NewHookWithArguments}\Arg{hook-1}\Arg{number}\\
-% \ROW\cs{NewReversedHookWithArguments}\Arg{hook-2}\Arg{number}\\
-% \end{lthooksCode}
-%%   Section~\ref{sec:hook-args} explains hooks with arguments.
-%
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}.
-% \end{function}
-%
-%
 % \subsubsection{Special declarations for generic hooks}
 %
 %    The declarations here should normally not be used. They are available
@@ -1507,6 +1643,28 @@
 %   on the result.
 % \end{function}
 %
+% \begin{function}[EXP]{\IfHookPairedTF}
+%   \begin{syntax}
+%     \cs{IfHookPairedTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+% \end{function}
+% \vskip-\baselineskip
+% \begin{function}[EXP,pTF,added=2024/01/01]{\hook_if_paired:n}
+%   \begin{syntax}
+%     \cs{hook_if_paired:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+%   Tests if the named hook belongs to a mirrored hook pair, and
+%   branches to either \meta{true code} or \meta{false code} depending
+%   on the result.
+% Belonging to a mirrored hook pair means one of
+% \begin{itemize}
+% \item the hook has been explictly declare with
+% \cs{NewMirroredHookPair} or similar;
+% \item the hook belongs to a pair of \hook{\meta{...}/before} and
+% \hook{\meta{...}/after} builtin generic hooks.
+% \end{itemize}
+% \end{function}
+%
 %
 % \subsubsection{Displaying hook code}
 %
@@ -1641,40 +1799,6 @@
 % you always have to specify the \meta{label} for a code chunk.  We
 % therefore suggest to use the declarations discussed in the previous
 % section even in \texttt{expl3} packages, but the choice is yours.
-%
-%
-% \begin{function}{
-%     \hook_new_reversed:n,
-%     \hook_new_pair:nn
-%   }
-%   \begin{syntax}
-%     \cs{hook_new_reversed:n} \Arg{hook-spec}
-%     \cs{hook_new_pair:nn} \Arg{hook-spec_1} \Arg{hook-spec_2}
-%   \end{syntax}
-%   Creates a new hook with normal or reverse ordering of code
-%    chunks. \cs{hook_new_pair:nn} creates a pair of such hooks with
-%    \Arg{hook-spec_2} being a reversed hook.
-%    If a hook name is already taken, an error is raised and the hook
-%    is not created.
-% \end{function}
-%
-% \begin{function}{
-%     \hook_new_reversed_with_args:nn,
-%     \hook_new_pair_with_args:nnn
-%   }
-%   \begin{syntax}
-%     \cs{hook_new_reversed_with_args:nn} \Arg{hook} \Arg{number}
-%     \cs{hook_new_pair_with_args:nnn} \Arg{hook-spec_1} \Arg{hook-spec_2} \Arg{number}
-%   \end{syntax}
-%   Creates a new hook with normal or reverse ordering of code
-%    chunks, that takes \meta{number} arguments from the input stream
-%    when it is used. \cs{hook_new_pair_with_args:nn} creates a pair of
-%    such hooks with \Arg{hook-spec_2} being a reversed hook.
-%    If a hook name is already taken, an error is raised and the hook
-%    is not created.
-% \end{function}
-%
-%
 %
 % \begin{function}{\hook_disable_generic:n}
 %   \begin{syntax}
@@ -1846,64 +1970,6 @@
 %    In summary: it is not possible to rely on the order of execution
 %    unless there are rules that partially or fully define the order
 %    (in which you can rely on them being fulfilled).
-%
-%
-% \subsection{The use of \enquote{reversed} hooks} \label{sec:reversed-order}
-%
-%    You may have wondered why you can declare a \enquote{reversed} hook
-%    with \cs{NewReversedHook} and what that does exactly.
-%
-%    In short: the execution order of a reversed hook (without any
-%    rules!) is exactly reversed to the order you would have gotten for
-%    a hook declared with \cs{NewHook}.
-%
-%    This is helpful if you have a pair of hooks where you expect to see
-%    code added that involves grouping, e.g., starting an environment
-%    in the first and closing that environment in the second hook.
-%    To give a somewhat contrived example\footnote{there are simpler
-%    ways to achieve the same effect.}, suppose there is a package
-%    adding the following:
-%\begin{lthooksCode}
-%\ROW|\AddToHook{env/quote/before}[package-1]{\begin{itshape}}|\\
-%\ROW|\AddToHook{env/quote/after} [package-1]{\end{itshape}}|\\
-%\end{lthooksCode}
-%    As a result, all quotes will be in italics.
-%    Now suppose further that another |package-too| makes the quotes
-%    also in blue and therefore adds:
-%\begin{lthooksCode}
-%\ROW|\usepackage{color}|\\
-%\ROW|\AddToHook{env/quote/before}[package-too]{\begin{color}{blue}}|\\
-%\ROW|\AddToHook{env/quote/after} [package-too]{\end{color}}|\\
-%\end{lthooksCode}
-%    Now if the \hook{env/quote/after} hook would be a normal hook we
-%    would get the same execution order in  both hooks, namely:
-%\begin{lthooksCode}
-%\ROW|package-1, package-too|\\
-%\end{lthooksCode}
-%    (or vice versa) and as a result, would get:
-%\begin{lthooksCode}
-%\ROW|\begin{itshape}\begin{color}{blue} ...|\\
-%\ROW|\end{itshape}\end{color}|\\
-%\end{lthooksCode}
-%    and an error message saying that \verb=\begin{color}= was ended by
-%    \verb=\end{itshape}=.
-%    With \hook{env/quote/after} declared as a reversed hook the
-%    execution order is reversed and so all environments are closed in
-%    the correct sequence and \cs{ShowHook} would give us the
-%    following output:
-%\begin{lthooksCode}
-%\ROW|==> Hook: 'env/quote/after'|\\
-%\ROW|> Code chunks:|\\
-%\ROW|>   'package-1' -> \end {itshape}|\\
-%\ROW|>   'package-too' -> \end {color}|\\
-%\ROW|> Execution order:|\\
-%\ROW|>   1: 'package-too'|\\
-%\ROW|>   2: 'package-1'.|\\
-%\end{lthooksCode}
-%
-%    The reversal of the execution order happens before applying any
-%    rules, so if you alter the order you will probably have to alter
-%    it in both hooks, not just in one, but that depends on the use case.
 %
 %
 % \subsection{Generic hooks provided by packages}
@@ -2202,7 +2268,7 @@
 %
 %
 % \section{\LaTeXe{} commands and environments augmented by hooks}
-% \label{sec:LaTeX-generic-hooks}
+% \label{sec:LaTeX-hooks}
 %
 %    In this section we describe the standard hooks that are now
 %    offered by \LaTeX{}, or give pointers to other documents in which
@@ -2211,6 +2277,7 @@
 %
 % \subsection{Generic hooks}
 % \label{sec:generic}
+% \label{sec:LaTeX-generic-hooks}
 %
 % As stated earlier, with the exception of generic hooks, all hooks must 
 % be declared with \cs{NewHook} before they can be used.  
@@ -3396,8 +3463,13 @@
 %  \end{macro}
 %  \end{macro}
 %
+% \begin{macro}{\c_@@_pair_\meta{hook}_tl}
+% Contains the matching hook if \meta{hook} corresponds to a hook pair.
+% \end{macro}
 %  \begin{macro}{\hook_new_pair:nn,\hook_new_pair_with_args:nnn}
-%    A shorthand for declaring a normal and a (matching) reversed hook in one go.
+%    A shorthand for declaring a normal and a matching reversed hook in one go.
+%    \cs[no-index]{c_@@_pair_\meta{hook}_tl} contains
+%    \meta{mirror hook}.
 % \changes{v1.1a}{2023/04/06}
 %         {Add \cs{hook_new_pair_with_args:nnn} (hook-args).}
 %    \begin{macrocode}
@@ -3417,6 +3489,8 @@
           {
             \@@_new:nn {#1} {#3}
             \@@_new_reversed:nn {#2} {#3}
+            \tl_const:cn { c_@@_pair_#1_tl } { #2 }
+            \tl_const:cn { c_@@_pair_#2_tl } { #1 }
           }
       }
   }
@@ -3937,15 +4011,17 @@
 %
 % \subsection{Adding or removing hook code}
 %
-% \begin{macro}{\hook_gput_code:nnn,\hook_gput_code_with_args:nnn}
 % \begin{macro}{
-%     \@@_gput_code:nnn,
-%     \@@_gput_code_store:nnn,
-%     \@@_hook_gput_code_do:nnn,
-%     \@@_prop_gput_labeled_cleanup:nnn,
-%     \@@_prop_gput_labeled_do:Nnnn
-%    }
-%
+%   \hook_gput_code:nnn,
+%   \hook_gput_code_with_args:nnn,
+% }
+% \begin{macro}{
+%   \@@_gput_code:nnn,
+%   \@@_gput_code_store:nnn,
+%   \@@_hook_gput_code_do:nnn,
+%   \@@_prop_gput_labeled_cleanup:nnn,
+%   \@@_prop_gput_labeled_do:Nnnn
+% }
 %    With \cs{hook_gput_code:nnn}\Arg{hook-spec}\Arg{label-spec}\Arg{code} a
 %    chunk of \meta{code} is added to an existing hook labeled
 %    after \meta{label-spec}.
@@ -5353,6 +5429,139 @@
 %<latexrelease>\cs_undefine:N \@@_parameter:n
 %<latexrelease>\cs_undefine:N \@@_generic_parameter:n
 %<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{Adding or removing code for mirrored hook pairs}
+%
+% \begin{macro}[pTF]{\hook_if_paired:n}
+% This function tests whether the hook argument was declared by
+% \cs{NewMirroredHookPair} or \cs{NewMirroredHookPairWithArguments},
+% when not builtin generic.
+% Further testing the reversibility will determine if the hook
+% is the first or the last element of the pair.
+%
+% When builtin generic, if the generic hook name ends with either 
+% \hook{/before} or \hook{/after}, complete the mirrored pair
+% with the matching \hook{before\string|after} name.
+% If the \hook{.../after} hook is generic reversed,
+% this is a hook pair.
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \hook_if_paired:n #1 { T, TF }
+  {
+    \tl_if_exist:cTF { c_@@_pair_#1_tl }
+      { \prg_return_true: }
+      { \@@_if_paired:w #1 / / / \s_@@_mark }
+  }
+\cs_new:Npn \@@_if_paired:w #1 / #2 / #3 / #4 \s_@@_mark
+  {
+    \bool_lazy_or:nnTF
+      { \str_if_eq_p:nn { #3 } { before } }
+      { \str_if_eq_p:nn { #3 } { after  } }
+      {
+        \@@_if_generic_reversed:nTF { #1/#2/after }
+          {
+            \tl_const:cn
+              { c_@@_pair_#1/#2/before_tl } { #1/#2/after }
+            \tl_const:cn
+              { c_@@_pair_#1/#2/after_tl } { #1/#2/before }
+            \prg_return_true:
+          }
+          { \prg_return_false: }
+      }
+      {
+        \tl_if_empty:nTF { #3 }
+          {
+            \bool_lazy_or:nnTF
+              { \str_if_eq_p:nn { #2 } { before } }
+              { \str_if_eq_p:nn { #2 } { after  } }
+              {
+                \@@_if_reversed:nTF { #1/after }
+                  {
+                    \tl_const:cn
+                      { c_@@_pair_#1/before_tl } { #1/after }
+                    \tl_const:cn
+                      { c_@@_pair_#1/after_tl } { #1/before }
+                    \prg_return_true:
+                  }
+                  { \prg_return_false: }
+              }
+              { \prg_return_false: }
+          }
+          { \prg_return_false: }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%   \IfHookPairedTF
+% }
+% The \LaTeXe\ API.
+%    \begin{macrocode}
+\cs_set_eq:NN \IfHookPairedTF \hook_if_paired:nTF
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%   \hook_pair_gput_code:nnnn,
+%   \hook_pair_gput_code_with_args:nnnn
+% }
+% Adding code to pairs.
+%    \begin{macrocode}
+\cs_generate_variant:Nn \@@_normalize_hook_args:Nnn { Nvn }
+\cs_new_protected:Npn \hook_pair_gput_code:nnnn #1 #2 #3 #4
+  {
+    \hook_if_paired:nTF { #1 }
+      {
+        \@@_replacing_args_false:
+        \@@_normalize_hook_args:Nnn \@@_gput_code:nnn
+          {#1} {#2} {#3}
+        \@@_normalize_hook_args:Nvn \@@_gput_code:nnn
+          { c_@@_pair_#1_tl } {#2} {#4}
+        \@@_replacing_args_reset:
+      }
+      {
+        \msg_error:nnn { hooks } { missing-pair } {#1}
+      }
+  }
+\cs_new_protected:Npn \hook_pair_gput_code_with_args:nnnn #1 #2 #3 #4
+  {
+    \hook_if_paired:nTF { #1 }
+      {
+        \@@_replacing_args_true:
+        \@@_normalize_hook_args:Nnn \@@_gput_code:nnn
+          {#1} {#2} {#3}
+        \@@_normalize_hook_args:Nvn \@@_gput_code:nnn
+          { c_@@_pair_#1_tl } {#2} {#4}
+        \@@_replacing_args_reset:
+      }
+      {
+        \msg_error:nnn { hooks } { missing-pair } {#1}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%   \hook_pair_gremove_code:nn
+% }
+% Removing code to pairs.
+%    \begin{macrocode}
+\cs_new_protected:Npn \hook_pair_gremove_code:nn #1 #2
+  {
+    \hook_if_paired:nTF { #1 }
+      {
+        \@@_normalize_hook_args:Nvn \@@_gremove_code:nn
+          { c_@@_pair_#1_tl } {#2}
+        \@@_normalize_hook_args:Nnn \@@_gremove_code:nn
+          {#1} {#2}
+      }
+      {
+        \msg_error:nnn { hooks } { missing-pair } {#1}
+      }
+  }
 %    \end{macrocode}
 % \end{macro}
 %
@@ -6853,9 +7062,22 @@
 %    \end{macrocode}
 % Done with \cs[no-index]{@@_tmp:w}.
 %    \begin{macrocode}
+    \hook_if_paired:nTF { #1 }
+      {
+        \iow_term:x
+          {
+            ...~\space\space pair:~'\tl_use:c { c_@@_pair_#1_tl }'
+          }
+      }
+      {
+        \iow_term:x
+          {
+            ...~\space\space pair:~None
+          }
+      }
     \iow_term:x
       {
-        ...~\space\space\c_hash_str\space~of~arguments:~
+        ...~\space\space\c_hash_str\space of~arguments:~
         \int_eval:n { \str_count:e { \@@_parameter:n {#1} } / 3 }
       }
     \iow_term:n { ...~Code~chunks: }
@@ -7381,7 +7603,11 @@
 % \begin{macro}{\@@_use_once_clear:n}
 %   \cs{@@_use_once_set:n} is used before the actual hook code is
 %   executed so that any usage of \cs{AddToHook} inside the hook causes
-%   the code to execute immediately.  Setting
+%   the code to execute immediately.
+%   \cs[no-index]{\hook_if_paired:nT} has the side effect of caching
+%   the |paired| attribute, that initially depends on the value of
+%   \cs[no-index]{g_@@_\meta{hook}_reversed_tl}.
+%   Setting
 %   \cs[no-index]{g_@@_\meta{hook}_reversed_tl} to |I| prevents further
 %   code from being added to the hook.  \cs{@@_use_once_clear:n} then
 %   clears the hook so that any further call to \cs{hook_use:n} or
@@ -7394,7 +7620,10 @@
 %<latexrelease>\IncludeInRelease{2023/06/01}{\@@_use_once_clear:n}
 %<latexrelease>                 {Hooks~with~args}
 \cs_new_protected:Npn \@@_use_once_set:n #1
-  { \@@_tl_gset:cn { g_@@_#1_reversed_tl } { I } }
+  {
+    \hook_if_paired:nT { #1 } {}
+    \@@_tl_gset:cn { g_@@_#1_reversed_tl } { I }
+  }
 \cs_new_protected:Npn \@@_use_once_clear:n #1
   {
     \@@_code_gset:nn {#1} { }
@@ -7658,7 +7887,7 @@
 %   An internal conditional that checks if a name belongs to a generic
 %   reversed hook.
 %    \begin{macrocode}
-\prg_new_conditional:Npnn \@@_if_generic_reversed:n #1 { T }
+\prg_new_conditional:Npnn \@@_if_generic_reversed:n #1 { T, TF }
   { \@@_if_generic_reversed:w #1 / / / \scan_stop: }
 \cs_new:Npn \@@_if_generic_reversed:w #1 / #2 / #3 / #4 \scan_stop:
   {
@@ -7906,6 +8135,14 @@
 %    \end{macrocode}
 %
 %    \begin{macrocode}
+\msg_new:nnn { hooks } { missing-pair }
+  { Hook~'#1'~does~not~belong~to~a~matching~hook~pair.~
+    Missing~
+    \iow_char:N\\NewMirroredHookPair~or~its~variant~with~arguments.
+  }
+%    \end{macrocode}
+%
+%    \begin{macrocode}
 \msg_new:nnn { hooks } { set-top-level }
   {
     You~cannot~change~the~default~label~#1~'top-level'.~Illegal \\
@@ -8047,16 +8284,27 @@
 %    \end{macrocode}
 %
 %
-%  \begin{macro}{\AddToHook,\AddToHookWithArguments}
+% \begin{macro}{
+%   \AddToHook,
+%   \AddToHookWithArguments,
+%   \AddToHookPair,
+%   \AddToHookPairWithArguments
+% }
 % \changes{v1.1a}{2023/04/06}
 %         {Add \cs{AddToHookWithArguments} (hook-args).}
+% \changes{v1.1?}{2024/01/01}
+%         {Add \cs{AddToHookPair} and \cs{AddToHookPairWithArguments}.}
 %    \begin{macrocode}
 %<latexrelease>\IncludeInRelease{2023/06/01}{\AddToHookWithArguments}
 %<latexrelease>                 {Hooks~with~args}
 \NewDocumentCommand \AddToHook { m o +m }
   { \hook_gput_code:nnn {#1} {#2} {#3} }
+\NewDocumentCommand \AddToHookPair { m o +m +m }
+  { \hook_pair_gput_code:nnnn {#1} {#2} {#3} {#4} }
 \NewDocumentCommand \AddToHookWithArguments { m o +m }
   { \hook_gput_code_with_args:nnn {#1} {#2} {#3} }
+\NewDocumentCommand \AddToHookPairWithArguments { m o +m +m }
+  { \hook_pair_gput_code_with_args:nnnn {#1} {#2} {#3} {#4} }
 %<latexrelease>\EndIncludeInRelease
 %<latexrelease>\IncludeInRelease{2020/10/01}{\AddToHookWithArguments}
 %<latexrelease>                 {Hooks~with~args}
@@ -8092,10 +8340,15 @@
 %  \end{macro}
 %
 %
-%  \begin{macro}{\RemoveFromHook}
+%  \begin{macro}{\RemoveFromHook,\RemoveFromHookPair}
 %    \begin{macrocode}
 \NewDocumentCommand \RemoveFromHook { m o }
   { \hook_gremove_code:nn {#1} {#2} }
+%<latexrelease>\IncludeInRelease{2024/01/01}{\RemoveFromHookPair}
+%<latexrelease>                 {Hooks~pairs}
+\NewDocumentCommand \RemoveFromHookPair { m o }
+  { \hook_pair_gremove_code:nn {#1} {#2} }
+%<latexrelease>\EndIncludeInRelease
 %    \end{macrocode}
 %  \end{macro}
 %

@@ -1,0 +1,181 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\documentclass{article}
+
+\input{regression-test}
+
+\RequirePackage{color}
+
+% There are many different hook profiles.
+
+\START
+
+\BEGINTEST{Declared pair}
+
+\NewMirroredHookPair{lthooks/before}{lthooks/after}
+
+\DebugPrintHook{lthooks/before}
+\DebugPrintHook{lthooks/after}
+
+\AddToHookPair {lthooks/before} [A] {\TYPE{BEFORE(A)}} {\TYPE{AFTER(A)}}
+\AddToHookPair {lthooks/after}  [B] {\TYPE{AFTER(B)}} {\TYPE{BEFORE(B)}}
+
+\DebugPrintHook{lthooks/before}
+\ShowHook{lthooks/before}
+\DebugPrintHook{lthooks/before}
+\DebugPrintHook{lthooks/after}
+\ShowHook{lthooks/after}
+\DebugPrintHook{lthooks/after}
+
+\ENDTEST
+
+\BEGINTEST{quote}
+
+\AddToHookPair{env/quote/before}[itshape]{\begin{itshape}} {\end{itshape}}
+\AddToHookPair{env/quote/after}[color]   {\end{color}}{\begin{color}{blue}}
+
+\DebugPrintHook{env/quote/before}
+\DebugPrintHook{env/quote/after}
+
+\RemoveFromHookPair{env/quote/before}[itshape]
+
+\DebugPrintHook{env/quote/before}
+\DebugPrintHook{env/quote/after}
+
+\RemoveFromHookPair{env/quote/after}[color]
+
+\DebugPrintHook{env/quote/before}
+\DebugPrintHook{env/quote/after}
+
+\ENDTEST
+
+\OMIT
+\begin{document}
+\TIMO
+
+\begin{quote}PASSED, no error expected\end{quote}
+
+\NewDocumentCommand\lthooksCommand{m}{\TYPE{[[[#1]]]}}
+
+\BEGINTEST{one argument command}
+
+\AddToHookPairWithArguments{cmd/lthooksCommand/before}[<<<*>>>]{\TYPE{<<<#1}\begin{itshape}} {\TYPE{#1>>>}\end{itshape}}
+\AddToHookPairWithArguments{cmd/lthooksCommand/after}[(((*)))]   {\TYPE{#1)))}\end{color}}{\TYPE{(((#1}\begin{color}{blue}}
+
+\DebugPrintHook{cmd/lthooksCommand/before}
+\DebugPrintHook{cmd/lthooksCommand/after}
+
+\lthooksCommand{TEST}
+
+\RemoveFromHookPair{cmd/lthooksCommand/after}[*]
+
+\DebugPrintHook{cmd/lthooksCommand/before}
+\DebugPrintHook{cmd/lthooksCommand/after}
+
+\lthooksCommand{TEST}
+
+\ENDTEST
+
+\BEGINTEST{Generic env/LHXENVWHATEVER/after}
+
+\ASSERTMatchDebugPrintHook{ \s reversed:\s N}{env/LHXENVWHATEVER/after}
+\ASSERTMatchDebugPrintHook{ generic_reversed:\s Y }{env/LHXENVWHATEVER/after}
+\NewDocumentEnvironment{LHXENVWHATEVER}{}{}{}
+\ASSERTMatchDebugPrintHook{ \s reversed:\s N }{env/LHXENVWHATEVER/after}
+\ASSERTMatchDebugPrintHook{ generic_reversed:\s Y }{env/LHXENVWHATEVER/after}
+\AddToHook{env/LHXENVWHATEVER/after}{ \TYPE{FAKE} }
+\ASSERTMatchDebugPrintHook{ \s reversed:\s Y }{env/LHXENVWHATEVER/after}
+\ASSERTMatchDebugPrintHook{ generic_reversed:\s Y }{env/LHXENVWHATEVER/after}
+
+\ExplSyntaxOn
+    \if_charcode:w - \cs:w c__hook_generic_env/./after_tl \cs_end:
+      \TYPE{PASSED}
+    \else:
+      \TYPE{FAILED}
+    \fi:
+\__hook_if_generic_reversed:nT {env/LHXENVWHATEVER/after}
+  { \TYPE{PASSED} \use_none:n } { \TYPE{FAILED} }
+
+\ExplSyntaxOff
+
+\ENDTEST
+
+\BEGINTEST{Implementation: Which "after" file hooks are reversed?}
+
+\ExplSyntaxOn
+\def\TEST#1#2
+  {
+    \__hook_if_generic_reversed:nT { #1 } 
+      { \TYPE{<#1>~IS~GENERIC~REVERSED}\ASSERT{#2}{Y} \use_none:n }
+      { \TYPE{<#1>~IS~NOT~GENERIC~REVERSED}\ASSERT{#2}{N} }
+  }
+\ExplSyntaxOff
+\TEST{env/LHXENVWHATEVER/after}{Y}
+\TEST{cmd/LHXCMDWHATEVER/after}{Y}
+\TEST{file/LHXFILEWHATEVER/after}{Y}
+\TEST{class/LHXCLASSWHATEVER/after}{Y}
+\TEST{package/LHXPACKAGEWHATEVER/after}{Y}
+\TEST{include/LHXINCLUDEWHATEVER/after}{Y}
+\ExplSyntaxOn
+\def\TEST#1#2
+  {
+    \__hook_preamble_hook:n { #1 }
+    \__hook_if_reversed:nT { #1 } 
+      { \TYPE{<#1>~IS~REVERSED}\ASSERT{#2}{Y} \use_none:n }
+      { \TYPE{<#1>~IS~NOT~REVERSED}\ASSERT{#2}{N} }
+  }
+\ExplSyntaxOff
+\TEST{file/after}{Y}
+\TEST{class/after}{Y}
+\TEST{package/after}{Y}
+\TEST{include/after}{Y}
+
+\ENDTEST
+
+\BEGINTEST{\IfHookPairedTF }
+
+\BEGINTEST{Declared}
+\IfHookPairedTF {LHXHOOKPAIR/before} {\TYPE{FAILED}} {\TYPE{PASSED}}
+\IfHookPairedTF {LHXHOOKPAIR/after}  {\TYPE{FAILED}} {\TYPE{PASSED}}
+\NewMirroredHookPair {LHXHOOKPAIR/before} {LHXHOOKPAIR/after}
+\IfHookPairedTF {LHXHOOKPAIR/before} {\TYPE{PASSED}} {\TYPE{FAILED}}
+\IfHookPairedTF {LHXHOOKPAIR/after}  {\TYPE{PASSED}} {\TYPE{FAILED}}
+\NewMirroredHookPairWithArguments {LHXHOOKPAIR*/before} {LHXHOOKPAIR*/after} { 2 }
+\IfHookPairedTF {LHXHOOKPAIR*/before} {\TYPE{PASSED}} {\TYPE{FAILED}}
+\IfHookPairedTF {LHXHOOKPAIR*/after}  {\TYPE{PASSED}} {\TYPE{FAILED}}
+\ENDTEST
+
+\BEGINTEST{One time}
+\UseOneTimeHook{package/LHXPACKAGE/after}
+\IfHookPairedTF {package/LHXPACKAGE/after} {\TYPE{PASSED}} {\TYPE{FAILED}}
+\ENDTEST
+
+\BEGINTEST{Builtin}
+\def\TEST#1
+  {
+    \BEGINTEST{#1}
+    \IfHookPairedTF {#1/after} {\TYPE{PASSED}} {\TYPE{FAILED}}
+    \IfHookPairedTF {#1/before} {\TYPE{PASSED}} {\TYPE{FAILED}}
+    \ENDTEST
+  }
+\TEST{env/LHXBUILTINWHATEVER}
+\TEST{cmd/LHXBUILTINWHATEVER}
+\TEST{file/LHXBUILTINWHATEVER}
+\TEST{file}
+\TEST{package/LHXBUILTINWHATEVER}
+\TEST{package}
+\TEST{class/LHXBUILTINWHATEVER}
+\TEST{class}
+\TEST{include/LHXBUILTINWHATEVER}
+\TEST{include}
+\ENDTEST
+
+\ENDTEST
+
+\typeout{!!!! If this test changes the documentation needs updating !!!!}
+
+\END

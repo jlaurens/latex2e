@@ -1,0 +1,561 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: Declared pair
+============================================================
+<<< Hook: 'lthooks/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/after'
+...   # of arguments: 0
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'lthooks/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: Y
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/before'
+...   # of arguments: 0
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'lthooks/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/after'
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \TYPE {BEFORE(A)}
+...   'B' -> \TYPE {BEFORE(B)}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'A', 'B'
+>>>
+==> Hook: 'lthooks/before'
+> Code chunks:
+>   'A' -> \TYPE {BEFORE(A)}
+>   'B' -> \TYPE {BEFORE(B)}
+> Execution order:
+>   1: 'A'
+>   2: 'B'.
+<recently read> }
+l. ...\ShowHook{lthooks/before}
+<<< Hook: 'lthooks/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/after'
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \TYPE {BEFORE(A)}
+...   'B' -> \TYPE {BEFORE(B)}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'A', 'B'
+>>>
+<<< Hook: 'lthooks/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/before'
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \TYPE {AFTER(A)}
+...   'B' -> \TYPE {AFTER(B)}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'B', 'A'
+>>>
+==> Hook: 'lthooks/after'
+>   reversed
+> Code chunks:
+>   'A' -> \TYPE {AFTER(A)}
+>   'B' -> \TYPE {AFTER(B)}
+> Execution order:
+>   1: 'B'
+>   2: 'A'.
+<recently read> }
+l. ...\ShowHook{lthooks/after}
+<<< Hook: 'lthooks/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'lthooks/before'
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \TYPE {AFTER(A)}
+...   'B' -> \TYPE {AFTER(B)}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'B', 'A'
+>>>
+============================================================
+============================================================
+TEST 2: quote
+============================================================
+<<< Hook: 'env/quote/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'env/quote/after'
+...   # of arguments: 0
+... Code chunks:
+...   'itshape' -> \begin {itshape}
+...   'color' -> \begin {color}{blue}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'itshape', 'color'
+>>>
+<<< Hook: 'env/quote/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   generic_reversed: Y
+...   execute_immediately: N
+...   pair: 'env/quote/before'
+...   # of arguments: 0
+... Code chunks:
+...   'itshape' -> \end {itshape}
+...   'color' -> \end {color}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'color', 'itshape'
+>>>
+<<< Hook: 'env/quote/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'env/quote/after'
+...   # of arguments: 0
+... Code chunks:
+...   'color' -> \begin {color}{blue}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'color'
+>>>
+<<< Hook: 'env/quote/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   generic_reversed: Y
+...   execute_immediately: N
+...   pair: 'env/quote/before'
+...   # of arguments: 0
+... Code chunks:
+...   'color' -> \end {color}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'color'
+>>>
+<<< Hook: 'env/quote/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'env/quote/after'
+...   # of arguments: 0
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'env/quote/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: Y
+...   generic_reversed: Y
+...   execute_immediately: N
+...   pair: 'env/quote/before'
+...   # of arguments: 0
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+============================================================
+============================================================
+TEST 3: one argument command
+============================================================
+<<< Hook: 'cmd/lthooksCommand/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'cmd/lthooksCommand/after'
+...   # of arguments: 1
+... Code chunks:
+...   '<<<*>>>' -> \TYPE {<<<#1}\begin {itshape}
+...   '(((*)))' -> \TYPE {(((#1}\begin {color}{blue}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   '<<<*>>>', '(((*)))'
+>>>
+<<< Hook: 'cmd/lthooksCommand/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   generic_reversed: Y
+...   execute_immediately: N
+...   pair: 'cmd/lthooksCommand/before'
+...   # of arguments: 1
+... Code chunks:
+...   '<<<*>>>' -> \TYPE {#1>>>}\end {itshape}
+...   '(((*)))' -> \TYPE {#1)))}\end {color}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   '(((*)))', '<<<*>>>'
+>>>
+<<<TEST
+(((TEST
+[[[TEST]]]
+TEST)))
+TEST>>>
+<<< Hook: 'cmd/lthooksCommand/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   execute_immediately: N
+...   pair: 'cmd/lthooksCommand/after'
+...   # of arguments: 1
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'cmd/lthooksCommand/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: Y
+...   generic_reversed: Y
+...   execute_immediately: N
+...   pair: 'cmd/lthooksCommand/before'
+...   # of arguments: 1
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+[[[TEST]]]
+============================================================
+============================================================
+TEST 4: Generic env/LHXENVWHATEVER/after
+============================================================
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 5: Implementation: Which "after" file hooks are reversed?
+============================================================
+<env/LHXENVWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<cmd/LHXCMDWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<file/LHXFILEWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<class/LHXCLASSWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<package/LHXPACKAGEWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<include/LHXINCLUDEWHATEVER/after> IS GENERIC REVERSED
+PASSED
+<file/after> IS REVERSED
+PASSED
+<class/after> IS REVERSED
+PASSED
+<package/after> IS REVERSED
+PASSED
+<include/after> IS REVERSED
+PASSED
+============================================================
+============================================================
+TEST 6: \IfHookPairedTF 
+============================================================
+============================================================
+TEST 7: Declared
+============================================================
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 8: One time
+============================================================
+PASSED
+============================================================
+============================================================
+TEST 9: Builtin
+============================================================
+============================================================
+TEST 10: env/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 11: cmd/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 12: file/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 13: file
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 14: package/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 15: package
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 16: class/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 17: class
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 18: include/LHXBUILTINWHATEVER
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 19: include
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+============================================================
+!!!! If this test changes the documentation needs updating !!!!
