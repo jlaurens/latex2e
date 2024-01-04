@@ -852,6 +852,160 @@
 %    |pkg1/on/foo:1| if it is public.
 %
 %
+% \subsection{Declaring and using hooks with arguments}
+% \label{sec:Hooks-with-arguments}
+%
+%    Sometimes hooks need to know about contextual information.
+%    It is possible to simply store this information in a macro
+%    available to the hook but in many cases this is far from
+%    sufficient. Hooks with arguments are a straightforward solution
+%    to this problem.
+%
+%    A hook with arguments works mostly like a regular hook, and most
+%    commands that work for regular hooks, also work for hooks that take
+%    arguments.  The differences are when the hook is declared
+%    (\cs{NewHookWithArguments} is used instead of \cs{NewHook} for example), then
+%    code can be added with both \cs{AddToHook} and
+%    \cs{AddToHookWithArguments}, and when the hook is used
+%    (\cs{UseHookWithArguments} instead of \cs{UseHook}).
+%    Below, the command argument \meta{n} is an integer
+%    from 0 to 9, denoting a \emph{number of arguments}.
+%
+% Using hooks with arguments can be sharp because the number of
+% given arguments must be correct as well as their type and meaning.
+% Whereas the hook must be well documented,
+% its name can also reflect its usage.
+% A lightweight convention would be to use as component of the hook name
+% at least \enquote{\texttt{/\#\meta{n}}} or a function signature when in L3.
+% A more complete convention would be a name containing
+% \enquote{\texttt{\#\meta{desc_1}\#...\#\meta{desc_{\meta{n}}}}}
+% at the end of a component.
+%
+% \begin{function}{
+%   \NewHookWithArguments,
+%   \hook_new_with_args:nn,
+% }
+%   \begin{syntax}
+%    \cs{NewHookWithArguments}\Arg{hook-spec}\Arg{n}
+%    \cs{hook_new_with_args:nn} \Arg{hook-spec} \Arg{n}
+%   \end{syntax}
+%    Declares a hook like \cs{NewHook} does except that added
+%    code chunks can refer to \meta{n} arguments
+%    \texttt{\#1}, \texttt{\#2},... \texttt{\#\meta{n}}.
+% \end{function}
+%
+% \medskip
+%
+% Commands \cs{AddToHook} and \cs{RemoveFromHook} can be used with
+% hooks with arguments, there are also dedicated commands.
+%
+% \begin{function}{
+%   \AddToHookWithArguments,
+%   \hook_gput_code_with_args:nnn,
+% }
+%   \begin{syntax}
+%     \cs{AddToHookWithArguments}\Arg{hook-spec}\oarg{label-spec}\Arg{\#\ code}
+%     \cs{hook_gput_code_with_args:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{\#\ code}
+%   \end{syntax}
+%    Works like \cs{AddToHook}, except that \meta{\#\ code} can
+%    access the arguments passed to the hook using \verb|#1|, \verb|#2|,
+%    \ldots, \texttt{\#\meta{n}} where \meta{n} is less than
+%    the eponym argument ever used when declaring the hook with
+%    \cs{NewHookWithArguments} or derived command.
+% \end{function}
+%
+%    This command does not take supplemental arguments, thus preventing
+%    the immediate execution of \meta{\#\ code} due to the lack of argument values.
+%    This is why one time hooks cannot be used with 
+%    \cs{AddToHookWithArguments} and alike once consumed.
+%
+%    If macros are defined inside \meta{\#\ code},
+%    their arguments are refered to with \enquote{\texttt{\#\#}}
+%    instead of \enquote{\texttt{\#}}.
+%    Next example defines a greetings command in a hook of
+%    the document body, with \cs{AddToHook}:
+%\begin{lthooksCode}[lineno]
+%   \ROW\cs{NewHook}|{./greetings}|\\
+%   \ROW...\\
+%   \ROW\cs{AddToHook}|{./greetings}|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,
+%   ]\TAB|{\def\greetings#1{Hello, #1!}}|\\
+%   \ROW...\\
+%   \ROW\cs{UseHook}|{./greetings}|\\
+%   \ROW|\greetings{ET}|\\
+%\end{lthooksCode}
+%   A variation when \enquote{Hello} may be localized:
+%   notice how \cs[no-index]{greetings} definition is different
+%   on lines 4 above and below.
+%\begin{lthooksCode}[lineno]
+%   \ROW\cs{NewHookWithArguments}|{./greetings/#Hello}{1}|\\
+%   \ROW...\\
+%   \ROW\cs{AddToHookWithArguments}|{./greetings/#Hello}|\\
+%   \ROW[format=\bfseries,mark=$\to$\;,
+%   ]\TAB|{\def\greetings##1{#1, ##1!}}|\\
+%   \ROW...\\
+%   \ROW\cs{UseHookWithArguments}|{./greetings/#Hello}{1}{Hallo}|\\
+%   \ROW|\greetings{ET}|
+%\end{lthooksCode}
+%    Here \verb|#1| refers to \enquote{Hallo}
+%     whereas \verb|##1| refers to \enquote{ET}.
+%
+% \begin{function}{
+%   \AddToHookNextWithArguments,
+%   \hook_gput_next_code_with_args:nn,
+% }
+%   \begin{syntax}
+%     \cs{AddToHookNextWithArguments}\Arg{hook-spec}\Arg{\#\ code}
+%     \cs{hook_gput_next_code_with_args:nn} \Arg{hook-spec} \Arg{\#\ code}
+%   \end{syntax}
+%    Works like \cs{AddToHookNext}, except that \meta{\#\ code} can
+%    access the arguments passed to the hook using \verb|#1|, \verb|#2|,
+%    \ldots, \texttt{\#\meta{n}} where \meta{n} is less than
+%    the eponym argument used when declaring the hook with
+%    \cs{NewHookWithArguments} or similar command.
+% \end{function}
+%
+% \begin{function}{
+%   \UseHookWithArguments,
+%   \hook_use:nnw,
+% }
+%   \begin{syntax}
+%     \cs{UseHookWithArguments}\Arg{hook name\LHXStar}\Arg{n}\Arg{arg_1}\ldots\Arg{arg_{\text{\scriptsize\meta{n}}}}
+%     \cs{hook_use:nnw} \Arg{hook name\LHXStar} \Arg{n} \Arg{arg_1}~...~\Arg{arg_{\text{\scriptsize\meta{n}}}}
+%   \end{syntax}
+%    Works like \cs{UseHook}, except that it passes to the code chunks
+%    \meta{arg_1} for |#1|, \ldots, \meta{arg_{\meta{n}}} for |#|\metatt{n}.
+%    The \meta{n} should at least equal the eponym argument used to declare the hook,
+%    excess arguments are ignored.
+%    If the hook is not declared, this command does nothing more than
+%    consuming its \meta{n}$+2$ arguments.
+%    A low-level \TeX{} error is raised when an argument number that
+%    doesn't exist is referenced.
+% \end{function}
+%
+% \begin{function}{
+%   \UseOneTimeHookWithArguments,
+%   \hook_use_once:nnw,
+% }
+%   \begin{syntax}
+%     \cs{UseOneTimeHookWithArguments}\Arg{hook name\LHXStar}\Arg{n}\Arg{arg_1}...\Arg{arg_{\text{\scriptsize\meta{n}}}}
+%     \cs{hook_use_once:nnw} \Arg{hook name\LHXStar} \Arg{n} \Arg{arg_1}~...~\Arg{arg_{\text{\scriptsize\meta{n}}}}
+%   \end{syntax}
+%    Works like \cs{UseOneTimeHook}, except that it passes to the code chunks
+%    \meta{arg_1} for |#1|, \ldots, \meta{arg_{\meta{n}}} for |#|\metatt{n}.
+%    The \meta{n} should at least equal the eponym argument used to declare the hook,
+%    excess arguments are ignored.
+%    If the hook is not declared, this command does nothing more than
+%    consuming its \meta{n}$+2$ arguments.
+%    A low-level \TeX{} error is raised when an argument number that
+%    doesn't exist is referenced.
+%
+%    It should be noted that after a one-time hook is used, it is no
+%    longer possible to use \cs{AddToHookWithArguments}\texttt{\Arg{n}} or similar with
+%    that hook as soon as \meta{n}$>0$. \cs{AddToHook} continues to work as normal.
+% \end{function}
+%
+%
 % \subsection{Managing the \protect\meta{current name}}
 % \label{sec:Managing-the-current-name}
 %
@@ -1023,14 +1177,6 @@
 % and \ref{sec:Managing-the-current-name}.
 % \end{function}
 %
-% \begin{function}{\NewHookWithArguments}
-%   \begin{syntax}
-%     \cs{NewHookWithArguments} \Arg{hook-spec} \Arg{number}
-%   \end{syntax}
-%   Declares a new hook which code takes \meta{number} arguments,
-%   and otherwise works exactly like \cs{NewHook}.
-%   Section~\ref{sec:hook-args} explains hooks with arguments.
-% \end{function}
 %
 % \begin{function}{\NewReversedHookWithArguments}
 %   \begin{syntax}
@@ -1038,7 +1184,7 @@
 %   \end{syntax}
 %   Like \cs{NewReversedHook}, but declares a hook which code takes
 %   \meta{number} arguments.
-%   Section~\ref{sec:hook-args} explains hooks with arguments.
+%   Section~\ref{sec:Hooks-with-arguments} explains hooks with arguments.
 % \end{function}
 %
 % \begin{function}{\NewMirroredHookPairWithArguments}
@@ -1513,12 +1659,10 @@
 % \end{function}
 %
 % \begin{function}{
-%     \hook_new_with_args:nn,
 %     \hook_new_reversed_with_args:nn,
 %     \hook_new_pair_with_args:nnn
 %   }
 %   \begin{syntax}
-%     \cs{hook_new_with_args:nn} \Arg{hook-spec} \Arg{number}
 %     \cs{hook_new_reversed_with_args:nn} \Arg{hook} \Arg{number}
 %     \cs{hook_new_pair_with_args:nnn} \Arg{hook-spec_1} \Arg{hook-spec_2} \Arg{number}
 %   \end{syntax}
@@ -1558,83 +1702,6 @@
 %
 %    Normally \cs{hook_new:n} should be used instead of this.
 % \end{function}
-%
-%
-% \begin{function}{\hook_use:nnw}
-%   \begin{syntax}
-%     \cs{hook_use:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
-%   \end{syntax}
-%    Executes the hook code followed (if set up) by the code for next
-%    invocation only, then empties that next invocation code.
-%    \cs{hook_use:nnw} should be used for hooks declared with arguments,
-%    and should be followed by as many brace groups as the declared
-%    number of arguments.
-%    The \meta{number} should be the number of arguments declared for
-%    the hook.  If the hook is not declared, this command does nothing
-%    and it will remove \meta{number} items from the input.
-% \end{function}
-%
-% \begin{function}{\hook_use_once:nnw}
-%   \begin{syntax}
-%     \cs{hook_use_once:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
-%   \end{syntax}
-%     Changes the status of the given hook so that from now on any addition to
-%     the hook code is executed immediately. Then execute any
-%     hook code already set up.
-%    \cs{hook_use_once:nnw} should be used for hooks declared with arguments,
-%    and should be followed by as many brace groups as the declared
-%    number of arguments.
-%    The \meta{number} should be the number of arguments declared for
-%    the hook.  If the hook is not declared, this command does nothing
-%    and it will remove \meta{number} items from the input.
-% \end{function}
-%
-% \begin{function}{
-%     \hook_gput_code_with_args:nnn
-%   }
-%   \begin{syntax}
-%     \cs{hook_gput_code_with_args:nnn} \Arg{hook-spec} \Arg{label-spec} \Arg{\# code}
-%   \end{syntax}
-%    Adds a chunk of \meta{\# code} to the specified hook labeled after
-%    \meta{label-spec}. If the specified label already exists the \meta{code} is
-%    appended to the already existing code.
-%
-%    If \cs{hook_gput_code_with_args:nnn} is used, the \meta{\# code}
-%    can access the arguments passed to \cs{hook_use:nnw}
-%    (or~\cs{hook_use_once:nnw}) with \verb|#1|, \verb|#2|, \ldots,
-%    \verb|#n| (up to the number of arguments declared for the hook).
-%    In that case, if an actual parameter token should be added to the
-%    code, it should be doubled.
-%
-%    If code is added to an external hook (of the kernel or
-%    another package) then the convention is to use the package name
-%    as the \meta{label-spec} not some internal module name or some other
-%    arbitrary string.
-% \end{function}
-%
-% \begin{function}{
-%     \hook_gput_next_code_with_args:nn,
-%   }
-%   \begin{syntax}
-%     \cs{hook_gput_next_code_with_args:nn} \Arg{hook-spec} \Arg{\# code}
-%   \end{syntax}
-%    Adds a chunk of \meta{code} for use only in the next invocation of the
-%    specified hook. Once used it is gone.
-%
-%    If \cs{hook_gput_next_code_with_args:nn} is used, the \meta{\# code}
-%    can access the arguments passed to \cs{hook_use:nnw}
-%    (or~\cs{hook_use_once:nnw}) with \verb|#1|, \verb|#2|, \ldots,
-%    \verb|#n| (up to the number of arguments declared for the hook).
-%    In that case, if an actual parameter token should be added to the
-%    code, it should be doubled.
-%
-%    This is simpler than \cs{hook_gput_code:nnn}, the code is simply
-%    appended to the hook in the order of declaration at the very end,
-%    i.e., after all standard code for the hook got executed.
-%    Thus if one needs to undo what the standard does one has to do
-%    that as part of \meta{code} or \meta{\# code}.
-% \end{function}
-%
 %
 %  \begin{function}{\hook_gset_rule:nnnn}
 %   \begin{syntax}
