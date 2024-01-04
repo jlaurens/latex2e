@@ -1,0 +1,137 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: One-time class hooks
+============================================================
+============================================================
+TEST 2: Built in one-time hook: class/LHXCLASSWHATEVER/before
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 3: Built in one-time hook: class/LHXCLASSWHATEVER/after
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+============================================================
+TEST 4: One-time package hooks
+============================================================
+============================================================
+TEST 5: Built in one-time hook: package/LHXPACKAGEWHATEVER/before
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 6: Built in one-time hook: package/LHXPACKAGEWHATEVER/after
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+============================================================
+TEST 7: Consumed declared
+============================================================
+PASSED
+PASSED
+PASSED
+PASSED
+<<< Hook: 'LHXHOOK'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   consumed: Y
+...   # of arguments: 0
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+PASSED
+PASSED
+<<< Hook: 'LHXHOOK*'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   consumed: Y
+...   # of arguments: 2
+... Code chunks:
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+============================================================
+============================================================
+TEST 8: Included file
+============================================================
+LaTeX Info: Writing file `./LHXINCLUDEWHATEVER.tex'.
+============================================================
+TEST 9: Built in one-time hook: include/LHXINCLUDEWHATEVER/before
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 10: Built in one-time hook: include/LHXINCLUDEWHATEVER/end
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 11: Built in one-time hook: include/LHXINCLUDEWHATEVER/after
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+============================================================
+TEST 12: Included file.tex
+============================================================
+LaTeX Info: Writing file `./LHXINCLUDEWHATEVERALT.tex'.
+============================================================
+TEST 13: Built in one-time hook: include/LHXINCLUDEWHATEVERALT/before
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 14: Built in one-time hook: include/LHXINCLUDEWHATEVERALT/end
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+TEST 15: Built in one-time hook: include/LHXINCLUDEWHATEVERALT/after
+============================================================
+PASSED
+PASSED
+============================================================
+============================================================
+!!!! If this test changes the documentation needs updating !!!!

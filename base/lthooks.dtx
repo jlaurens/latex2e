@@ -301,7 +301,7 @@
 % the |\typeout{NEXT}| instruction was executed by |\UseHook{MyName}|.
 % After, the \hook{MyName} hook is empty because the added code has then
 % been removed. This special behavior offers subtle coding patterns detailed
-% in section \ref{sec:onetime-hooks}.
+% in section \ref{sec:One-time-hooks}.
 % 
 % On next stop at line \ref{line:A-8}, the terminal reads:
 % \begin{lthooksCode}
@@ -751,6 +751,106 @@
 %
 % \end{function}
 %
+% \subsection{One time hooks}
+% \label{sec:One-time-hooks}
+%
+% Sometimes it is necessary to defer the execution of some code
+% until a condition is fulfilled, for example to execute a task only
+% once all the packages have been loaded or at the end of the document.
+% Before the condition is realized, any code is stored in a hook for
+% later use. Once the condition is realized, all the stored code is
+% executed and after the condition is realized, any code added no
+% longer needs to be stored and can execute immediately.
+%
+% A similar situation occurs when possibly many commands need the same
+% initialization task. One possibility is to initialize even if none
+% of the commands is ever used, which is inefficient coding.
+% It is highly practical to initialize the  global state at the
+% beginning of each command body. Such a pattern would be
+% \begin{lthooksCode}
+% \ROW|\newcommand{\MyCmd}{|\FILL{20}^^A
+% \SEP|\newcommand{\MyCmdInit}{|\\
+% \ROW\TAB|\MyCmdInit|\FILL{12}^^A
+% \SEP\TAB|...|\\
+% \ROW\TAB|...|\FILL{5}^^A
+% \SEP\TAB|\renewcommand{\MyCmdInit}{}|\\
+% \ROW|}|\FILL{1}^^A
+% \SEP|}|
+% \end{lthooksCode}
+% Using a one time hook will also
+% ensure that the initialization code is run exactly once,
+% whichever command is executed first, but with more flexibility:
+% \begin{lthooksCode}
+% \ROW|\newcommand{\MyCmd}{|\FILL{20}^^A
+% \SEP\cs{NewHook}|{MyCmd/Init}|\\
+% \ROW\TAB\cs{UseOneTimeHook}|{MyCmd/Init}|\FILL{29}^^A
+% \SEP\cs{AddToHook}|{MyCmd/Init}{|\\
+% \ROW\TAB|...|\FILL{5}^^A
+% \SEP\TAB|...|\\
+% \ROW|}|\FILL{1}^^A
+% \SEP|}|
+% \end{lthooksCode}
+%
+%
+% \begin{function}{
+%   \UseOneTimeHook,
+%   \hook_use_once:n,
+% }
+%   \begin{syntax}
+% \LEFT{\cs{UseOneTimeHook}\Arg{hook name\LHXStar}}^^A
+%\RIGHT{\cs{hook_use_once:n} \Arg{hook name\LHXStar}}
+%   \end{syntax}
+%   This command does nothing if there is no usable hook for
+%   the given name or if the hook has already been consumed.
+%    Otherwise, marks the hook as consumed and then works like
+%   \cs{UseHook}. Next time it does nothing.
+% \end{function}
+%
+%    Any labeled code added to a consumed hook, whatever method used
+% (e.g., \cs{AddToHook}, \cs{AtBeginDocument}...\@),
+%    is executed immediately instead of stored.
+%    On the contrary, any extra code added for the next use only
+%    will never be executed.
+%
+%    In particular this means that after
+%\begin{lthooksCode}
+%    \ROW\cs{AddToHook}|{|myHook|}{|\META{code_1}^^A
+%      \cs{AddToHook}|{myHook}|\{\META{code_2}\}\META{code_3}|}|^^A
+%      \footnote{Such a construct is sometimes used with
+%    \cs{AtBeginDocument} which is why it is supported.}
+%\end{lthooksCode}
+%    \cs{UseOneTimeHook}|{myHook}| is reduced to the execution of
+%    \texttt{\meta{code_1}\meta{code_2}\meta{code_3}}, and any
+%    further attempt to use that hook again is a do nothing operation.
+% On the opposit, \cs{UseHook}|{myHook}| is reduced to the execution of
+%    \texttt{\meta{code_1}\meta{code_3}} while \meta{code_2} is
+% appended to the chunk. Next \cs{UseHook}|{myHook}| is then reduced to
+%    the execution of \texttt{\meta{code_1}\meta{code_3}\meta{code_2}}
+%    while \meta{code_2} is appended once more to the chunk.
+%    And the next \cs{UseHook}|{myHook}| is then reduced to
+%    the execution of \texttt{\meta{code_1}\meta{code_3}\meta{code_2}\meta{code_2}}
+%    while \meta{code_2} is appended once more to the chunk, etc.
+%    In general, mixing \cs{UseHook} and \cs{UseOneTimeHook} for the same
+%    hook should be avoided, but when done both do nothing
+%    after the first \cs{UseOneTimeHook}.
+%
+%    Another coding pattern consists in defering the execution
+%    of some instruction until some main command exists. If
+%    \pkg{pkg1} and \pkg{pkg2} respectively contain
+%\begin{lthooksCode}
+%    \ROW|% pkg1:|\FILL{7}\SEP|% pkg2:|\\
+%    \ROW\cs{newcommand}|\foo[1]{...}|^^A
+%    \FILL{23}\SEP\cs{AddToHook}|{pkg1/on/foo:1}{\foo{bar}}| \\
+%    \ROW\cs{NewHook}|{pkg1/on/foo:1}|\FILL{23}\SEP\\
+%    \ROW\cs{UseOneTimeHook}|{pkg1/on/foo:1}|\FILL{30}\SEP\\
+%\end{lthooksCode}
+%    then if \pkg{pkg1} or \pkg{pkg2} is not loaded,
+%    instruction \enquote{\cs{foo}|\{bar\}|} never executes.
+%    On the contrary, it executes if both packages are loaded,
+%    in whatever order.
+%    Of course, \pkg{pkg1} must document the hook named
+%    |pkg1/on/foo:1| if it is public.
+%
 %
 % \subsection{Managing the \protect\meta{current name}}
 % \label{sec:Managing-the-current-name}
@@ -915,8 +1015,8 @@
 %   \end{syntax}
 %     A shorthand for
 % \begin{lthooksCode}
-% \ROW\cs{NewHook}\Arg{hook-1}\\
-% \ROW\cs{NewReversedHook}\Arg{hook-2}\\
+% \ROW\cs{NewHook}\Arg{hook-spec_1}\\
+% \ROW\cs{NewReversedHook}\Arg{hook-spec_2}\\
 % \end{lthooksCode}
 %    The \meta{hook} can be specified using the dot-syntax to denote
 %    the current package name. See sections~\ref{sec:Command-arguments}
@@ -1018,35 +1118,6 @@
 %    the hook.  If the hook is not declared, this command does nothing
 %    and it will remove \meta{number} items from the input.
 %   Section~\ref{sec:hook-args} explains hooks with arguments.
-% \end{function}
-%
-% \begin{function}{\UseOneTimeHook}
-%   \begin{syntax}
-%     \cs{UseOneTimeHook} \Arg{hook-name\LHXStar}
-%   \end{syntax}
-%    Some hooks are only used (and can be only used) in one place, for
-%    example, those in \verb=\begin{document}= or
-%    \verb=\end{document}=. From that point onwards, adding to the hook
-%    through a defined \cs[no-index]{\meta{addto-cmd}} command (e.g.,
-%    \cs{AddToHook} or \cs{AtBeginDocument}, etc.\@) would have no
-%    effect (as would the use of such a command inside the hook code
-%    itself). It is therefore customary to redefine
-%    \cs{\meta{addto-cmd}} to simply  process its argument, i.e.,
-%    essentially make it behave like \cs{@firstofone}.
-%
-%    \cs{UseOneTimeHook} does that: it records that the hook has been
-%    consumed and any further attempt to add to it will result in
-%    executing the code to be added immediately.
-%
-%    Using \cs{UseOneTimeHook} several times with the same
-%    \meta{hook-name} means that it only executes the first time it is used.
-%    For example, if it is used in a command that can be called several times
-%    then the hook executes during only the \emph{first} invocation of that
-%    command; this allows its use as an \enquote{initialization hook}.
-%
-%    Mixing \cs{UseHook} and \cs{UseOneTimeHook} for the same
-%    \meta{hook-name} should be avoided, but if this is done then neither will execute
-%    after the first \cs{UseOneTimeHook}.
 % \end{function}
 %
 % \begin{function}{\UseOneTimeHookWithArguments}
@@ -1274,6 +1345,21 @@
 %   on the result.
 % \end{function}
 %
+% \begin{function}[EXP]{\IfHookConsumedTF}
+%   \begin{syntax}
+%     \cs{IfHookConsumedTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+% \end{function}
+% \vskip-\baselineskip
+% \begin{function}[EXP, pTF, added=2024/01/01]{\hook_if_consumed:n}
+%   \begin{syntax}
+%     \cs{hook_if_consumed:n} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+%   Tests if the named hook has been consumed by a call to
+%   \cs[no-index]{UseOneTimeHook...}, and
+%   branches to either \meta{true code} or \meta{false code} depending
+%   on the result.
+% \end{function}
 %
 %
 % \subsubsection{Displaying hook code}
@@ -1488,9 +1574,8 @@
 %    and it will remove \meta{number} items from the input.
 % \end{function}
 %
-% \begin{function}{\hook_use_once:n,\hook_use_once:nnw}
+% \begin{function}{\hook_use_once:nnw}
 %   \begin{syntax}
-%     \cs{hook_use_once:n} \Arg{hook-name}
 %     \cs{hook_use_once:nnw} \Arg{hook-name} \Arg{number} \Arg{arg_1} \ldots \Arg{arg_n}
 %   \end{syntax}
 %     Changes the status of the given hook so that from now on any addition to
@@ -1754,70 +1839,6 @@
 %    it in both hooks, not just in one, but that depends on the use case.
 %
 %
-%
-%
-% \subsection{Difference between \enquote{normal} and
-%    \enquote{one-time} hooks}
-% \label{sec:onetime-hooks}
-%
-%    When executing a hook a developer has the choice of using
-%    either \cs{UseHook} or \cs{UseOneTimeHook} (or their \pkg{expl3}
-%    equivalents \cs{hook_use:n} and \cs{hook_use_once:n}).
-%    This choice affects how \cs{AddToHook} is handled after the hook
-%    has been executed for the first time.
-%
-%    With normal hooks adding code via \cs{AddToHook} means that the
-%    code chunk is added to the hook data structure and then used each time
-%    \cs{UseHook} is called.
-%
-%    With one-time hooks it this is handled slightly differently:
-%    After \cs{UseOneTimeHook} has been called, any further attempts to
-%    add code to the hook via \cs{AddToHook} will simply execute the
-%    \meta{code} immediately.
-%
-%    This has some consequences one needs to be aware of:
-%    \begin{itemize}
-%    \item
-%
-%      If \meta{code} is added to a normal hook after the hook was
-%      executed and it is never executed again for one or the other
-%      reason, then this new \meta{code} will never be executed.
-%
-%    \item
-%
-%      In contrast if that happens with a one-time hook the \meta{code} is
-%      executed immediately.
-%
-%    \end{itemize}
-%    In particular this means that construct such as
-%\begin{lthooksCode}
-%\ROW\cs{AddToHook}\verb={myhook}=^^A
-%   \verb={=\meta{code_1}^^A
-%   \cs{AddToHook}\verb={myhook}=\Arg{code_2}^^A
-%   \meta{code_3}\verb=}=
-%\end{lthooksCode}
-%    works for one-time hooks\footnote{This is sometimes used with
-%    \cs{AtBeginDocument} which is why it is supported.} (all three
-%    code chunks are executed one after another), but it makes little
-%    sense with a normal hook, because with a normal hook the first time
-%    \verb=\UseHook{myhook}= is executed it would
-%    \begin{itemize}
-%    \item
-%       execute \meta{code_1},
-%    \item
-%       then execute \cs{AddToHook}|{myhook}{|\metatt{code_2}|}| which adds the
-%    code chunk \meta{code_2} to the hook for use on the next invocation,
-%    \item
-%       and finally execute \meta{code_3}.
-%    \end{itemize}
-%    The second time \cs{UseHook} is called it would execute the
-%    above and in addition \meta{code_2} as that was added as a code
-%    chunk to the hook in the meantime. So each time the hook is used
-%    another copy of \meta{code_2} is added and so that code chunk
-%    is executed $\meta{\# of invocations} -1$ times.
-%
-%
-%
 % \subsection{Generic hooks provided by packages}
 % \label{sec:generic-hooks}
 %
@@ -2043,7 +2064,7 @@
 % \newcommand\onetimetext{This is a one-time hook, so after it
 %   is executed, all further
 %   attempts to add code to it will execute such code immediately
-%   (see section~\ref{sec:onetime-hooks}).}
+%   (see section~\ref{sec:One-time-hooks}).}
 %
 %  \LaTeXe{} offered a small number of hooks together with commands to
 %    add to them. They are listed here and are retained for backwards
@@ -2082,7 +2103,7 @@
 %    executed at \verb=\begin{document}= any attempt to add \meta{code}
 %    to this hook with \cs{AtBeginDocument} or with \cs{AddToHook} will
 %    cause that \meta{code} to execute immediately instead.
-%    See section~\ref{sec:onetime-hooks} for more on one-time hooks.
+%    See section~\ref{sec:One-time-hooks} for more on one-time hooks.
 %
 %    For important packages with known order requirement we may over
 %    time add rules to the kernel (or to those packages) so that they
@@ -6761,7 +6782,7 @@
     \@@_tmp:w { empty }
     \@@_tmp:w { reversed }
     \@@_tmp:w { generic_reversed }
-    \@@_tmp:w { execute_immediately }
+    \@@_tmp:w { consumed }
 %    \end{macrocode}
 % Done with \cs[no-index]{@@_tmp:w}.
 %    \begin{macrocode}
@@ -7626,6 +7647,37 @@
 %  \end{macro}
 %  \end{macro}
 %  \end{macro}
+%
+% \begin{macro}[pTF]{
+%   \hook_if_consumed:n,
+% }
+% Partially redundant with \cs[no-index]{@@_execute_immediately:nTF}.
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \hook_if_consumed:n #1 { p, T, F, TF }
+  {
+    \exp_after:wN \@@_use_none_delimit_by_s_mark:w
+    \if:w I
+        \if_cs_exist:w g_@@_#1_reversed_tl \cs_end:
+          \cs:w g_@@_#1_reversed_tl \exp_after:wN \cs_end:
+        \fi:
+        X
+      \s_@@_mark \prg_return_true:
+    \else:
+      \s_@@_mark \prg_return_false:
+    \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{
+%   \IfHookConsumedTF,
+% }
+% \LaTeXe\ API.
+%    \begin{macrocode}
+\cs_set_eq:NN \IfHookConsumedTF \hook_if_consumed:nTF  
+%    \end{macrocode}
+% \end{macro}
+%
 %
 %  \subsection{Messages}
 %

@@ -1,0 +1,94 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\begin{filecontents}[overwrite]{LHXCLASSWHATEVER.cls}
+\LoadClass{article}
+\end{filecontents}
+
+\documentclass{LHXCLASSWHATEVER}
+
+\begin{filecontents}[overwrite]{LHXPACKAGEWHATEVER.sty}
+\input{regression-test}
+\end{filecontents}
+
+\RequirePackage{LHXPACKAGEWHATEVER}
+
+\def\TEST#1{
+  \BEGINTEST{Built in one-time hook: #1}
+  \ASSERTMatchDebugPrintHook{consumed:\sY}{#1}
+  \ASSERTUnmatchDebugPrintHook{consumed:\sN}{#1}
+  \ENDTEST
+}
+
+\START
+
+\BEGINTEST{One-time class hooks}
+\TEST{class/LHXCLASSWHATEVER/before}
+\TEST{class/LHXCLASSWHATEVER/after}
+\ENDTEST
+
+\BEGINTEST{One-time package hooks}
+\TEST{package/LHXPACKAGEWHATEVER/before}
+\TEST{package/LHXPACKAGEWHATEVER/after}
+\ENDTEST
+
+\BEGINTEST{Consumed declared}
+
+\NewHook{LHXHOOK}
+\ASSERTMatchDebugPrintHook{consumed:\sN}{LHXHOOK}
+\ASSERTUnmatchDebugPrintHook{consumed:\sY}{LHXHOOK}
+\UseOneTimeHook{LHXHOOK}
+\ASSERTMatchDebugPrintHook{consumed:\sY}{LHXHOOK}
+\ASSERTUnmatchDebugPrintHook{consumed:\sN}{LHXHOOK}
+\DebugPrintHook{LHXHOOK}
+
+\NewHookWithArguments{LHXHOOK*}{2}
+\ASSERTMatchDebugPrintHook{consumed:\sN}{LHXHOOK*}
+\UseOneTimeHookWithArguments{LHXHOOK*}{2}{}{}
+\ASSERTMatchDebugPrintHook{consumed:\sY}{LHXHOOK*}
+\DebugPrintHook{LHXHOOK*}
+
+\ENDTEST
+
+\OMIT
+\begin{document}
+\TIMO
+
+\BEGINTEST{Included file}
+
+\begin{filecontents}[overwrite]{LHXINCLUDEWHATEVER.tex}
+\TYPE{PASSED}
+\end{filecontents}
+
+\OMIT
+\include{LHXINCLUDEWHATEVER}
+\TIMO
+
+\TEST{include/LHXINCLUDEWHATEVER/before}
+\TEST{include/LHXINCLUDEWHATEVER/end}
+\TEST{include/LHXINCLUDEWHATEVER/after}
+
+\ENDTEST
+
+\BEGINTEST{Included file.tex}
+
+\begin{filecontents}[overwrite]{LHXINCLUDEWHATEVERALT.tex}
+\TYPE{PASSED}
+\end{filecontents}
+
+\OMIT
+\include{LHXINCLUDEWHATEVERALT.tex}
+\TIMO
+
+\TEST{include/LHXINCLUDEWHATEVERALT/before}
+\TEST{include/LHXINCLUDEWHATEVERALT/end}
+\TEST{include/LHXINCLUDEWHATEVERALT/after}
+
+\ENDTEST
+
+\typeout{!!!! If this test changes the documentation needs updating !!!!}
+
+\END
