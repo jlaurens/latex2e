@@ -46,9 +46,9 @@ TEST 5: + TOP LEVEL
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -74,10 +74,10 @@ TEST 6: + LABEL A
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -103,11 +103,11 @@ TEST 7: + LABEL B
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -134,12 +134,12 @@ TEST 8: + LABEL C
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -166,13 +166,13 @@ TEST 9: + NEXT
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
->     next-only -> \typeout {<NEXT-ONLY>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
+>   next-only -> \typeout {<NEXT-ONLY>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -199,15 +199,15 @@ TEST 10: LABEL C < LABEL A
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
->     next-only -> \typeout {<NEXT-ONLY>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
+>   next-only -> \typeout {<NEXT-ONLY>}
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -237,17 +237,17 @@ TEST 11: DEFAULT LABEL B > LABEL C
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'UNDECLARED HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
->     next-only -> \typeout {<NEXT-ONLY>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
+>   next-only -> \typeout {<NEXT-ONLY>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -289,9 +289,9 @@ TEST 14: + TOP LEVEL
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'top-level'.
+>   1: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -314,11 +314,11 @@ TEST 15: + LABEL A
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'LABEL A'
->     2: 'top-level'.
+>   1: 'LABEL A'
+>   2: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE A>
@@ -343,13 +343,13 @@ TEST 16: + LABEL B
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL B'
->     3: 'top-level'.
+>   1: 'LABEL A'
+>   2: 'LABEL B'
+>   3: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE A>
@@ -376,17 +376,17 @@ TEST 17: + LABEL C
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'
->     4: 'top-level'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'
+>   4: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE A>
@@ -414,19 +414,19 @@ TEST 18: + NEXT
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
->     next-only -> \typeout {<NEXT-ONLY>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
+>   next-only -> \typeout {<NEXT-ONLY>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'
->     4: 'top-level'
->     5: next-only.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'
+>   4: 'top-level'
+>   5: next-only.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE A>
@@ -456,19 +456,19 @@ TEST 19: LABEL C < LABEL A
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > Execution order:
->     1: 'LABEL C'
->     2: 'LABEL A'
->     3: 'LABEL B'
->     4: 'top-level'.
+>   1: 'LABEL C'
+>   2: 'LABEL A'
+>   3: 'LABEL B'
+>   4: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE C>
@@ -497,19 +497,19 @@ TEST 20: DEFAULT LABEL B > LABEL C
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > Execution order:
->     1: 'LABEL C'
->     2: 'LABEL A'
->     3: 'LABEL B'
->     4: 'top-level'.
+>   1: 'LABEL C'
+>   2: 'LABEL A'
+>   3: 'LABEL B'
+>   4: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE C>
@@ -551,11 +551,11 @@ TEST 23: + TOP LEVEL
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'top-level'.
+>   1: 'top-level'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -577,13 +577,13 @@ TEST 24: + LABEL A
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL A'.
+>   1: 'top-level'
+>   2: 'LABEL A'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -607,15 +607,15 @@ TEST 25: + LABEL B
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL B'
->     3: 'LABEL A'.
+>   1: 'top-level'
+>   2: 'LABEL B'
+>   3: 'LABEL A'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -641,19 +641,19 @@ TEST 26: + LABEL C
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules, to be mirrored:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL B'
->     3: 'LABEL C'
->     4: 'LABEL A'.
+>   1: 'top-level'
+>   2: 'LABEL B'
+>   3: 'LABEL C'
+>   4: 'LABEL A'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -680,21 +680,21 @@ TEST 27: + NEXT
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
->     next-only -> \typeout {<NEXT-ONLY>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
+>   next-only -> \typeout {<NEXT-ONLY>}
 > Default rules, to be mirrored:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL B'
->     3: 'LABEL C'
->     4: 'LABEL A'
->     5: next-only.
+>   1: 'top-level'
+>   2: 'LABEL B'
+>   3: 'LABEL C'
+>   4: 'LABEL A'
+>   5: next-only.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -723,21 +723,21 @@ TEST 28: + LABEL C < LABEL A
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules, to be mirrored:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL B'
->     3: 'LABEL C'
->     4: 'LABEL A'.
+>   1: 'top-level'
+>   2: 'LABEL B'
+>   3: 'LABEL C'
+>   4: 'LABEL A'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -765,21 +765,21 @@ TEST 29: + DEFAULT LABEL B > LABEL C
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'DECLARED REVERSED'
->     reversed
+>   reversed
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
->     'top-level' -> \typeout {<TOP-LEVEL>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
+>   'top-level' -> \typeout {<TOP-LEVEL>}
 > Default rules, to be mirrored:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL C' before 'LABEL A'
+>   'LABEL C' before 'LABEL A'
 > Execution order:
->     1: 'top-level'
->     2: 'LABEL B'
->     3: 'LABEL C'
->     4: 'LABEL A'.
+>   1: 'top-level'
+>   2: 'LABEL B'
+>   3: 'LABEL C'
+>   4: 'LABEL A'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <TOP-LEVEL>
@@ -842,11 +842,11 @@ l. ......reShow{env/lthooks.regression test/after}
 <recently read> }
 l. ......eShow{env/lthooks.regression test/before}
 ==> Hook: 'env/lthooks.regression test/before'
->     builtin generic
+>   builtin generic
 > Code chunks:
->     'top-level' -> \typeout {<BEFORE>}
+>   'top-level' -> \typeout {<BEFORE>}
 > Execution order:
->     1: 'top-level'.
+>   1: 'top-level'.
 <recently read> }
 l. ......eShow{env/lthooks.regression test/before}
 <BEFORE>
@@ -864,11 +864,11 @@ l. ......eShow{env/lthooks.regression test/before}
 <recently read> }
 l. ......reShow{env/lthooks.regression test/after}
 ==> Hook: 'env/lthooks.regression test/after'
->     builtin generic, reversed
+>   builtin generic, reversed
 > Code chunks:
->     'top-level' -> \typeout {<AFTER>}
+>   'top-level' -> \typeout {<AFTER>}
 > Execution order:
->     1: 'top-level'.
+>   1: 'top-level'.
 <recently read> }
 l. ......reShow{env/lthooks.regression test/after}
 <AFTER>
@@ -900,9 +900,9 @@ l. ...\TESTLHXCompareShow{\TESTHook}
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'GENERIC HOOK'
->     not declared
+>   not declared
 > Code chunks:
->     'LABEL' -> \typeout {<CODE>}
+>   'LABEL' -> \typeout {<CODE>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -921,9 +921,9 @@ l. ...\TESTLHXCompareShow{\TESTHook}
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'GENERIC HOOK'
 > Code chunks:
->     'LABEL' -> \typeout {<CODE>}
+>   'LABEL' -> \typeout {<CODE>}
 > Execution order:
->     1: 'LABEL'.
+>   1: 'LABEL'.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 <CODE>
@@ -943,9 +943,9 @@ l. ...\TESTLHXCompareShow{\TESTHook}
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
 ==> Hook: 'GENERIC HOOK'
->     not declared, disabled
+>   not declared, disabled
 > Code chunks:
->     'LABEL' -> \typeout {<CODE>}
+>   'LABEL' -> \typeout {<CODE>}
 > No execution.
 <recently read> }
 l. ...\TESTLHXCompareShow{\TESTHook}
@@ -996,15 +996,15 @@ TEST 34: LABEL A <relation> top-level
 l. ...\TEST{LABEL A}{top-level}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{top-level}
 <CODE A>
@@ -1029,15 +1029,15 @@ l. ...\TEST{LABEL A}{top-level}
 l. ...\TEST{LABEL A}{top-level}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{top-level}
 <CODE A>
@@ -1062,15 +1062,15 @@ l. ...\TEST{LABEL A}{top-level}
 l. ...\TEST{LABEL A}{top-level}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{top-level}
 <CODE A>
@@ -1095,15 +1095,15 @@ l. ...\TEST{LABEL A}{top-level}
 l. ...\TEST{LABEL A}{top-level}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{top-level}
 <CODE A>
@@ -1128,15 +1128,15 @@ l. ...\TEST{LABEL A}{top-level}
 l. ...\TEST{LABEL A}{top-level}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{top-level}
 <CODE A>
@@ -1165,15 +1165,15 @@ TEST 35: top-level <relation> LABEL B
 l. ...\TEST{top-level}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{top-level}{LABEL B}
 <CODE A>
@@ -1198,15 +1198,15 @@ l. ...\TEST{top-level}{LABEL B}
 l. ...\TEST{top-level}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{top-level}{LABEL B}
 <CODE A>
@@ -1231,15 +1231,15 @@ l. ...\TEST{top-level}{LABEL B}
 l. ...\TEST{top-level}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{top-level}{LABEL B}
 <CODE A>
@@ -1264,15 +1264,15 @@ l. ...\TEST{top-level}{LABEL B}
 l. ...\TEST{top-level}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{top-level}{LABEL B}
 <CODE A>
@@ -1297,15 +1297,15 @@ l. ...\TEST{top-level}{LABEL B}
 l. ...\TEST{top-level}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{top-level}{LABEL B}
 <CODE A>
@@ -1335,17 +1335,17 @@ TEST 36: LABEL A <relation> LABEL B
 l. ...\TEST{LABEL A}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' after 'LABEL A'
+>   'LABEL B' after 'LABEL A'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{LABEL B}
 <CODE A>
@@ -1371,17 +1371,17 @@ l. ...\TEST{LABEL A}{LABEL B}
 l. ...\TEST{LABEL A}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' before 'LABEL A'
+>   'LABEL B' before 'LABEL A'
 > Execution order:
->     1: 'LABEL C'
->     2: 'LABEL B'
->     3: 'LABEL A'.
+>   1: 'LABEL C'
+>   2: 'LABEL B'
+>   3: 'LABEL A'.
 <recently read> }
 l. ...\TEST{LABEL A}{LABEL B}
 <CODE C>
@@ -1406,15 +1406,15 @@ l. ...\TEST{LABEL A}{LABEL B}
 l. ...\TEST{LABEL A}{LABEL B}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL A}{LABEL B}
 <CODE A>
@@ -1444,17 +1444,17 @@ LaTeX hooks Warning: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
 (hooks)              'RULES HOOK'. You may see errors later.
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' incompatible-warning 'LABEL A'
+>   'LABEL B' incompatible-warning 'LABEL A'
 > Execution order:
->     1: 'LABEL A' (Warning)
->     2: 'LABEL C'
->     3: 'LABEL B' (Warning).
+>   1: 'LABEL A' (Warning)
+>   2: 'LABEL C'
+>   3: 'LABEL B' (Warning).
 <recently read> }
 l. ...\TEST{LABEL A}{LABEL B}
 LaTeX hooks Warning: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
@@ -1496,17 +1496,17 @@ LaTeX found two incompatible labels in the same hook. This indicates an
 incompatibility between packages.
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' incompatible-error 'LABEL A'
+>   'LABEL B' incompatible-error 'LABEL A'
 > Execution order:
->     1: 'LABEL A' (Error)
->     2: 'LABEL C'
->     3: 'LABEL B' (Error).
+>   1: 'LABEL A' (Error)
+>   2: 'LABEL C'
+>   3: 'LABEL B' (Error).
 <recently read> }
 l. ...\TEST{LABEL A}{LABEL B}
 ! LaTeX hooks Error: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
@@ -1541,17 +1541,17 @@ TEST 37: LABEL B <relation> LABEL A
 l. ...\TEST{LABEL B}{LABEL A}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' before 'LABEL A'
+>   'LABEL B' before 'LABEL A'
 > Execution order:
->     1: 'LABEL C'
->     2: 'LABEL B'
->     3: 'LABEL A'.
+>   1: 'LABEL C'
+>   2: 'LABEL B'
+>   3: 'LABEL A'.
 <recently read> }
 l. ...\TEST{LABEL B}{LABEL A}
 <CODE C>
@@ -1577,17 +1577,17 @@ l. ...\TEST{LABEL B}{LABEL A}
 l. ...\TEST{LABEL B}{LABEL A}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' after 'LABEL A'
+>   'LABEL B' after 'LABEL A'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL B}{LABEL A}
 <CODE A>
@@ -1612,15 +1612,15 @@ l. ...\TEST{LABEL B}{LABEL A}
 l. ...\TEST{LABEL B}{LABEL A}
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Execution order:
->     1: 'LABEL A'
->     2: 'LABEL C'
->     3: 'LABEL B'.
+>   1: 'LABEL A'
+>   2: 'LABEL C'
+>   3: 'LABEL B'.
 <recently read> }
 l. ...\TEST{LABEL B}{LABEL A}
 <CODE A>
@@ -1650,17 +1650,17 @@ LaTeX hooks Warning: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
 (hooks)              'RULES HOOK'. You may see errors later.
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' incompatible-warning 'LABEL A'
+>   'LABEL B' incompatible-warning 'LABEL A'
 > Execution order:
->     1: 'LABEL A' (Warning)
->     2: 'LABEL C'
->     3: 'LABEL B' (Warning).
+>   1: 'LABEL A' (Warning)
+>   2: 'LABEL C'
+>   3: 'LABEL B' (Warning).
 <recently read> }
 l. ...\TEST{LABEL B}{LABEL A}
 LaTeX hooks Warning: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
@@ -1702,17 +1702,17 @@ LaTeX found two incompatible labels in the same hook. This indicates an
 incompatibility between packages.
 ==> Hook: 'RULES HOOK'
 > Code chunks:
->     'LABEL A' -> \typeout {<CODE A>}
->     'LABEL B' -> \typeout {<CODE B>}
->     'LABEL C' -> \typeout {<CODE C>}
+>   'LABEL A' -> \typeout {<CODE A>}
+>   'LABEL B' -> \typeout {<CODE B>}
+>   'LABEL C' -> \typeout {<CODE C>}
 > Default rules:
->     'LABEL C' before 'LABEL B'
+>   'LABEL C' before 'LABEL B'
 > Rules:
->     'LABEL B' incompatible-error 'LABEL A'
+>   'LABEL B' incompatible-error 'LABEL A'
 > Execution order:
->     1: 'LABEL A' (Error)
->     2: 'LABEL C'
->     3: 'LABEL B' (Error).
+>   1: 'LABEL A' (Error)
+>   2: 'LABEL C'
+>   3: 'LABEL B' (Error).
 <recently read> }
 l. ...\TEST{LABEL B}{LABEL A}
 ! LaTeX hooks Error: Labels 'LABEL B' and 'LABEL A' are incompatible in hook
