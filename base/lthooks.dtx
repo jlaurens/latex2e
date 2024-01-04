@@ -81,39 +81,39 @@
 %   }
 % }
 % \int_new:N \l__lthooks_source_int
-% \hook_new:n {lthooks.source/lineno.format}
+% \hook_new:n {lthooks.code/lineno.format}
 % \hook_gput_code:nnn
-%   {lthooks.source/lineno.format}
-%   {lthooks.source/default}
+%   {lthooks.code/lineno.format}
+%   {lthooks.code/default}
 %   {\sffamily\tiny}
-% \NewDocumentEnvironment{lthooks.source}{O{}} {
-%   \keys_define:nn { lthooks.source } {
+% \NewDocumentEnvironment{lthooks.code}{O{}} {
+%   \keys_define:nn { lthooks.code } {
 %     lineno .bool_set:N = \l__lthooks_source_lineno_bool,
 %     lineno .default:n  = true,
 %     no-lineno .bool_set_inverse:N = \l__lthooks_source_lineno_bool,
 %     first  .int_set:N  = \l__lthooks_source_int,
 %   }
-%   \keys_set:nn { lthooks.source } {first=1, lineno=false, #1 }
+%   \keys_set:nn { lthooks.code } {first=1, lineno=false, #1 }
 %   \cs_set:Npn\SEP{\rule[-\dp\strutbox]{1pt}{\baselineskip}~~}
 %   \cs_set:Npn\TAB{\phantom{xx}}
 %   \cs_set_eq:NN\IT\textit
 %   \bool_if:NF \c_true_bool { FAIL }
 %   \bool_if:NT \c_false_bool { FAIL }
 %   \bool_if:NTF \l__lthooks_source_lineno_bool {
-%     \keys_define:nn { lthooks.source.ROW } {
+%     \keys_define:nn { lthooks.code.ROW } {
 %       format .code:n = \hook_gput_next_code:nn
-%         { lthooks.source/lineno.format }
+%         { lthooks.code/lineno.format }
 %         { ##1 },
 %       mark .tl_set:N = \l__lthooks_source_mark_tl,
 %       mark .initial:n = ,
 %     }
 %     \NewDocumentCommand\ROW{O{}}{
-%       \keys_define:nn { lthooks.source.ROW } {
+%       \keys_define:nn { lthooks.code.ROW } {
 %         mark .initial:n = ,
 %       }
-%       \keys_set:nn { lthooks.source.ROW } { ##1, }
+%       \keys_set:nn { lthooks.code.ROW } { ##1, }
 %       \makebox[0pt][r]{\textcolor[gray]{0.5}{
-%         \hook_use:n { lthooks.source/lineno.format }
+%         \hook_use:n { lthooks.code/lineno.format }
 %         \l__lthooks_source_mark_tl
 %         \int_use:N \l__lthooks_source_int
 %       }\hphantom{x}}
@@ -193,7 +193,7 @@
 % corresponds to a hooking in computer programming.} and the related
 % workflow. It only relies on hook related commands as well as
 % |\typein| and |\typeout| to interact with the terminal.
-% \begin{lthooks.source}[lineno]
+% \begin{lthooks.code}[lineno]
 % \ROW{|\documentclass{article}|}\\
 % \ROW{|\begin{document}|}\\
 % \ROW{\cs{DeclareHook}|{MyName}       %|}
@@ -215,12 +215,12 @@
 %   ]\cs{ShowHook}|{MyName}          %|
 % \IT{Step 2: show the hook data}\\
 % \ROW|\end{document}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 % On step 1, we see the result of the command |\UseHook{MyName}|. The
 % three instructions |\typeout{A}|, |\typeout{B}| and  |\typeout{C}|
 % were executed and |A|, |B|, |C| are displayed in the terminal.
 % From step 2 we have a good understanding of \LaTeX\ hooks:
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|-> The hook 'MyName':|\\
 % \ROW|> Code chunks:|\\
 % \ROW|>     labelA -> \typeout {A}|\\
@@ -235,7 +235,7 @@
 % \ROW|>     ---|\\
 % \ROW|> Execution order:|\\
 % \ROW|>     labelA, labelB, labelC.|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %
 % \subsection{Basic description}
 % A \LaTeX\ hook is uniquely identified by a string: its \emph{name}.
@@ -252,16 +252,16 @@
 % see section \ref{sec:LaTeX-generic-hooks}, one of them is simply named
 % |begindocument| (section \ref{sec:begindocument-hooks}).
 % Running
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW\cs{AddToHook}|{begindocument}{|\META{code}|}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 % ensures that \META{code} will be executed after all the packages
 % have loaded.
 %
 % Hooks also allow to alter environments: with
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW\cs{AddToHook}|{env/quote/begin}{\color{red}}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 % all the forthcoming |quote| environments will be typeset in red,
 % provided the proper color management package is loaded beforehands.
 %
@@ -426,14 +426,14 @@
 %
 %    For practical reasons, the addition is cumulative in the sense
 % that after
-%    \begin{lthooks.source}
+%    \begin{lthooks.code}
 % \ROW\cs{AddToHook}|{myHook}[myLabel]|\Arg{code_1}\\
 % \ROW\cs{AddToHook}|{myHook}[myLabel]|\Arg{code_2}
-%    \end{lthooks.source}
+%    \end{lthooks.code}
 %    the code chunk is the same than after
-%    \begin{lthooks.source}
+%    \begin{lthooks.code}
 % \ROW\cs{AddToHook}|{myHook}[myLabel]{|\meta{code_1}\meta{code_2}|}|
-%    \end{lthooks.source}
+%    \end{lthooks.code}
 %    and only the first addition is relevant in code ordering,
 %    see section \ref{sec:Ordering-code-execution}.
 %
@@ -444,13 +444,13 @@
 %    in a code chunk. In order to gain more control, one technique
 %    is to prepare the code beforehands with L3 |tl| commands.
 %    Another technique consists of using a supplemental private hook:
-%    \begin{lthooks.source}
+%    \begin{lthooks.code}
 % \ROW\cs{DeclareHook}|{myHook/private}|\\
 % \ROW\cs{AddToHook}|{myHook/private}[myLabel_1]|\Arg{code_1}\\
 % \ROW|...|\\
 % \ROW\cs{AddToHook}|{myHook/private}[myLabel_n]|\Arg{code_n}\\
 % \ROW\cs{AddToHook}|{theHook}[myLabel]{\UseHook{myHook/private}}|
-%    \end{lthooks.source}
+%    \end{lthooks.code}
 %
 % \begin{function}{
 %   \RemoveFromHook,
@@ -486,23 +486,23 @@
 %    The command \cs{RemoveFromHook} can be used to replace a single
 %    code chunk, with some side effects though.
 %    From the introductory example, running a supplemental
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %   \ROW\cs{RemoveFromHook}|{MyName}|[label_A]\\
 %   \ROW\cs{AddToHook}|{MyName}[label_A]{\typeout{A alt}}|
-%\end{lthooks.source}
+%\end{lthooks.code}
 %    breaks the execution order that becomes
 %    |label_B|, |label_C|, |label_A|.
 %    In order to recover exactly the original ordering,
 %    next rules are declared:
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %   \ROW\cs{DeclareHookRule}|{MyName}{label_A}{before}{label_B}|\\
 %   \ROW\cs{DeclareHookRule}|{MyName}{label_B}{before}{label_C}|\\
-%\end{lthooks.source}
+%\end{lthooks.code}
 %
 % \medskip
 % Next example shows how to safely add temporary code to hooks while
 % inside the document body.
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %   \ROW\cs{AddToHook}|{env/quote/begin}{\small}|\\
 %   \ROW|\begin{quote}|\\
 %   \ROW\TAB A quote set in a smaller typeface\\
@@ -510,15 +510,15 @@
 %   \ROW...\\
 %   \ROW\cs{RemoveFromHook}|{env/quote/begin}|\\
 %   \ROW... |% now back to normal for further quotes|
-%\end{lthooks.source}
+%\end{lthooks.code}
 % No code label was provided either to add nor remove command:
 % the \enquote{\texttt{top-level}} keyword is used by default
 % for the label such that no other code is accidentally removed.
 %
 % Note that you can't cancel the font size command with
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %   \ROW\cs{AddToHook}|{env/quote/begin}{}|
-%\end{lthooks.source}
+%\end{lthooks.code}
 % because it only adds a further empty chunk of code to
 % the hook. Adding |\normalsize| would result in the hook
 % containing |\small\normalsize| which is not efficient code.
@@ -564,23 +564,23 @@
 %    
 % Next example shows how to safely add temporary code to hooks while
 % inside the document body.
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %   \ROW\cs{AddToHookNext}|{env/quote/begin}{\small}|\\
 %   \ROW|\begin{quote}|\\
 %   \ROW\TAB A quote set in a smaller typeface\\
 %   \ROW|\end{quote}|\\
 %   \ROW... |% back to normal for further quotes|
-%\end{lthooks.source}
+%\end{lthooks.code}
 % See command \cs{AddToHook} when several consecutive quote
 % must be typeset in a smaller typeface.
 %
 % For practical reasons, the addition is cumulative like for
 % \cs{AddToHook}. Moreover, it is possible to nest
 % \cs{AddToHookNext} commands: for a normal hook,
-%   \begin{lthooks.source}
+%   \begin{lthooks.code}
 %     \ROW\cs{AddToHookNext}\Arg{hook}\verb={=\meta{code_1}^^A
 %         \cs{AddToHookNext}\Arg{hook}\Arg{code_2}\verb=}=
-%   \end{lthooks.source}
+%   \end{lthooks.code}
 %    results in \meta{code_1} being executed the next time the hook
 %    is used, and \meta{code_2} being executed the next time after.
 %
@@ -695,7 +695,7 @@
 % of the commands is ever used, which is inefficient coding.
 % It is highly practical to initialize the  global state at the
 % beginning of each command body. Such a pattern would be
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|\newcommand{\MyCmd}{|\FILL{20}^^A
 % \SEP|\newcommand{\MyCmdInit}{|\\
 % \ROW\TAB|\MyCmdInit|\FILL{12}^^A
@@ -704,11 +704,11 @@
 % \SEP\TAB|\renewcommand{\MyCmdInit}{}|\\
 % \ROW|}|\FILL{1}^^A
 % \SEP|}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 % Using a one time hook will also
 % ensure that the initialization code is run exactly once,
 % whichever command is executed first, but with more flexibility:
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|\newcommand{\MyCmd}{|\FILL{20}^^A
 % \SEP\cs{DeclareHook}|{MyCmdInit}|\\
 % \ROW\TAB\cs{UseOneTimeHook}|{MyCmdInit}|\FILL{28}^^A
@@ -717,7 +717,7 @@
 % \SEP\TAB|...|\\
 % \ROW|}|\FILL{1}^^A
 % \SEP|}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 %
 %
 % \begin{function}{
@@ -741,12 +741,12 @@
 %    will never be executed.
 %
 %    In particular this means that after
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{|myHook|}{|\META{code_1}^^A
 %      \cs{AddToHook}|{myHook}|\{\META{code_2}\}\META{code_3}|}|^^A
 %      \footnote{Such a construct is sometimes used with
 %    \cs{AtBeginDocument} which is why it is supported.}
-%\end{lthooks.source}
+%\end{lthooks.code}
 %    \cs{UseOneTimeHook}|{myHook}| is reduced to the execution of
 %    \texttt{\meta{code_1}\meta{code_2}\meta{code_3}}, and any
 %    further attempt to use that hook again is a do nothing operation.
@@ -762,13 +762,13 @@
 %    Another coding pattern consists in defering the execution
 %    of some instruction until some main command exists. If
 %    \pkg{pkg1} and \pkg{pkg2} respectively contain
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %    \ROW|% pkg1:|\FILL{7}\SEP|% pkg2:|\\
 %    \ROW\cs{newcommand}|\foo[1]{...}|^^A
 %    \FILL{23}\SEP\cs{AddToHook}|{pkg1/on/foo:1}{\foo{bar}}| \\
 %    \ROW\cs{EnableGenericHook}|{pkg1/on/foo:1}|\FILL{33}\SEP\\
 %    \ROW\cs{UseOneTimeHook}|{pkg1/on/foo:1}|\FILL{30}\SEP\\
-%\end{lthooks.source}
+%\end{lthooks.code}
 %    then if \pkg{pkg1} or \pkg{pkg2} is not loaded,
 %    instruction \enquote{\cs{foo}|\{bar\}|} never executes.
 %    On the contrary, it executes if both packages are loaded,
@@ -878,7 +878,7 @@
 %    instead of \enquote{\texttt{\#}}.
 %    Next example defines a greetings command in a hook of
 %    the document body, with \cs{AddToHook}:
-%\begin{lthooks.source}[lineno]
+%\begin{lthooks.code}[lineno]
 %   \ROW\cs{DeclareHook}|{./greetings}|\\
 %   \ROW...\\
 %   \ROW\cs{AddToHook}|{./greetings}|\\
@@ -887,11 +887,11 @@
 %   \ROW...\\
 %   \ROW\cs{UseHook}|{./greetings}|\\
 %   \ROW|\greetings{ET}|\\
-%\end{lthooks.source}
+%\end{lthooks.code}
 %   A variation when \enquote{Hello} may be localized:
 %   notice how \cs[no-index]{greetings} definition is different
 %   on lines 4 above and below.
-%\begin{lthooks.source}[lineno]
+%\begin{lthooks.code}[lineno]
 %   \ROW\cs{DeclareHookWithArguments}|{./greetings/#Hello}{1}|\\
 %   \ROW...\\
 %   \ROW\cs{AddToHookWithArguments}|{./greetings/#Hello}|\\
@@ -900,7 +900,7 @@
 %   \ROW...\\
 %   \ROW\cs{UseHookWithArguments}|{./greetings/#Hello}{1}{Hallo}|\\
 %   \ROW|\greetings{ET}|
-%\end{lthooks.source}
+%\end{lthooks.code}
 %    Here \verb|#1| refers to \enquote{Hallo}
 %     whereas \verb|##1| refers to \enquote{ET}.
 %
@@ -1077,11 +1077,11 @@
 %
 %   \medskip
 %   Loading a class or a package is like running
-%   \begin{lthooks.source}
+%   \begin{lthooks.code}
 %     \ROW\cs{PushHookCurrentName}|{|\META{package/class name}|}| \\
 %     \ROW ~~\META{package/class code}\\
 %     \ROW\cs{PopHookCurrentName}
-%   \end{lthooks.source}
+%   \end{lthooks.code}
 %   and inside a package or class, the \META{current name} is
 %   initially the package or class name.
 %
@@ -1239,22 +1239,22 @@
 %
 %    All the declared rules must be compatible with each other,
 %    for example next codes will raise an error.
-%    \begin{lthooks.source}
+%    \begin{lthooks.code}
 %    \ROW\cs{DeclareHookRule}|{MyHook}{labelA}<{labelB}|\\
 %    \ROW\cs{DeclareHookRule}|{MyHook}{labelB}<{labelA}|\\
-%    \end{lthooks.source}
+%    \end{lthooks.code}
 %    Moreover, if there are many possibilities to fulfill the rules,
 %    which one is used is undefined. For example, with
-%    \begin{lthooks.source}
+%    \begin{lthooks.code}
 %    \ROW\cs{DeclareHookRule}|{MyHook}{labelA}<{labelB}|\\
-%    \end{lthooks.source}
+%    \end{lthooks.code}
 %    there are 3 possible orderings of the 3 labels
 %    |labelA|, |labelB|, |labelC|:
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|labelA < labelB < labelC|\\
 % \ROW|labelA < labelC < labelB|\\
 % \ROW|labelC < labelA < labelB|
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    Wich one is effective is not always the same,
 %    even while typesetting one document\footnote{In very specific
 %    situations, the effective ordering may differ between different
@@ -1265,7 +1265,7 @@
 %    The generic hook |cmd/emph/after| is used to insert a \enquote{!}
 %    after the argument of the |\emph| command.
 %
-% \begin{lthooks.source}[lineno]
+% \begin{lthooks.code}[lineno]
 % \ROW|\emph{W}|\\
 % \ROW\cs{AddToHook}|{cmd/emph/after}[./on]{!}%|\\
 % \ROW|\emph{W}|\\
@@ -1275,7 +1275,7 @@
 % \ROW[format=\bfseries,mark=$\to$\;,
 % ]\cs{RemoveFromHook}|{cmd/emph/after}[./off]%|\\
 % \ROW|\emph{W}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    Line 1 prints \enquote{W},
 %    line 3 prints \enquote{W} followed by the \enquote{!},
 %    added to the \hook{cmd/emph/after} hook at line 2.
@@ -1287,22 +1287,22 @@
 %
 %    We get the same result if we replace line 7 with next line,
 %    except that it might be slower due to the supplemental rule.
-% \begin{lthooks.source}[lineno,first=7]
+% \begin{lthooks.code}[lineno,first=7]
 % \ROW[format=\bfseries,mark=$\to$\;,
 % ]\cs{DeclareHookRule}|{cmd/emph/after}{./off}{unrelated}{./on}%|
-% \end{lthooks.source}
+% \end{lthooks.code}
 %
 % \begin{function}{\ClearHookRule}
 %   \begin{syntax}
 %     \cs{ClearHookRule}\Arg{hook}\Arg{label_1}\Arg{label_2}
 %   \end{syntax}
 %    Synonym of each instruction amongst
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{DeclareHookRule}\Arg{hook}^^A
 %    \Arg{label_1}|{unrelated}|\Arg{label_2}\\
 %    \ROW\cs{hook_gset_rule:nnnn} \Arg{hook}
 %    \Arg{label_1} |{unrelated}| \Arg{label_2}
-% \end{lthooks.source}
+% \end{lthooks.code}
 % \end{function}
 %
 %
@@ -1358,10 +1358,10 @@
 %     \cs{hook_gset_rule_pair:nnnnn}\\\TAB\Arg{hook_1} \Arg{label_1} \Arg{relation} \Arg{label_2} \Arg{hook_2} 
 %   \end{syntax}
 %    Shorthand for
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW\cs{DeclareHookRule}\Arg{hook_1}\Arg{label_1}\Arg{relation}\Arg{label_2}\\
 % \ROW\cs{DeclareHookRule}\Arg{hook_2}\Arg{label_1}\Arg{relation$^*$}\Arg{label_2}
-% \end{lthooks.source}
+% \end{lthooks.code}
 % where \meta{relation$^*$} is the mirror of \meta{relation}
 % according to:
 % \begin{center}
@@ -1383,12 +1383,12 @@
 %     \cs{ClearMirroredHookRulePair}\Arg{hook_1}\Arg{label_1}\Arg{label_2}\Arg{hook_2}
 %   \end{syntax}
 %    Synonym of each instruction amongst
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{ClearMirroredHookRulePair}\\
 %    \ROW\TAB\Arg{hook_1}\Arg{label_1}|{unrelated}|\Arg{label_2}\Arg{hook_2}\\
 %    \ROW\cs{hook_gset_rule_pair:nnnnn}\\
 %    \ROW\TAB\Arg{hook_1} \Arg{label_1} |{unrelated}| \Arg{label_2} \Arg{hook_2}
-% \end{lthooks.source}
+% \end{lthooks.code}
 % \end{function}
 %
 %
@@ -1417,10 +1417,10 @@
 %   a non empty hook unless the code chunk is empty and the label is
 %   \enquote{|top-level|}.
 %   For example, next instructions runs at the top level with no error, %   but will raise an error when run in a package:
-%   \begin{lthooks.source}
+%   \begin{lthooks.code}
 %   \ROW\cs{AddToHook}|{A}{}|\\
 %   \ROW\cs{IfHookEmptyTF}|{A}{}{\PackageError{FAIL}{}{}}|\\
-%   \end{lthooks.source}
+%   \end{lthooks.code}
 % \end{function}
 %
 % \begin{function}[pTF]{
@@ -1729,44 +1729,44 @@
 %    in using these hooks.
 %    With \pkg{package-1}, all \env{quote} environments can typeset
 %    in italics with either
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{env/quote/begin}[package-1]{\itshape}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    or the functionally equivalent
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{env/quote/before}[package-1]{\begin{itshape}}|\\
 %    \ROW\cs{AddToHook}|{env/quote/after} [package-1]{\end{itshape}}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    Similarly, with \pkg{package-2}, all \env{quote} environments can
 %    typeset in blue with a color management package and either
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{env/quote/begin}[package-2]{\color{blue}}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    or the functionally equivalent
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{env/quote/before}[package-2]{\begin{color}{blue}}|\\
 %    \ROW\cs{AddToHook}|{env/quote/after} [package2]{\end{color}}|\\
-% \end{lthooks.source}.
+% \end{lthooks.code}.
 %    Whatever method chosen, whatever package loaded, whatever
 %    loading order everything will work seemlessly.
 %    On the contrary, using the wrong hooks in
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{env/quote/begin}[package-1]{\begin{itshape}}|\\
 %    \ROW\cs{AddToHook}|{env/quote/end}[package-1]{\end{itshape}}|\\
 %    \ROW\cs{AddToHook}|{env/quote/begin}[package-2]{\begin{color}{blue}}|\\
 %    \ROW\cs{AddToHook}|{env/quote/end}[package-2]{\end{color}}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    leads to the \LaTeX\ error
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|! LaTeX Error: \begin{color} on input line ... ended by \end{itshape}.|
-% \end{lthooks.source}
+% \end{lthooks.code}
 % because |env/quote/end| is not a reversed hook such that using the
 % \env{quote} environment would be equivalent to standard
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 % \ROW|\begin{quote}\begin{itshape}\begin{color}{blue}|\\
 % \ROW...\\
 % \ROW|\end{itshape}\end{color}\end{quote}|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %
 %    \medskip
 %    The hooks are only executed if \cs{begin}\texttt{\{\META{env}\}} and
@@ -1775,11 +1775,11 @@
 %    (e.g., to avoid the environment grouping) they are not
 %    available. If you want them available in code using this method,
 %    you would need to add them yourself, i.e., write something like
-%\begin{lthooks.source}
+%\begin{lthooks.code}
 %  \ROW\cs{UseHook}|{env/quote/before}\quote|\\
 %  \ROW...\\
 %  \ROW|\endquote|\cs{UseHook}|{env/quote/after}|\\
-%\end{lthooks.source}
+%\end{lthooks.code}
 %    to add the outer hooks, etc.
 % Moreover, contrary to commands, redefining an environment
 % automatically keeps the code chunks of the hooks.
@@ -1853,15 +1853,15 @@
 %    \end{description}
 %    Not all commands are eligible to use hooks, for exemple
 %    the simple instruction
-% \begin{lthooks.source}
+% \begin{lthooks.code}
 %    \ROW\cs{AddToHook}|{cmd/end/after}{}|
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    that seems harmless because it adds nothing to the |\end|
 %    command certainly breaks any standard document.
 %    Moreover, there are some subtleties in some patterns,
 %    for example swapping lines 2 and 3 below
 %    changes the typeset output from \enquote{12} to \enquote{112}.
-% \begin{lthooks.source}[lineno]
+% \begin{lthooks.code}[lineno]
 % \ROW|\def\foo{}%                           |^^A
 % \SEP|\def\foo{}%|\\
 % \ROW[format=\bfseries,mark=$\to$\;,
@@ -1874,7 +1874,7 @@
 % \SEP|\AddToHook{cmd/bar/after}{2}%|\\
 % \ROW|\foo\bar                              |^^A
 % \SEP|\foo\bar|\\
-% \end{lthooks.source}
+% \end{lthooks.code}
 %    All this is covered in \texttt{ltcmdhooks-doc.pdf} or
 %    with code in \texttt{ltcmdhooks-code.pdf},
 %    as part of a very detailed analysis.
