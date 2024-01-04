@@ -1,0 +1,68 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\documentclass{article}
+
+\input{regression-test}
+
+\START
+
+\BEGINTEST{Builtin generic}
+
+\ASSERTMatchDebugPrintHook{generic:\ Y}{cmd/foo/before}
+
+\ENDTEST
+
+\BEGINTEST{Activated generic}
+
+\ActivateGenericHook{babel/esperanto/afterextras}
+\ASSERTMatchDebugPrintHook{generic:\ N}{babel/esperanto/afterextras}
+
+\ENDTEST
+
+\BEGINTEST{Unsupported `/` in builtin generic name variable part}
+
+\NewDocumentEnvironment{lthooks/TEST}{}{}{}
+\AddToHook{env/lthooks/TEST/before}{\TYPE{FAILED~(BEFORE)}}
+\AddToHook{env/lthooks/TEST/begin}{\TYPE{FAILED~(BEGIN)}}
+\AddToHook{env/lthooks/TEST/end}{\TYPE{FAILED~(END)}}
+\AddToHook{env/lthooks/TEST/after}{\TYPE{FAILED~(AFTER)}}
+\begin{lthooks/TEST}\TYPE{PASSED}\end{lthooks/TEST}
+
+\ENDTEST
+
+\BEGINTEST{Simulate environment `lthooks/TEST0`}
+
+\ExplSyntaxOn
+
+\NewDocumentEnvironment{lthooks/TEST0}{}
+  {\UseHook{env/lthooks/TEST0/before}\group_begin:\UseHook{env/lthooks/TEST0/before}}
+  {\UseHook{env/lthooks/TEST0/after}\group_end:\UseHook{env/lthooks/TEST0/after}}
+\NewHook{env/lthooks/TEST0/before}
+\NewHook{env/lthooks/TEST0/begin}
+\NewHook{env/lthooks/TEST0/end}
+\NewReversedHook{env/lthooks/TEST0/after}
+
+\cs_set:Npn \TEST #1 {
+  \group_begin:
+  \cs_set:Npn \TEST { \TYPE{FAILED~(#1)} }
+  \AddToHook{env/lthooks/TEST0/#1}{ \cs_set:Npn \TEST { \TYPE{PASSED~(#1)} } }
+  \begin{lthooks/TEST0}\TYPE{PASSED~(body)}\end{lthooks/TEST0}
+  \TEST
+  \group_end:
+}
+\ExplSyntaxOff
+
+\TEST{before}
+\TEST{begin}
+\TEST{end}
+\TEST{after}
+
+\ENDTEST
+
+\typeout{!!!! If this test changes the documentation needs updating !!!!}
+
+\END
