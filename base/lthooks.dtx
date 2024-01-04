@@ -614,11 +614,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \NewHook,
-%   \hook_declare:n,
+%   \hook_new:n,
 % }
 %   \begin{syntax}
 % \LEFT{\cs{NewHook}\Arg{hook}}^^A
-%\RIGHT{\cs{hook_declare:n} \Arg{hook}}
+%\RIGHT{\cs{hook_new:n} \Arg{hook}}
 %   \end{syntax}
 % Declares a hook named after \meta{hook}. If a hook was already
 % declared with that name, an error is raised and nothing more is done.
@@ -626,11 +626,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \DeclareReversedHook,
-%   \hook_declare_reversed:n,
+%   \hook_new_reversed:n,
 % }
 %   \begin{syntax}
 % \LEFT{\cs{DeclareReversedHook}\Arg{hook}}^^A
-%\RIGHT{\cs{hook_declare_reversed:n} \Arg{hook}}
+%\RIGHT{\cs{hook_new_reversed:n} \Arg{hook}}
 %   \end{syntax}
 %    Declares a hook like \cs{NewHook}, except that
 %    when used, code chunks of the hooks are executed in
@@ -640,11 +640,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \DeclareMirroredHookPair,
-%   \hook_declare_pair:nn,
+%   \hook_new_pair:nn,
 % }
 %   \begin{syntax}
 %     \cs{DeclareMirroredHookPair}\Arg{hook_1}\Arg{hook_2}
-%     \cs{hook_declare_pair:nn} \Arg{hook_1} \Arg{hook_2}
+%     \cs{hook_new_pair:nn} \Arg{hook_1} \Arg{hook_2}
 %   \end{syntax}
 %     A shorthand for
 %    \cs{NewHook}\texttt{\Arg{hook_1}}^^A
@@ -809,11 +809,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \NewHookWithArguments,
-%   \hook_declare_with_args:nn,
+%   \hook_new_with_args:nn,
 % }
 %   \begin{syntax}
 %    \cs{NewHookWithArguments}\Arg{hook}\Arg{n}
-%    \cs{hook_declare_with_args:nn} \Arg{hook} \Arg{n}
+%    \cs{hook_new_with_args:nn} \Arg{hook} \Arg{n}
 %   \end{syntax}
 %    Declares a hook like \cs{NewHook} does except that added
 %    code chunks can refer to \meta{n} arguments
@@ -823,11 +823,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \DeclareReversedHookWithArguments,
-%   \hook_declare_reversed_with_args:nn,
+%   \hook_new_reversed_with_args:nn,
 % }
 %   \begin{syntax}
 %     \cs{DeclareReversedHookWithArguments}\Arg{hook}\Arg{n}
-%     \cs{hook_declare_reversed_with_args:nn} \Arg{hook} \Arg{n}
+%     \cs{hook_new_reversed_with_args:nn} \Arg{hook} \Arg{n}
 %   \end{syntax}
 %    Declares a hook like \cs{DeclareReversedHook} does except
 %    that added code chunks can refer to \meta{n} arguments
@@ -837,11 +837,11 @@
 %
 % \begin{function}[added=0001-01-01]{
 %   \DeclareMirroredHookPairWithArguments,
-%   \hook_declare_pair_with_args:nnn,
+%   \hook_new_pair_with_args:nnn,
 % }
 %   \begin{syntax}
 %     \cs{DeclareMirroredHookPairWithArguments}\Arg{hook_1}\Arg{hook_2} \Arg{n}
-%     \cs{hook_declare_pair_with_args:nnn} \Arg{hook_1} \Arg{hook_2} \Arg{n}
+%     \cs{hook_new_pair_with_args:nnn} \Arg{hook_1} \Arg{hook_2} \Arg{n}
 %   \end{syntax}
 %    A shorthand for
 %    \cs{NewHookWithArguments}\texttt{\Arg{hook_1}}\Arg{n}\\
@@ -2142,17 +2142,17 @@
 % \hline
 % Old & New since 0001-01-01\\\hline
 % \Row{NewHook}                     {NewHook}
-% \Row{hook_new:n}                  {hook_declare:n}
+% \Row{hook_new:n}                  {hook_new:n}
 % \Row{NewReversedHook}             {DeclareReversedHook}
-% \Row{hook_new_reversed:n}         {hook_declare_reversed:n}
+% \Row{hook_new_reversed:n}         {hook_new_reversed:n}
 % \Row{NewMirroredHookPair}         {DeclareMirroredHookPair}
-% \Row{hook_new_pair:nn}            {hook_declare_pair:nn}
+% \Row{hook_new_pair:nn}            {hook_new_pair:nn}
 % \Row{NewHookWithArguments}        {NewHookWithArguments}
-% \Row{hook_new_with_args:nn}       {hook_declare_with_args:nn}
+% \Row{hook_new_with_args:nn}       {hook_new_with_args:nn}
 % \Row{NewReversedHookWithArguments}{DeclareReversedHookWithArguments}
-% \Row{hook_new_reversed_with_args:nn}{hook_declare_reversed_with_args:nn}
+% \Row{hook_new_reversed_with_args:nn}{hook_new_reversed_with_args:nn}
 % \Row{NewMirroredHookPairWithArguments}{DeclareMirroredHookPairWithArguments}
-% \Row{hook_new_pair_with_args:nn}  {hook_declare_pair_with_args:nnn}
+% \Row{hook_new_pair_with_args:nn}  {hook_new_pair_with_args:nnn}
 % \Row{PushDefaultHookLabel}        {PushHookCurrentName}
 % \Row{PopDefaultHookLabel}         {PopHookCurrentName}
 % \Row{SetDefaultHookLabel}         {SetHookCurrentName}
