@@ -633,7 +633,7 @@
 %    is not suitable because it deletes stored code which is difficult
 %    to undo. Instead, use the |voids| rule to prevent code execution
 %    followed by a different rule to enable that code again
-%    (see section~\ref{sec:rules}).
+%    (see section~\ref{sec:Ordering-code-execution}).
 %
 % If the goal is to typeset in a smaller typeface only one quote
 % here and there and not several consecutive quotes,
@@ -1271,7 +1271,295 @@
 %    called \cs{DisableHook}, but that name was misleading as it
 %    shouldn't be used to disable non-generic hooks.}
 %
-% 
+%
+% \subsection{Ordering code execution}
+% \label{sec:Ordering-code-execution}
+% In general, code added to hooks by different label owners are
+% independent from each other and the order in which they are
+% executed is irrelevant. While this is true in most cases it is
+% sometimes false, for example a code that relies on some package
+% should execute only after the package has loaded.
+% Moreover, in mirrored hook pairs the order in one hook
+% influences the order in the second hook and breaks any independency.
+%
+% Before the \LaTeX\ hook management system was introduced,
+% packages had to take elaborate precautions to determine if some other
+% package got loaded and find some ways to alter its own behavior
+% accordingly. In addition it was often the user's
+% responsibility to load packages in the right order so that
+% instructions were executed in the right order. And sometimes it
+% was just impossible to resolve conflicts just changing the ordering.
+%
+% Now, rules are the means to precisely describe how labeled code
+% chunks should be processed relatively to one another.
+% Using a hook consists of ordering the code chunks by applying the
+% rules to a default ordering, either direct or reversed, then execute
+% the code chunks in the resulting order.
+% \cs{ShowHook} and \cs{LogHook} give the execution order.
+%
+% \subsubsection{Default ordering}
+% Before execution, the various code chunks follow a direct ordering:
+% \begin{enumerate}
+% \item low level code chunks in the order of the first time they were
+% added,
+% \item the \enquote{|top-level|} code chunk, if any, whenever it was
+% first added,
+% \end{enumerate}
+% For reversed hooks, this ordered is reversed
+% \begin{enumerate}
+% \item the \enquote{|top-level|} code chunk, if any, whenever it was
+% first added,
+% \item low level code chunks in the inverse order of the first time
+% they were added.
+% \end{enumerate}
+% The extra code for the next use only, if any, is always executed last.
+%
+%
+% \subsubsection{Custom ordering}
+% The custom ordering is obtained after the rules apply to
+% the default ordering, either direct or reversed.
+% \begin{function}{
+%   \DeclareHookRule,
+%   \hook_gset_rule:nnnn,
+% }
+%   \begin{syntax}
+%     \cs{DeclareHookRule}\Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
+%     \cs{hook_gset_rule:nnnn} \Arg{hook-spec} \Arg{label-spec_1} \Arg{relation} \Arg{label-spec_2}
+%   \end{syntax}
+%    Does nothing if both specified labels are identical, or if one of them
+%    expands to \enquote{\hook{top-level}}, otherwise
+%    declares a relation between specified \meta{label_1} and \meta{label_2}
+%    for the specified hook.
+%    The specifide hook does not needs to be declared before declaring the rule,
+%    it does not even need to ever contain code chunks for any of the
+%    specified labels.
+% \end{function}
+%
+% \medskip
+%
+%    The supported relations are:
+%    \begin{itemize}
+%
+%    \item[\texttt{before} or \texttt{\string<}:]
+%
+%      The code chunk for \meta{label_1} comes before the one for
+%      \meta{label_2}.
+%
+%    \item[\texttt{after} or \texttt{\string>}:]
+%      The code chunk for \meta{label_1} comes after the one for
+%      \meta{label_2}.
+%
+%    \item[\texttt{incompatible-warning}:]
+%
+%      A warning is raised if the hook has code chunks for both
+%      \meta{label_1} and \meta{label_2}.
+%
+%    \item[\texttt{incompatible-error}:]
+%
+%      An error is raised if the hook has code chunks for both
+%      \meta{label_1} and \meta{label_2}, and none will
+%      execute until the conflict is resolved.
+%
+%    \item[\texttt{voids}]
+%
+%      The code chunk for \meta{label_1} overwrites the one for
+%     \meta{label_2}. If there is a code chunk for \meta{label_1}
+%      it will execute and the one for \meta{label_2} won't, otherwise
+%      the code chunk for \meta{label_2} will execute, if any.
+%      This can be used, for example if one package is a
+%      superset in functionality of another one and therefore wants to
+%      replace the original code with its own version.
+%
+%    \item[\texttt{unrelated}]
+%
+%      The order of the code chunks for \meta{label_1} and
+%      \meta{label_2} is irrelevant. This rule allows to cancel a
+%      previous rule.
+%
+%    \end{itemize}
+%    There can only be a single relation between two different labels
+%    for a given hook, i.e., a later \cs{DeclareHookRule} overwrites
+%    any previous declaration.
+%
+%    If \meta{hook-spec} expands to \enquote{\hook{??}} this declares a default
+%    relation for all hooks that use the two labels,
+%    more precisions in  \cs{DeclareDefaultHookRule} command below.
+%
+%    All the declared rules must be compatible with each other,
+%    for example next codes will raise an error.
+%    \begin{lthooksCode}
+%    \ROW\cs{DeclareHookRule}|{MyHook}{labelA}<{labelB}|\\
+%    \ROW\cs{DeclareHookRule}|{MyHook}{labelB}<{labelA}|\\
+%    \end{lthooksCode}
+%    Moreover, if there are many possibilities to fulfill the rules,
+%    which one is used is undefined. For example, with
+%    \begin{lthooksCode}
+%    \ROW\cs{DeclareHookRule}|{MyHook}{labelA}<{labelB}|\\
+%    \end{lthooksCode}
+%    there are 3 possible orderings of the 3 labels
+%    |labelA|, |labelB|, |labelC|:
+% \begin{lthooksCode}
+% \ROW|labelA < labelB < labelC|\\
+% \ROW|labelA < labelC < labelB|\\
+% \ROW|labelC < labelA < labelB|
+% \end{lthooksCode}
+%    Wich one is effective is not always the same,
+%    even while typesetting one document\footnote{In very specific
+%    situations, the effective ordering may differ between different
+%    runs, eventually preventing a steady \TeX\ state from being achieved.}.
+%
+%    \medskip
+%    Next example shows how some code is temporarily deactivated.
+%    The generic hook |cmd/emph/after| is used to insert a \enquote{!}
+%    after the argument of the |\emph| command.
+%
+% \begin{lthooksCode}[lineno]
+% \ROW|\emph{W}|\\
+% \ROW\cs{AddToHook}|{cmd/emph/after}[./on]{!}%|\\
+% \ROW|\emph{W}|\\
+% \ROW\cs{DeclareHookRule}|{cmd/emph/after}{./off}{voids}{./on}%|\\
+% \ROW\cs{AddToHook}|{cmd/emph/after}[./off]{}%|\\
+% \ROW|\emph{W}|\\
+% \ROW[format=\bfseries,mark=$\to$\;,
+% ]\cs{RemoveFromHook}|{cmd/emph/after}[./off]%|\\
+% \ROW|\emph{W}|
+% \end{lthooksCode}
+%    Line 1 prints \enquote{W},
+%    line 3 prints \enquote{W} followed by the \enquote{!},
+%    added to the \hook{cmd/emph/after} hook at line 2.
+%    Line 5 adds an empty code chunk that overrides the \enquote{|!|}
+%    of line 2 due to the rule of line 5.
+%    Line 6 prints like line 1.
+%    Line 7 removes the code chunks that overrode the \enquote{|!|},
+%    such that line 8 prints like line 3.
+%
+%    We get the same result if we replace line 7 with next line,
+%    except that it might be slower due to the supplemental rule.
+% \begin{lthooksCode}[lineno,first=7]
+% \ROW[format=\bfseries,mark=$\to$\;,
+% ]\cs{DeclareHookRule}|{cmd/emph/after}{./off}{unrelated}{./on}%|
+% \end{lthooksCode}
+%
+% \begin{function}{\ClearHookRule}
+%   \begin{syntax}
+%     \cs{ClearHookRule}\Arg{hook-spec}\Arg{label-spec_1}\Arg{label-spec_2}
+%   \end{syntax}
+%    Synonym of each instruction amongst
+% \begin{lthooksCode}
+%    \ROW\cs{DeclareHookRule}\Arg{hook-spec}^^A
+%    \Arg{label-spec_1}|{unrelated}|\Arg{label-spec_2}\\
+%    \ROW\cs{hook_gset_rule:nnnn} \Arg{hook-spec}^^A
+%    \Arg{label-spec_1} |{ unrelated }| \Arg{label-spec_2}
+% \end{lthooksCode}
+% \end{function}
+%
+% \begin{function}{
+%   \DeclareDefaultHookRule,
+%   \DeclareHookRule{??},
+%   \hook_gset_rule:nnnn{??},
+% }
+%   \begin{syntax}
+%     \cs{DeclareDefaultHookRule}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
+%     \cs{DeclareHookRule}|{??}|\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
+%     \cs{hook_gset_rule:nnnn} |{??}| \Arg{label-spec_1} \Arg{relation} \Arg{label-spec_2}
+%   \end{syntax}
+%    Does nothing if both specified labels are identical, or if one of them
+%    expands to \enquote{\hook{top-level}}, otherwise
+%    declares a relation between specified \meta{label_1} and \meta{label_2}
+%    for all hooks.
+%    Rules specific to a given hook take precedence over default
+%    rules with the same labels.
+%
+%    The relations are the ones described for \cs{DeclareHookRule}
+%    except for reversed hooks due to order reversal:
+%    \begin{itemize}
+%
+%    \item[\texttt{before} or \texttt{\string<}:]
+%
+%      The code chunk for \meta{label_1} comes \emph{after} the one for
+%      \meta{label_2} and not before.
+%
+%    \item[\texttt{after} or \texttt{\string>}:]
+%      The code chunk for \meta{label_1} comes \emph{before} the one for
+%      \meta{label_2} and not after.
+%
+%    \end{itemize}
+%
+%    Useful for cases where one package has a specific relation to
+%    some other package, e.g., is \texttt{incompatible} or always
+%    needs a special ordering \texttt{before} or \texttt{after}.
+%
+%    Declaring default rules is only supported in the main document
+%    preamble. Nevertheless, a declaration somewhere else won't allways
+%    raise an error for performance reasons.
+% \end{function}
+%
+%
+% \subsubsection{Ordering mirrored hooks}
+% \label{sec:Ordering-mirrored-hooks}
+%
+% For a pair of mirrored hooks, things can become a bit tricky
+% when rules get involved. In general, the same rules are added to both
+% hooks, except for ordering rules that are reversed.
+% For example, |env/quote/before| and |env/quote/after| form a
+% mirrored hook pair that can be used to enclose the |quote|
+% environment inside other environments. See a basic example in
+% section \ref{sec:reversed-order}.
+%
+% It is recommanded to allways feed mirrored hooks in parallel,
+% with the very same label using \cs[no-index]{AddToHookPair...}
+% and \cs[no-index]{RemoveFromHookPair...}. Of course, one of the
+% hooks can be fed with an empty code chunk. Moreover, the rules
+% should also be declared in parallel. That way, the risk that the
+% mirrored hooks are not perfectly balancing each other and break
+% code is limited.
+%
+% \begin{function}[added=2024-01-01]{
+%   \DeclareHookPairRule,
+%   \hook_pair_gset_rule:nnnn,
+% }
+%   \begin{syntax}
+%     \cs{DeclareHookPairRule}\\\TAB\Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
+%     \cs{hook_pair_gset_rule:nnnn}\\\TAB\Arg{hook-spec} \Arg{label-spec_1} \Arg{relation} \Arg{label-spec_2}
+%   \end{syntax}
+% \end{function}
+% Raises an error if the specified hook does not belong to
+% a mirrored hook pair, otherwise executes
+% \begin{lthooksCode}
+% \ROW\cs{DeclareHookRule}\Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}\\
+% \ROW\cs{DeclareHookRule}\Arg{mirror hook-spec}\Arg{label-spec_1}\Arg{relation\LHXStar}\Arg{label-spec_2}
+% \end{lthooksCode}
+% where the mirror hook is the other element of the mirrored hook
+% pair and \meta{relation\LHXStar} is the mirror of \meta{relation}
+% according to:
+% \begin{center}
+% \begin{tabular}{|l|l|}
+% \hline
+% \meta{relation} & \meta{relation\LHXStar} \\\hline
+% |before| & |after| \\\hline
+% |after| & |before| \\\hline
+% |incompatible-warning| & |incompatible-warning| \\\hline
+% |incompatible-error| & |incompatible-error| \\\hline
+% |voids| & |voids| \\\hline
+% |unrelated| & |unrelated| \\\hline
+% \end{tabular}
+% \end{center}
+%
+% \begin{function}[added=2024-01-01]{\ClearMirroredHookRulePair}
+%   \begin{syntax}
+%     \cs{ClearMirroredHookRulePair}\Arg{hook-spec}\Arg{label-spec_1}\Arg{label-spec_2}
+%   \end{syntax}
+% Raises an error if the specified hook does not belong to a
+% mirrored hook pair, otherwise synonym of each instruction amongst
+% \begin{lthooksCode}
+%    \ROW\cs{DeclareHookPairRule}
+%    \ROW\TAB\Arg{hook-spec}\Arg{label-spec_1}|{unrelated}|\Arg{label-spec_2}\\
+%    \ROW\cs{hook_pair_gset_rule:nnnn}\\
+%    \ROW\TAB\Arg{hook-spec} \Arg{label-spec_1} |{unrelated}| \Arg{label-spec_2}
+% \end{lthooksCode}
+% \end{function}
+%
+%
 % \subsection{Managing the \protect\meta{current name}}
 % \label{sec:Managing-the-current-name}
 %
@@ -1409,117 +1697,6 @@
 %
 %
 % \subsection{\LaTeXe\ interfaces}
-%
-%
-% \subsubsection{Defining relations between hook code}
-% \label{sec:rules}
-%
-% The default assumption is that code added to hooks by different
-% packages are independent and the order in which they are executed is
-% irrelevant. While this is true in many cases it is obviously false
-% in others.
-%
-% Before the hook management system was introduced
-% packages had to take elaborate precaution to determine of some other
-% package got loaded as well (before or after) and find some ways to
-% alter its behavior accordingly. In addition is was often the user's
-% responsibility to load packages in the right order so that code
-% added to hooks got added in the right order and some cases even
-% altering the loading order wouldn't resolve the conflicts.
-%
-% With the new hook management system it is now possible to define
-% rules (i.e., relationships) between code chunks added by different
-% packages and explicitly describe in which order they should be
-% processed.
-%
-% \begin{function}{\DeclareHookRule}
-%   \begin{syntax}
-%     \cs{DeclareHookRule} \Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
-%   \end{syntax}
-%    Defines a relation between \meta{label_1} and \meta{label_2}
-%    built from \meta{label-spec_1} and \meta{label-spec_2} for the
-%    specified hook. If \meta{hook-spec} is \texttt{??} this defines a default
-%    relation for all hooks that use the two labels, i.e., that have
-%    chunks of code labeled with \meta{label_1} and \meta{label_2}.
-%    Rules specific to a given hook take precedence over default
-%    rules that use \texttt{??} as the \meta{hook-spec}.
-%
-%    Currently, the supported relations are the following:
-%    \begin{itemize}
-%
-%    \item[\texttt{before} or \texttt{\string<}]
-%
-%      Code for \meta{label_1} comes before code for \meta{label_2}.
-%
-%    \item[\texttt{after} or \texttt{\string>}]
-%      Code for \meta{label_1} comes after code for \meta{label_2}.
-%
-%    \item[\texttt{incompatible-warning}]
-%
-%      Only code for either \meta{label_1} or \meta{label_2} can appear
-%      for that hook (a way to say that two packages---or parts of
-%      them---are incompatible). A warning is raised if both labels
-%      appear in the same hook.
-%
-%    \item[\texttt{incompatible-error}]
-%
-%      Like \texttt{incompatible-error} but instead of a warning a
-%      \LaTeX{} error is raised, and the code for both labels are
-%      dropped from that hook until the conflict is resolved.
-%
-%    \item[\texttt{voids}]
-%
-%      Code for \meta{label_1} overwrites code for \meta{label_2}. More
-%      precisely, code for \meta{label2} is dropped for that
-%      hook. This can be used, for example if one package is a
-%      superset in functionality of another one and therefore wants to
-%      undo code in some hook and replace it with its own version.
-%
-%    \item[\texttt{unrelated}]
-%
-%       The order of code for \meta{label_1} and \meta{label_2} is
-%      irrelevant. This rule is there to undo an incorrect rule
-%      specified earlier.
-%
-%    \end{itemize}
-%    There can only be a single relation between two labels for a
-%    given hook,
-%    i.e., a later \cs{DeclareHookRule} overwrites any previous
-%    declaration.
-% \end{function}
-%
-%
-% \begin{function}{\ClearHookRule}
-%   \begin{syntax}
-%     \cs{ClearHookRule}\Arg{hook-spec}\Arg{label-spec_1}\Arg{label-spec_2}
-%   \end{syntax}
-%    Syntactic sugar for saying that \meta{label_1} and \meta{label_2}
-%    built from \meta{label-spec_1} and \meta{label-spec_2}
-%    are |unrelated| for the specified hook.
-% \end{function}
-%
-%
-%
-% \begin{function}{\DeclareDefaultHookRule}
-%   \begin{syntax}
-%     \cs{DeclareDefaultHookRule}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}
-%   \end{syntax}
-%   This sets up a relation between \meta{label_1} and \meta{label_2}
-%    built from \meta{label-spec_1} and \meta{label-spec_2}
-%    for all hooks unless overwritten by a specific rule for a hook.
-%    Useful for cases where one package has a specific relation to
-%    some other package, e.g., is \texttt{incompatible} or always
-%    needs a special ordering \texttt{before} or \texttt{after}.
-%    (Technically it is just a shorthand for using \cs{DeclareHookRule}
-%    with \texttt{??} as the hook specifier.)
-%
-%    Declaring default rules is only supported in the document
-%    preamble.\footnotemark{}
-% \end{function}\footnotetext{Trying to do so, e.g., via
-%    \cs{DeclareHookRule} with \texttt{??}  has bad side-effects and
-%    is not supported (though not explicitly caught for performance
-%    reasons).}
-%
 %
 %
 % \subsubsection{Querying hooks}
@@ -1774,96 +1951,6 @@
 %    Turns the debugging of hook code on or off. This displays changes
 %    to the hook data.
 % \end{function}
-%
-%
-%
-% \subsection{On the order of hook code execution} \label{sec:order}
-% \label{sec:Ordering-code-execution}
-%
-%    Chunks of code for a hook under different labels are supposed
-%    to be independent if there are no special rules set up that
-%    define a relation between the chunks. This means that you can't
-%    make assumptions about the order of execution!
-%
-%    Suppose you have the following declarations:
-% \begin{lthooksCode}
-% \ROW|\NewHook{myhook}|\\
-% \ROW|\AddToHook{myhook}[packageA]{\typeout{A}}|\\
-% \ROW|\AddToHook{myhook}[packageB]{\typeout{B}}|\\
-% \ROW|\AddToHook{myhook}[packageC]{\typeout{C}}|\\
-% \end{lthooksCode}
-%    then executing the hook with \cs{UseHook} will produce the
-%    typeout \texttt{A} \texttt{B} \texttt{C} in that order.  In other
-%    words, the execution order is computed to be \texttt{packageA},
-%    \texttt{packageB}, \texttt{packageC} which you can verify with
-%    \cs{ShowHook}\texttt{\{myhook\}}:
-% \begin{lthooksCode}
-% \ROW|==> Hook: 'myhook'|\\
-% \ROW|> Code chunks:|\\
-% \ROW|>   'packageA' -> \typeout {A}|\\
-% \ROW|>   'packageB' -> \typeout {B}|\\
-% \ROW|>   'packageC' -> \typeout {C}|\\
-% \ROW|> Execution order:|\\
-% \ROW|>   1: 'packageA'|\\
-% \ROW|>   2: 'packageB'|\\
-% \ROW|>   3: 'packageC'.|\\
-% \end{lthooksCode}
-%    The reason is that the code chunks are internally saved in a property list
-%    and the initial order of such a property list is the order in
-%    which key-value pairs got added. However, that is only true if
-%    nothing other than adding happens!
-%
-%    Suppose, for example, you want to replace the code chunk for
-%    \texttt{packageA}, e.g.,
-%\begin{lthooksCode}
-%\ROW|\RemoveFromHook{myhook}[packageA]|\\
-%\ROW|\AddToHook{myhook}[packageA]{\typeout{A alt}}|\\
-%\end{lthooksCode}
-%    then your execution order becomes
-%\begin{lthooksCode}
-%\ROW|>   1: 'packageB'|\\
-%\ROW|>   2: 'packageC'|\\
-%\ROW|>   3: 'packageA'.|\\
-%\end{lthooksCode}
-%    because the label got removed
-%    from the property list and then re-added (at its end).
-%
-%    While that may not be too surprising,  the execution order is
-%    also sometimes altered if you add a redundant rule, e.g. if you specify
-%\begin{lthooksCode}
-%\ROW\cs{DeclareHookRule}|{myhook}{packageA}{before}{packageB}|\\
-%\end{lthooksCode}
-%    instead of the previous lines we get
-%\begin{lthooksCode}
-%\ROW|==> Hook: 'myhook'|\\
-%\ROW|> Code chunks:|\\
-%\ROW|>   'packageA' -> \typeout {A}|\\
-%\ROW|>   'packageB' -> \typeout {B}|\\
-%\ROW|>   'packageC' -> \typeout {C}|\\
-%\ROW|> Rule:|\\
-%\ROW|>   'packageB' after 'packageA'|\\
-%\ROW|> Execution order:|\\
-%\ROW|>   1: 'packageA'|\\
-%\ROW|>   2: 'packageC'|\\
-%\ROW|>   3: 'packageB'.|\\
-%\end{lthooksCode}
-%    As you can see the code chunks are still listed in the same order, but
-%    in the execution order the labels \texttt{packageB} and
-%    \texttt{packageC} have
-%    swapped places.
-%    The reason is that, with the rule there are two orders that
-%    satisfy it, and the algorithm for sorting happened to pick a
-%    different one compared to the case without rules (where it
-%    doesn't run at all as there is nothing to resolve).
-%    Incidentally, if we had instead specified the redundant rule
-%\begin{lthooksCode}
-%\ROW|\DeclareHookRule{myhook}{packageB}{before}{packageC}|\\
-%\end{lthooksCode}
-%    the execution order would not have changed.
-%
-%    In summary: it is not possible to rely on the order of execution
-%    unless there are rules that partially or fully define the order
-%    (in which you can rely on them being fulfilled).
 %
 %
 % \subsection{Private \LaTeX{} kernel hooks}
@@ -6879,7 +6966,75 @@
 % \end{macro}
 %
 %
-%  \subsection{Specifying code for next invocation}
+% \subsubsection{Setting rules for mirrored hook pairs}
+%
+% \begin{macro}{
+%   \DeclareHookPairRule,
+%   \hook_pair_gset_rule:nnnn,
+% }
+% Test if the specified hook belongs to a mirrored hook pair
+% and then executes
+% \begin{lthooksCode}
+% \ROW\cs{DeclareHookRule}\\
+% \ROW\TAB\Arg{hook-spec}\Arg{label-spec_1}\Arg{relation}\Arg{label-spec_2}\\
+% \ROW\cs{DeclareHookRule}\\
+% \ROW\TAB\Arg{mirror hook-spec}\Arg{label-spec_1}\Arg{relation\LHXStar}\Arg{label-spec_2}
+% \end{lthooksCode}
+%    \begin{macrocode}
+\cs_new_protected:Npn \hook_pair_gset_rule:nnnn #1#2#3#4
+  {
+    \@@_normalize_hook_rule_args:Nnnnn \@@_pair_gset_rule:nnnn
+      {#1} {#2} {#3} {#4}
+  }
+\cs_new:Npn \@@_exp_mirror:Nn #1 #2 {
+  \exp_args:Nv #1 { c_@@_pair_#2_tl }
+}
+\cs_new_protected:Npn \@@_pair_gset_rule:nnnn #1#2#3#4
+  {
+    \hook_if_paired:nTF { #1 }
+      {
+        \@@_gset_rule:nnnn { #1 } { #2 } { #3 } { #4 }
+        \str_case:nnF { #3 }
+          {
+              { before }
+              {
+                \@@_exp_mirror:Nn
+                \@@_gset_rule:nnnn { #1 } { #2 } { after } { #4 }
+              }
+              { < }
+              {
+                \@@_exp_mirror:Nn
+                \@@_gset_rule:nnnn { #1 } { #2 } { > } { #4 }
+              }
+              { after }
+              {
+                \@@_exp_mirror:Nn
+                \@@_gset_rule:nnnn { #1 } { #2 } { before } { #4 }
+              }
+              { > }
+              {
+                \@@_exp_mirror:Nn
+                \@@_gset_rule:nnnn { #1 } { #2 } { < } { #4 }
+              }
+          }
+          {
+            \@@_exp_mirror:Nn
+            \@@_gset_rule:nnnn  { #1 } { #2 } { #3 } { #4 }
+          }
+      }
+      {
+        \msg_error:nnn { hooks } { missing-pair } {#1}
+      }
+  }
+%    \end{macrocode}
+% The \LaTeXe\ API.
+%    \begin{macrocode}
+\cs_set_eq:NN \DeclareHookPairRule \hook_pair_gset_rule:nnnn
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%%  \subsection{Specifying code for next invocation}
 %
 % \begin{macro}{\hook_gput_next_code:nn}
 % \changes{v1.1a}{2023/04/06}

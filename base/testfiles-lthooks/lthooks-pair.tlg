@@ -14,7 +14,7 @@ TEST 1: Declared pair
 ...   empty: Y
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -38,7 +38,7 @@ TEST 1: Declared pair
 ...   empty: Y
 ...   reversed: Y
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -62,7 +62,7 @@ TEST 1: Declared pair
 ...   empty: N
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -97,7 +97,7 @@ l. ...\ShowHook{lthooks/before}
 ...   empty: N
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -123,7 +123,7 @@ l. ...\ShowHook{lthooks/before}
 ...   empty: N
 ...   reversed: Y
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -159,7 +159,7 @@ l. ...\ShowHook{lthooks/after}
 ...   empty: N
 ...   reversed: Y
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'lthooks/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -189,7 +189,7 @@ TEST 2: quote
 ...   empty: N
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -215,7 +215,7 @@ TEST 2: quote
 ...   empty: N
 ...   reversed: Y
 ...   generic_reversed: Y
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -241,7 +241,7 @@ TEST 2: quote
 ...   empty: N
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -266,7 +266,7 @@ TEST 2: quote
 ...   empty: N
 ...   reversed: Y
 ...   generic_reversed: Y
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -291,7 +291,7 @@ TEST 2: quote
 ...   empty: Y
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/after'
 ...   # of arguments: 0
 ... Code chunks:
@@ -315,7 +315,7 @@ TEST 2: quote
 ...   empty: Y
 ...   reversed: Y
 ...   generic_reversed: Y
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'env/quote/before'
 ...   # of arguments: 0
 ... Code chunks:
@@ -343,7 +343,7 @@ TEST 3: one argument command
 ...   empty: N
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'cmd/lthooksCommand/after'
 ...   # of arguments: 1
 ... Code chunks:
@@ -369,7 +369,7 @@ TEST 3: one argument command
 ...   empty: N
 ...   reversed: Y
 ...   generic_reversed: Y
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'cmd/lthooksCommand/before'
 ...   # of arguments: 1
 ... Code chunks:
@@ -400,7 +400,7 @@ TEST>>>
 ...   empty: Y
 ...   reversed: N
 ...   generic_reversed: N
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'cmd/lthooksCommand/after'
 ...   # of arguments: 1
 ... Code chunks:
@@ -424,7 +424,7 @@ TEST>>>
 ...   empty: Y
 ...   reversed: Y
 ...   generic_reversed: Y
-...   execute_immediately: N
+...   consumed: N
 ...   pair: 'cmd/lthooksCommand/before'
 ...   # of arguments: 1
 ... Code chunks:
@@ -556,6 +556,99 @@ TEST 19: include
 PASSED
 PASSED
 ============================================================
+============================================================
+============================================================
+============================================================
+TEST 20: Rules
+============================================================
+PASSED
+PASSED
+LHX/before: 'A', 'B', 'C', 'D'
+LHX/after: 'D', 'C', 'B', 'A'
+PASSED
+============================================================
+TEST 21: A<B
+============================================================
+LHX/before: 'A', 'C', 'D', 'B'
+LHX/after: 'B', 'D', 'C', 'A'
+PASSED
+============================================================
+============================================================
+TEST 22: A>B
+============================================================
+LHX/before: 'B', 'C', 'D', 'A'
+LHX/after: 'A', 'D', 'C', 'B'
+PASSED
+============================================================
+============================================================
+TEST 23: A<C
+============================================================
+LHX/before: 'A', 'B', 'D', 'C'
+LHX/after: 'C', 'D', 'B', 'A'
+PASSED
+============================================================
+============================================================
+TEST 24: A>C
+============================================================
+LHX/before: 'B', 'C', 'D', 'A'
+LHX/after: 'A', 'D', 'C', 'B'
+PASSED
+============================================================
+============================================================
+TEST 25: A<D
+============================================================
+LHX/before: 'A', 'B', 'C', 'D'
+LHX/after: 'D', 'C', 'B', 'A'
+PASSED
+============================================================
+============================================================
+TEST 26: A>D
+============================================================
+LHX/before: 'B', 'C', 'D', 'A'
+LHX/after: 'A', 'D', 'C', 'B'
+PASSED
+============================================================
+============================================================
+TEST 27: B<C
+============================================================
+LHX/before: 'A', 'B', 'D', 'C'
+LHX/after: 'C', 'D', 'B', 'A'
+PASSED
+============================================================
+============================================================
+TEST 28: B>C
+============================================================
+LHX/before: 'A', 'C', 'D', 'B'
+LHX/after: 'B', 'D', 'C', 'A'
+PASSED
+============================================================
+============================================================
+TEST 29: B<D
+============================================================
+LHX/before: 'A', 'B', 'C', 'D'
+LHX/after: 'D', 'C', 'B', 'A'
+PASSED
+============================================================
+============================================================
+TEST 30: B>D
+============================================================
+LHX/before: 'A', 'C', 'D', 'B'
+LHX/after: 'B', 'D', 'C', 'A'
+PASSED
+============================================================
+============================================================
+TEST 31: C<D
+============================================================
+LHX/before: 'A', 'B', 'C', 'D'
+LHX/after: 'D', 'C', 'B', 'A'
+PASSED
+============================================================
+============================================================
+TEST 32: C>D
+============================================================
+LHX/before: 'A', 'B', 'D', 'C'
+LHX/after: 'C', 'D', 'B', 'A'
+PASSED
 ============================================================
 ============================================================
 !!!! If this test changes the documentation needs updating !!!!

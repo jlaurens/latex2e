@@ -176,6 +176,72 @@
 
 \ENDTEST
 
+\BEGINTEST{Rules}
+
+\NewMirroredHookPair{LHX/before}{LHX/after}
+\AddToHookPair{LHX/before}[A]{\TYPE{A/before}}{\TYPE{A/after}}
+\AddToHookPair{LHX/before}[B]{\TYPE{B/before}}{\TYPE{B/after}}
+\AddToHookPair{LHX/before}[C]{\TYPE{C/before}}{\TYPE{C/after}}
+\AddToHookPair{LHX/before}[D]{\TYPE{D/before}}{\TYPE{D/after}}
+
+\def\LHXRESET{
+  \DeclareHookPairRule{LHX/before}{A}{unrelated}{B}
+  \DeclareHookPairRule{LHX/before}{A}{unrelated}{C}
+  \DeclareHookPairRule{LHX/before}{A}{unrelated}{D}
+  \DeclareHookPairRule{LHX/before}{B}{unrelated}{C}
+  \DeclareHookPairRule{LHX/before}{B}{unrelated}{D}
+  \DeclareHookPairRule{LHX/before}{C}{unrelated}{D}
+}
+
+\ExplSyntaxOn
+
+\clist_new:N \l__lthooks_tmpa_clist
+\clist_new:N \l__lthooks_tmpb_clist
+
+\cs_set:Npn \clist__lthooks_copy:Nn #1 #2 {
+  \clist_set_eq:Nc #1 { g__hook_#2_labels_clist }
+  \exp_args:Nx \TYPE { #2 :~' \clist_use:Nn #1 { ',~' }'}
+}
+\def\LHXCheckHookPair#1{
+  \clist__lthooks_copy:Nn \l__lthooks_tmpa_clist { #1 }
+  \cs_set:Npn \TEST:w { \clist__lthooks_copy:Nn \l__lthooks_tmpb_clist }
+  \__hook_exp_mirror:Nn \TEST:w { #1 }
+  \clist_reverse:N \l__lthooks_tmpb_clist
+  \tl_if_eq:NNTF \l__lthooks_tmpa_clist \l__lthooks_tmpb_clist
+    {\TYPE{PASSED:~Reverse~order}}
+    {\TYPE{FAILED}}
+}
+\ExplSyntaxOn
+
+\ASSERTMatchDebugPrintHook{'A',\s'B',\s'C',\s'D'}{LHX/before}
+\ASSERTMatchDebugPrintHook{'D',\s'C',\s'B',\s'A'}{LHX/after}
+
+\LHXCheckHookPair{LHX/before}
+
+\ExplSyntaxOn
+\def\TEST#1#2{
+  \BEGINTEST{#1<#2}
+  \LHXRESET
+  \DeclareHookPairRule{LHX/before}{#1}{<}{#2}
+  \LHXCheckHookPair{LHX/before}
+  \ENDTEST
+  \BEGINTEST{#1>#2}
+  \LHXRESET
+  \DeclareHookPairRule{LHX/before}{#1}{>}{#2}
+  \LHXCheckHookPair{LHX/before}
+  \ENDTEST
+}
+\ExplSyntaxOff
+
+\TEST AB
+\TEST AC
+\TEST AD
+\TEST BC
+\TEST BD
+\TEST CD
+
+\ENDTEST
+
 \typeout{!!!! If this test changes the documentation needs updating !!!!}
 
 \END
