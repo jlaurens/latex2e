@@ -1,0 +1,214 @@
+% for getting the examples in the code really ...
+
+\ExplSyntaxOn
+\debug_on:n { check-declarations , deprecation }
+\ExplSyntaxOff
+
+\documentclass{article}
+
+\input{regression-test}
+
+\START
+
+\BEGINTEST{Emptiness}
+
+\def\MyAssertHookEmptiness#1#2 { \ASSERT{#2}{\IfHookEmptyTF{#1}{Y}{N}} }
+
+\BEGINTEST{Undeclare}
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHook{QUERY-E-1}[top-level]{}
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHook{QUERY-E-1}[top-level]{X}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\RemoveFromHook{QUERY-E-1}
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHook{QUERY-E-1}[X]{}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\RemoveFromHook{QUERY-E-1}[X]
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHook{QUERY-E-1}[X]{X}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\RemoveFromHook{QUERY-E-1}[X]
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHookNext{QUERY-E-1}{}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\ClearHookNext{QUERY-E-1}
+\MyAssertHookEmptiness{QUERY-E-1}{Y}
+\AddToHookNext{QUERY-E-1}{}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\UseHook{QUERY-E-1}
+\MyAssertHookEmptiness{QUERY-E-1}{N}
+\ENDTEST
+
+\BEGINTEST{Declared}
+\NewHook{QUERY-E-2}
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHook{QUERY-E-2}[top-level]{}
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHook{QUERY-E-2}[top-level]{X}
+\MyAssertHookEmptiness{QUERY-E-2}{N}
+\RemoveFromHook{QUERY-E-2}[top-level]
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHook{QUERY-E-2}[X]{}
+\MyAssertHookEmptiness{QUERY-E-2}{N}
+\RemoveFromHook{QUERY-E-2}[X]
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHook{QUERY-E-2}[X]{X}
+\MyAssertHookEmptiness{QUERY-E-2}{N}
+\RemoveFromHook{QUERY-E-2}[X]
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHookNext{QUERY-E-2}{}
+\MyAssertHookEmptiness{QUERY-E-2}{N}
+\ClearHookNext{QUERY-E-2}
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\AddToHookNext{QUERY-E-2}{}
+\MyAssertHookEmptiness{QUERY-E-2}{N}
+\UseHook{QUERY-E-2}
+\MyAssertHookEmptiness{QUERY-E-2}{Y}
+\ENDTEST
+
+\BEGINTEST{Declared with arguments}
+\NewHookWithArguments{QUERY-E-3}{2}
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHook{QUERY-E-3}[top-level]{}
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHook{QUERY-E-3}[top-level]{X}
+\MyAssertHookEmptiness{QUERY-E-3}{N}
+\RemoveFromHook{QUERY-E-3}[top-level]
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHook{QUERY-E-3}[X]{}
+\MyAssertHookEmptiness{QUERY-E-3}{N}
+\RemoveFromHook{QUERY-E-3}[X]
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHook{QUERY-E-3}[X]{X}
+\MyAssertHookEmptiness{QUERY-E-3}{N}
+\RemoveFromHook{QUERY-E-3}[X]
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHookNext{QUERY-E-3}{}
+\MyAssertHookEmptiness{QUERY-E-3}{N}
+\ClearHookNext{QUERY-E-3}
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\AddToHookNextWithArguments{QUERY-E-3}{\TYPE{#1#2}}
+\MyAssertHookEmptiness{QUERY-E-3}{N}
+\UseHookWithArguments{QUERY-E-3}{2}{... PAS}{SED}
+\MyAssertHookEmptiness{QUERY-E-3}{Y}
+\ENDTEST
+
+\BEGINTEST{One time}
+\NewHook{QUERY-E-4}
+\UseOneTimeHook{QUERY-E-4}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\AddToHookNext{QUERY-E-4}{\TYPE{... PASSED(Next)}}
+\MyAssertHookEmptiness{QUERY-E-4}{N}
+\ClearHookNext{QUERY-E-4}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\AddToHookNext{QUERY-E-4}{\TYPE{... PASSED(Next)}}
+\MyAssertHookEmptiness{QUERY-E-4}{N}
+\UseHook{QUERY-E-4}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\AddToHook{QUERY-E-4}{}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\AddToHook{QUERY-E-4}{\TYPE{... PASSED(Add)}}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\AddToHook{QUERY-E-4}[X]{\TYPE{... PASSED(Add)}}
+\MyAssertHookEmptiness{QUERY-E-4}{Y}
+\ENDTEST
+
+\BEGINTEST{One time with arguments}
+\NewHookWithArguments{QUERY-E-5}{2}
+\UseOneTimeHookWithArguments{QUERY-E-5}{2}{}{}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\AddToHookNextWithArguments{QUERY-E-5}{\TYPE{#1#2(next)}}
+\MyAssertHookEmptiness{QUERY-E-5}{N}
+\UseHookWithArguments{QUERY-E-5}{2}{... PAS}{SED}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\ClearHookNext{QUERY-E-5}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\AddToHook{QUERY-E-5}{}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\AddToHook{QUERY-E-5}{\TYPE{... PASSED(top-level)}}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\AddToHook{QUERY-E-5}[X]{\TYPE{... PASSED(X)}}
+\MyAssertHookEmptiness{QUERY-E-5}{Y}
+\ENDTEST
+
+\ENDTEST
+
+\BEGINTEST{Usability}
+
+\def\MyAssertHookUsability#1#2 { \ASSERT{#2}{\IfHookUsableTF{#1}{Y}{N}} }
+
+\BEGINTEST{Undeclared}
+\MyAssertHookUsability{QUERY-U-1}{N}
+\ENDTEST
+
+\BEGINTEST{Declared}
+\NewHook{QUERY-U-2}
+\MyAssertHookUsability{QUERY-U-2}{Y}
+\NewHookWithArguments{QUERY-U-2*}{2}
+\MyAssertHookUsability{QUERY-U-2*}{Y}
+\ENDTEST
+
+\BEGINTEST{Environment}
+\def\MyTest#1
+  {
+    \MyAssertHookUsability{env/QUERY/#1}{Y}
+    \DisableGenericHook{env/QUERY/#1}
+    \MyAssertHookUsability{env/QUERY/#1}{N}
+    \ActivateGenericHook{env/QUERY/#1}
+    \MyAssertHookUsability{env/QUERY/#1}{N}
+  }
+\MyTest{before}
+\MyTest{begin}
+\MyTest{end}
+\MyTest{after}
+\ENDTEST
+
+\BEGINTEST{Command}
+\def\MyTest#1
+  {
+    \MyAssertHookUsability{cmd/MyQUERYa/#1}{Y}
+    \DisableGenericHook{cmd/MyQUERYa/#1}
+    \MyAssertHookUsability{cmd/MyQUERYa/#1}{N}
+    \ActivateGenericHook{cmd/MyQUERYa/#1}
+    \MyAssertHookUsability{cmd/MyQUERYa/#1}{N}
+  }
+\MyTest{before}
+\MyTest{after}
+\ENDTEST
+
+\BEGINTEST{Activated generic hook}
+\MyAssertHookUsability{QUERY-U-5}{N}
+\ActivateGenericHook{QUERY-U-5}
+\MyAssertHookUsability{QUERY-U-5}{Y}
+\DisableGenericHook{QUERY-U-5}
+\MyAssertHookUsability{QUERY-U-5}{N}
+\ENDTEST
+
+\ENDTEST
+
+\BEGINTEST{Disability}
+
+\def\MyAssertHookDisability#1#2 { \ASSERT{#2}{\IfGenericHookDisabledTF{#1}{Y}{N}} }
+
+\BEGINTEST{Undeclared}
+\MyAssertHookDisability{QUERY-D-1}{N}
+\ENDTEST
+
+\BEGINTEST{Declared}
+\NewHook{QUERY-D-2}
+\MyAssertHookDisability{QUERY-D-2}{N}
+\NewHookWithArguments{QUERY-D-2*}{2}
+\MyAssertHookDisability{QUERY-D-2*}{N}
+\ENDTEST
+
+\BEGINTEST{Disabled}
+\DisableGenericHook{QUERY-D-3}
+\MyAssertHookDisability{QUERY-D-3}{Y}
+\ENDTEST
+
+\ENDTEST
+
+\TYPE{!!!! If this test changes the documentation needs updating !!!!}
+
+\END

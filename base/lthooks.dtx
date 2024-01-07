@@ -1696,56 +1696,83 @@
 %   No \LaTeX3 function was exposed.
 %
 %
-% \subsection{\LaTeXe\ interfaces}
-%
-%
-% \subsubsection{Querying hooks}
+% \subsection{Querying hooks}
 % \label{sec:querying}
 %
-% Simpler data types, like token lists, have three possible states; they
-% can:
-% \begin{itemize}
-%   \item exist and be empty;
-%   \item exist and be non-empty; and
-%   \item not exist (in which case emptiness doesn't apply);
-% \end{itemize}
-% Hooks are a bit more complicated:
-% a hook may exist or not, and independently it may or may not be empty.
-% This means that even a hook that doesn't exist may be non-empty and
-%    it can also be disabled.
+% In general, commands that represent simple data, like token lists,
+% have three possible states: exist; exist and empty; and don't exist.
+% On the contrary, hooks are entities that always exist:
+% you can always add or remove code chunks to hooks and you can
+% always define rules involving hooks, as long as it remains consistent.
+% This allows package \pkg{pkg-B} to amend a hook defined in package \pkg{pkg-A},
+% even if \pkg{pkg-A} is loaded after \pkg{pkg-B} or
+% if \pkg{pkg-A} is never loaded at all. 
 %
-% This seemingly strange state may happen when, for example, package~$A$
-% defines hook \hook{A/foo}, and package $B$ adds some code to that
-% hook.  However, a document may load package $B$ before package $A$, or
-% may not load package $A$ at all.  In both cases some code is added to
-% hook \hook{A/foo} without that hook being defined yet, thus that
-% hook is said to be non-empty, whereas it doesn't exist.  Therefore,
-% querying the existence of a hook doesn't imply its emptiness, neither
-% does the other way around.
-%
-% Given that code or rules can be added to a hook even if it doesn't
-% physically exist yet, means that a querying its existence has no
-% real use case (in contrast to other variables that can only be
-% update if they have already been declared). For that reason only the
-% test for emptiness has a public interface.
-%
-% A hook is said to be empty when no code was added to it, either to
-% its permanent code pool, or to its ``next'' token list.  The hook
-% doesn't need to be declared to have code added to its code pool.
-% A hook is said to exist when it was declared with \cs{NewHook} or
-% some variant thereof.  Generic hooks such as \hook{file} and \hook{env} hooks are
-% automatically declared when code is added to them.
+% Given these facts, a pragmatic question is whether a hook will execute
+% code when used. For this we can test emptiness and usability.
 %
 % \begin{function}[EXP]{\IfHookEmptyTF}
 %   \begin{syntax}
 %     \cs{IfHookEmptyTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
 %   \end{syntax}
-%   Tests if the specified hook is empty (\emph{i.e.}, no code was added to
-%   it using either \cs{AddToHook} or \cs{AddToHookNext}) or such code
-%    was removed again (via \cs{RemoveFromHook}), and
-%   branches to either \meta{true code} or \meta{false code} depending
-%   on the result.
 % \end{function}
+% \vskip-\baselineskip
+% \begin{function}[pTF,EXP]{\hook_if_empty:n}
+%   \begin{syntax}
+%     \cs{hook_if_empty:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+%   Tests if the hook with the given name is \emph{empty},
+%   \emph{i.e.} any code ever added has been removed via
+%   \cs{RemoveFromHook} or similar, or consumed on use for
+%   \hook{next-only} code. Adding an empty code chunk to an empty
+%   hook, makes it non empty, except for \hook{top-level} label.
+%   Branches to either \meta{true code} or \meta{false code}
+%   depending on the result.
+%   \cs{ShowHook} output shows the emptiness.
+% \end{function}
+%
+% \begin{function}[EXP]{\IfHookUsableTF}
+%   \begin{syntax}
+%     \cs{IfHookUsableTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+% \end{function}
+% \vskip-\baselineskip
+% \begin{function}[pTF,EXP,added=2024/01/01]{\hook_if_usable:n}
+%   \begin{syntax}
+%     \cs{hook_if_usable:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+%   Tests if the hook with the given name is usable, \emph{i.e.}
+%   has been declared with \cs{NewHook} (or some variant thereof),
+%   or is a generic hook, either builtin or
+%   explicitly activated with \cs{ActivateGenericHook},
+%   and which was not disabled by \cs{DisableGenericHook}.
+%   Branches to either \meta{true code} or \meta{false code}
+%   depending on the result.
+%   When a hook is usable, its code gets executed when
+%   \cs{UseHook}-like commands are executed.
+%   \cs{ShowHook} output displays an execution order exactly when
+%   the hook is usable.
+% \end{function}
+%
+% \begin{function}[EXP]{\IfGenericHookDisabledTF}
+%   \begin{syntax}
+%     \cs{IfGenericHookDisabledTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+% \end{function}
+% \vskip-\baselineskip
+% \begin{function}[pTF,EXP,added=2024/01/01]{\hook_if_generic_disabled:nTF}
+%   \begin{syntax}
+%     \cs{hook_if_generic_disabled:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+%   \end{syntax}
+%   Tests if the generic hook with the given name has been disabled
+%   by \cs{DisableGenericHook} or similar.
+%   Branches to either \meta{true code} or \meta{false code}
+%   depending on the result.
+%   \cs{ShowHook} output shows the disable status of a generic hook.
+% \end{function}
+%
+%
+% \subsection{\LaTeXe\ interfaces}
 %
 % \begin{function}[EXP]{\IfHookConsumedTF}
 %   \begin{syntax}
@@ -2890,7 +2917,7 @@
 %       In this state the hook can be declared, disabled, rules can be
 %       defined or code could be added to it, but it is not possible
 %       to use the hook (with \cs{UseHook}).
-
+%
 %    \item[basic data structure set up]
 %
 %       A hook is this state when its basic data structure has been
@@ -3411,6 +3438,14 @@
     \cs_undefine:c { @@~#1 }
   }
 \prg_new_conditional:Npnn \@@_if_disabled:n #1 { p, T, F, TF }
+  {
+    \bool_lazy_and:nnTF
+        { \tl_if_exist_p:c { g_@@_#1_declared_tl } }
+        { ! \cs_if_exist_p:c { @@~#1 } }
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+\prg_new_conditional:Npnn \hook_if_generic_disabled:n #1 { p, T, F, TF }
   {
     \bool_lazy_and:nnTF
         { \tl_if_exist_p:c { g_@@_#1_declared_tl } }
@@ -7575,6 +7610,20 @@
 %    \begin{macrocode}
 %<latexrelease>\IncludeInRelease{2023/06/01}{\hook_if_empty:n}
 %<latexrelease>                 {Hooks~with~args}
+\prg_new_conditional:Npnn \@@_if_empty:n #1 { p , T , F , TF }
+  {
+    \if:w
+        T
+        \prop_if_exist:cT { g_@@_#1_code_prop }
+          { \prop_if_empty:cF { g_@@_#1_code_prop } { F } }
+        \@@_cs_if_empty:cF { @@_toplevel~#1 } { F }
+        \@@_cs_if_empty:cF { @@_next~#1 } { F }
+        T
+      \prg_return_true:
+    \else:
+      \prg_return_false:
+    \fi:
+  }
 \prg_new_conditional:Npnn \hook_if_empty:n #1 { p , T , F , TF }
   {
     \if:w
@@ -7630,6 +7679,26 @@
     \cs_if_exist:cTF { @@~#1 }
       { \prg_return_true: }
       { \prg_return_false: }
+  }
+%    \end{macrocode}
+% \end{macro}
+% 
+% \begin{macro}[pTF]{\hook_if_usable:n}
+%    Declared or generic usable and not disabled.
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \hook_if_usable:n #1 { p , T , F , TF }
+  {
+    \@@_if_disabled:nTF { #1 }
+      { \prg_return_false: }
+      {
+        \@@_if_declared:nTF { #1 }
+          { \prg_return_true: }
+          { 
+            \@@_if_generic:nTF { #1 }
+              { \prg_return_true: }
+              { \prg_return_false: }
+          }
+      }
   }
 %    \end{macrocode}
 % \end{macro}
@@ -8367,6 +8436,20 @@
 %   expansion step.
 %    \begin{macrocode}
 \cs_new_eq:NN \IfHookEmptyTF \hook_if_empty:nTF
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[EXP]{\IfHookUsableTF}
+%   Copy of \cs{hook_if_usable:nTF}.
+%    \begin{macrocode}
+\cs_new_eq:NN \IfHookUsableTF \hook_if_usable:nTF
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[EXP]{\IfGenericHookDisabledTF}
+%   Copy of \cs{hook_if_generic_disabled:nTF}.
+%    \begin{macrocode}
+\cs_new_eq:NN \IfGenericHookDisabledTF \hook_if_generic_disabled:nTF
 %    \end{macrocode}
 % \end{macro}
 %
