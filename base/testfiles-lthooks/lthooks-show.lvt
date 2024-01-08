@@ -488,6 +488,9 @@
 \TYPE{>>>>>>>>>> Compare...}
 \ENDTEST
 
+\TYPE{>>>>>>>>>> Compare...}
+\ENDTEST
+
 \typeout{!!!! If this test changes the documentation needs updating !!!!}
 
 \END

@@ -1754,7 +1754,29 @@
 %   the hook is usable.
 % \end{function}
 %
-% \begin{function}[EXP]{\IfGenericHookDisabledTF}
+% \begin{function}[EXP]{\IfHookPairedTF}
+  %   \begin{syntax}
+  %     \cs{IfHookPairedTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+  %   \end{syntax}
+  % \end{function}
+  % \vskip-\baselineskip
+  % \begin{function}[EXP,pTF,added=2024/01/01]{\hook_if_paired:n}
+  %   \begin{syntax}
+  %     \cs{hook_if_paired:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
+  %   \end{syntax}
+  %   Tests if the named hook belongs to a mirrored hook pair, and
+  %   branches to either \meta{true code} or \meta{false code} depending
+  %   on the result.
+  % Belonging to a mirrored hook pair means one of
+  % \begin{itemize}
+  % \item the hook has been explictly declare with
+  % \cs{NewMirroredHookPair} or similar;
+  % \item the hook belongs to a pair of \hook{\meta{...}/before} and
+  % \hook{\meta{...}/after} builtin generic hooks.
+  % \end{itemize}
+  % \end{function}
+  %
+  % \begin{function}[EXP]{\IfGenericHookDisabledTF}
 %   \begin{syntax}
 %     \cs{IfGenericHookDisabledTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
 %   \end{syntax}
@@ -1770,9 +1792,6 @@
 %   depending on the result.
 %   \cs{ShowHook} output shows the disable status of a generic hook.
 % \end{function}
-%
-%
-% \subsection{\LaTeXe\ interfaces}
 %
 % \begin{function}[EXP]{\IfHookConsumedTF}
 %   \begin{syntax}
@@ -1790,131 +1809,40 @@
 %   on the result.
 % \end{function}
 %
-% \begin{function}[EXP]{\IfHookPairedTF}
-%   \begin{syntax}
-%     \cs{IfHookPairedTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
-%   \end{syntax}
-% \end{function}
-% \vskip-\baselineskip
-% \begin{function}[EXP,pTF,added=2024/01/01]{\hook_if_paired:n}
-%   \begin{syntax}
-%     \cs{hook_if_paired:nTF} \Arg{hook-name\LHXStar} \Arg{true code} \Arg{false code}
-%   \end{syntax}
-%   Tests if the named hook belongs to a mirrored hook pair, and
-%   branches to either \meta{true code} or \meta{false code} depending
-%   on the result.
-% Belonging to a mirrored hook pair means one of
-% \begin{itemize}
-% \item the hook has been explictly declare with
-% \cs{NewMirroredHookPair} or similar;
-% \item the hook belongs to a pair of \hook{\meta{...}/before} and
-% \hook{\meta{...}/after} builtin generic hooks.
-% \end{itemize}
-% \end{function}
 %
-%
-% \subsubsection{Displaying hook code}
+% \subsection{Displaying hook code}
 %
 %    If one has to adjust the code execution in a hook using a hook
 %    rule it is helpful to get some information about the code
 %    associated with a hook, its current order and the existing rules.
 %
-% \begin{function}{\ShowHook,\LogHook}
+% \begin{function}{\ShowHook,\hook_show:n,\LogHook,\hook_log:n}
 %   \begin{syntax}
-%     \cs{ShowHook} \Arg{hook-spec}
-%     \cs{LogHook}  \Arg{hook-spec}
+% \LEFT{\cs{ShowHook} \Arg{hook-spec}}^^A
+% \RIGHT{\cs{hook_show:n} \Arg{hook-spec}}
+% \LEFT{\cs{LogHook} \Arg{hook-spec}}^^A
+% \RIGHT{\cs{hook_log:n} \Arg{hook-spec}}
 %   \end{syntax}
 %   Displays information about the specified hook such as
 %   \begin{itemize}
 %   \item
-%      the code chunks (and their labels) added to it,
+%      the code chunks added to it, by label including
+%      \enquote{\hook{top-level}}, and for next-only use,
+%   \item
+%      any default rules set up to order them,
 %   \item
 %      any rules set up to order them,
 %   \item
 %      the computed order in which the chunks are executed,
-%   \item
-%      any code executed on the next invocation only.
 %   \end{itemize}
 % \end{function}
 %
-%   \cs{LogHook} prints the information to the |.log| file, and
-%   \cs{ShowHook} prints them to the terminal/command window and starts
-%   \TeX's prompt (only in \cs{errorstopmode}) to wait for user action.
+%   \cs{LogHook} and \cs{hook_log:n} print the information to the |.log| file,
+%   \cs{ShowHook} and \cs{hook_show:n} print them to the terminal/command window
+%   and start \TeX's prompt (only in \cs{errorstopmode}) to wait for user action.
 %
-%    The \meta{hook} can be specified using the dot-syntax to denote
-%    the current package name. See sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}.
 %
-%^^A   % Code for the listing below:
-%^^A   \NewHook{example-hook}
-%^^A   \AddToHook{example-hook}{[code from 'top-level']}
-%^^A   \AddToHook{example-hook}[foo]{[code from package 'foo']}
-%^^A   \AddToHook{example-hook}[bar]{[from package 'bar']}
-%^^A   \AddToHook{example-hook}[baz]{[package 'baz' is here]}
-%^^A   \AddToHookNext{example-hook}{[one-time code]}
-%^^A   \DeclareHookRule{example-hook}{baz}{before}{foo}
-%^^A   \DeclareDefaultHookRule{bar}{after}{baz}
-%^^A   \ShowHook{example-hook}
-%
-%   \def\theFancyVerbLine{\textcolor[gray]{0.5}{%^^A
-%     \sffamily\tiny\arabic{FancyVerbLine}}}
-%
-%   \bigskip
-%   Suppose a hook \texttt{example-hook} whose output of
-%   \cs{ShowHook}|{example-hook}| is:
-%   \begin{lthooksCode}[lineno]
-%   \ROW|==> Hook: 'example-hook'|\\
-%   \ROW|> Code chunks:|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:top-level,
-%   ]|>   'top-level' -> [code from 'top-level']|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:next-only,
-%   ]|>   next-only -> [one-time code]|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:foo,
-%   ]|>   'foo' -> [code from package 'foo']|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:bar,
-%   ]|>   'bar' -> [from package 'bar']|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:baz,
-%   ]|>   'baz' -> [package 'baz' is here]|\\
-%   \ROW|> Default rules:|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:default-rule,
-%   ]|>   'foo' after 'baz'|\\
-%   \ROW|> Rules:|\\
-%   \ROW[format=\bfseries,mark=$\to$\;,label=line:example-hook:rule,
-%   ]|>   'baz' before 'bar'|\\
-%   \ROW|> Execution order:|\\
-%   \ROW[format=\bfseries]|>   1: 'baz'|\\
-%   \ROW[format=\bfseries]|>   2: 'foo'|\\
-%   \ROW[format=\bfseries]|>   3: 'bar'|\\
-%   \ROW[format=\bfseries]|>   4: 'top-level'|\\
-%   \ROW[format=\bfseries]|>   5: next-only|\\
-%   \end{lthooksCode}
-%
-%   In the listing above, lines~\ref{line:example-hook:foo} to~\ref{line:example-hook:baz}
-%   show the three code chunks added
-%   to the hook and their respective labels.
-%   Line~\ref{line:example-hook:top-level} shows the code chunk added by the user in the main document
-%   (labeled |top-level|).
-%   This code will be either the first or last labeled code executed by the hook
-%   (|last| if the hook is normal, |first| if it is reversed).  This
-%   chunk is not affected by rules and does not take part in sorting.
-%
-%   Line~\ref{line:example-hook:next-only} shows the code chunk for the next execution of the hook.
-%   This code will be used and disappear at the next
-%   \verb|\UseHook{example-hook}|, in contrast to the chunks mentioned
-%   earlier, which can only be removed from that hook by doing
-%   \verb|\RemoveFromHook{|\meta{label}|}[example-hook]|.
-%
-%   Line~\ref{line:example-hook:default-rule}
-%   shows the rules declared by \cs{DeclareDefaultHookRule}.
-%   This rule applies to its labels in \emph{all} hooks, unless
-%   overridden by a non-default relation. Line~\ref{line:example-hook:rule}
-%   shows the rules declared by \cs{DeclareHookRule}.
-%   Both |'|\metatt{label_1}|' before '|\metatt{label_2}
-%   and  |'|\metatt{label_2}|' after '|\metatt{label_1}
-%   are equivalent.
-%
-%   Finally, last lines list the code chunks in the order they will be executed when the hook is used.
-%
+% \subsection{\LaTeXe\ interfaces}
 %
 % \subsubsection{Debugging or testing hook code}
 %
@@ -1946,30 +1874,6 @@
 % you always have to specify the \meta{label} for a code chunk.  We
 % therefore suggest to use the declarations discussed in the previous
 % section even in \texttt{expl3} packages, but the choice is yours.
-%
-% \begin{function}{\hook_show:n,\hook_log:n}
-%   \begin{syntax}
-%     \cs{hook_show:n} \Arg{hook-spec}
-%     \cs{hook_log:n}  \Arg{hook-spec}
-%   \end{syntax}
-%   Displays information about the specified hook such as
-%   \begin{itemize}
-%   \item
-%      the status of the hook,
-%   \item
-%      the code chunks (and their labels) added to it,
-%   \item
-%      any rules set up to order them,
-%   \item
-%      the computed order in which the chunks are executed,
-%   \item
-%      any code executed on the next invocation only.
-%   \end{itemize}
-%
-%   \cs{hook_log:n} prints the information to the |.log| file, and
-%   \cs{hook_show:n} prints them to the terminal/command window and starts
-%   \TeX's prompt (only if \cs{errorstopmode}) to wait for user action.
-% \end{function}
 %
 % \begin{function}{\hook_debug_on:,\hook_debug_off:}
 %   \begin{syntax}
