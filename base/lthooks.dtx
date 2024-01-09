@@ -1842,13 +1842,14 @@
 %   and start \TeX's prompt (only in \cs{errorstopmode}) to wait for user action.
 %
 %
-% \subsection{\LaTeXe\ interfaces}
+% \subsection{Debugging or testing hook code}
 %
-% \subsubsection{Debugging or testing hook code}
-%
-% \begin{function}{\DebugHooksOn,\DebugHooksOff}
+% \begin{function}{\DebugHooksOn,\hook_debug_on:,\DebugHooksOff,\hook_debug_off:}
 %   \begin{syntax}
-%     \cs{DebugHooksOn}
+% \LEFT{\cs{DebugHooksOn}}^^A
+% \RIGHT{\cs{hook_debug_on:}}
+% \LEFT{\cs{DebugHooksOff}}^^A
+% \RIGHT{\cs{hook_debug_off:}}
 %   \end{syntax}
 %    Turn the debugging of hook code on or off. This displays most changes
 %    made to the hook data structures. The output is rather coarse and
@@ -1861,26 +1862,6 @@
 %   \end{syntax}
 %    Prints information about the hook. The output is rather coarse and
 %      primarily intended for debugging or testing purposes.
-% \end{function}
-%
-%
-% \subsection{L3 programming layer (\texttt{expl3}) interfaces}
-% \label{sec:l3hook-interface}
-%
-%
-% This is a quick summary of the \LaTeX3 programming interfaces for
-% use with packages written in \texttt{expl3}. In contrast to the
-% \LaTeXe{} interfaces they always use mandatory arguments only, e.g.,
-% you always have to specify the \meta{label} for a code chunk.  We
-% therefore suggest to use the declarations discussed in the previous
-% section even in \texttt{expl3} packages, but the choice is yours.
-%
-% \begin{function}{\hook_debug_on:,\hook_debug_off:}
-%   \begin{syntax}
-%     \cs{hook_debug_on:}
-%   \end{syntax}
-%    Turns the debugging of hook code on or off. This displays changes
-%    to the hook data.
 % \end{function}
 %
 %
