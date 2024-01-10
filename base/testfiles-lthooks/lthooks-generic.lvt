@@ -23,6 +23,17 @@
 
 \ENDTEST
 
+\NewDocumentCommand\FOO{}{\typeout{FOO}}
+\FOO
+\AddToHook{cmd/FOO/before}{\TYPE{<<<}}
+\AddToHook{cmd/FOO/after}{\TYPE{>>>}}
+
+\SEPARATOR
+\TYPE{begin{document}}
+\SEPARATOR
+\OMIT
+\begin{document}
+\TIMO
 \BEGINTEST{Unsupported `/` in builtin generic name variable part}
 
 \NewDocumentEnvironment{lthooks/TEST}{}{}{}
@@ -46,23 +57,92 @@
 \NewHook{env/lthooks/TEST0/end}
 \NewReversedHook{env/lthooks/TEST0/after}
 
-\cs_set:Npn \TEST #1 {
+\cs_set:Npn \TESTER #1 {
   \group_begin:
-  \cs_set:Npn \TEST { \TYPE{FAILED~(#1)} }
-  \AddToHook{env/lthooks/TEST0/#1}{ \cs_set:Npn \TEST { \TYPE{PASSED~(#1)} } }
+  \cs_set:Npn \TESTER { \TYPE{FAILED~(#1)} }
+  \AddToHook{env/lthooks/TEST0/#1}{ \cs_set:Npn \TESTER { \TYPE{PASSED~(#1)} } }
   \begin{lthooks/TEST0}\TYPE{PASSED~(body)}\end{lthooks/TEST0}
-  \TEST
+  \TESTER
   \group_end:
 }
 \ExplSyntaxOff
 
-\TEST{before}
-\TEST{begin}
-\TEST{end}
-\TEST{after}
+\TESTER{before}
+\TESTER{begin}
+\TESTER{end}
+\TESTER{after}
+
+\ENDTEST
+
+\BEGINTEST{cmd/TESTFOO/...}
+\ExplSyntaxOn
+\cs_undefine:N \TESTFOO
+\NewDocumentCommand\TESTFOO{}{\TYPE{PASSED~(TESTFOO)}}
+\TESTFOO
+\AddToHook
+  {cmd/TESTFOO/before}
+  [A]
+  {\cs_set:Npn \TESTFOOBEFORE{\TYPE{FAILED~(before)}}}
+\AddToHook
+  {cmd/TESTFOO/before}
+  [B]
+  {\cs_set:Npn \TESTFOOBEFORE{\TYPE{PASSED~(before)}}}
+\AddToHook
+  {cmd/TESTFOO/after}
+  [A]
+  {\cs_set:Npn \TESTFOOAFTER{\TYPE{PASSED~(after)}}}
+\AddToHook
+  {cmd/TESTFOO/after}
+  [B]
+  {\cs_set:Npn \TESTFOOAFTER{\TYPE{FAILED~(after)}}}
+
+%\UseHook{cmd/TESTFOO/before}
+\TESTFOO
+\TESTFOOBEFORE
+\TESTFOOAFTER
+
+\ExplSyntaxOff
+
+\ENDTEST
+
+\BEGINTEST{file/<name>/...}
+
+\begin{filecontents}[overwrite]{lthooks-generic-A.tex}
+\typeout{PASSED (lthooks-generic-A.tex)}
+\end{filecontents}
+
+\def\TESTFOOBEFORE{FAILED}
+\def\TESTFOOAFTER{FAILED}
+
+\AddToHook{file/lthooks-generic-A.tex/before}[A]
+  {\def\TESTFOOBEFORE{\TYPE{FAILED (before)}}}
+\AddToHook{file/lthooks-generic-A.tex/before}[B]
+  {\def\TESTFOOBEFORE{\TYPE{PASSED (before)}}}
+\AddToHook{file/lthooks-generic-A.tex/after}[A]
+  {\def\TESTFOOAFTER{\TYPE{PASSED (after)}}}
+\AddToHook{file/lthooks-generic-A.tex/after}[B]
+  {\def\TESTFOOAFTER{\TYPE{FAILED (after)}}}
+\DebugPrintHook{file/lthooks-generic-A.tex/before}
+\DebugPrintHook{file/lthooks-generic-A.tex/after}
+\input{lthooks-generic-A.tex}
+
+\TESTFOOBEFORE
+\TESTFOOAFTER
+
+\def\TESTFOOBEFORE{FAILED}
+\def\TESTFOOAFTER{FAILED}
+\include{lthooks-generic-A.tex}
+\TESTFOOBEFORE
+\TESTFOOAFTER
+
+\ENDTEST
+
+\BEGINTEST{file/<name>/...}
 
 \ENDTEST
 
 \typeout{!!!! If this test changes the documentation needs updating !!!!}
+
+\end{document}
 
 \END

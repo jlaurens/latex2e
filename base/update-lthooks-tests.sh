@@ -102,6 +102,7 @@ l3build save -cconfig-lthooks \
    lthooks-pair \
    lthooks-generic \
    lthooks-query \
+   lthooks-file \
    lthooks-errors \
    lthooks-errors-deprecated \
    lthooks-etoolbox \

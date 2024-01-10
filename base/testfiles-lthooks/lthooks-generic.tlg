@@ -10,6 +10,10 @@ TEST 2: Activated generic
 ============================================================
 PASSED
 ============================================================
+FOO
+============================================================
+begin{document}
+============================================================
 ============================================================
 TEST 3: Unsupported `/` in builtin generic name variable part
 ============================================================
@@ -27,4 +31,74 @@ PASSED (before)
 PASSED (body)
 PASSED (after)
 ============================================================
+============================================================
+TEST 5: cmd/TESTFOO/...
+============================================================
+PASSED (TESTFOO)
+PASSED (TESTFOO)
+PASSED (before)
+PASSED (after)
+============================================================
+============================================================
+TEST 6: file/<name>/...
+============================================================
+LaTeX Info: Writing file `./lthooks-generic-A.tex'.
+<<< Hook: 'file/lthooks-generic-A.tex/before'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \def \TESTFOOBEFORE {\TYPE {FAILED (before)}}
+...   'B' -> \def \TESTFOOBEFORE {\TYPE {PASSED (before)}}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'A', 'B'
+>>>
+<<< Hook: 'file/lthooks-generic-A.tex/after'
+... Attributes:
+...   deprecated_generic: N
+...   generic: Y
+...   declared: N
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: Y
+...   # of arguments: 0
+... Code chunks:
+...   'A' -> \def \TESTFOOAFTER {\TYPE {PASSED (after)}}
+...   'B' -> \def \TESTFOOAFTER {\TYPE {FAILED (after)}}
+...   'top level' empty
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   'B', 'A'
+>>>
+(lthooks-generic-A.tex
+PASSED (lthooks-generic-A.tex)
+)
+PASSED (before)
+PASSED (after)
+(lthooks-generic-A.tex
+PASSED (lthooks-generic-A.tex)
+)
+PASSED (before)
+PASSED (after)
+============================================================
 !!!! If this test changes the documentation needs updating !!!!
+(lthooks-generic.aux (lthooks-generic-A.aux))

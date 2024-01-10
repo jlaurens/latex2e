@@ -1978,49 +1978,14 @@
 % \section{\LaTeXe{} commands and environments augmented by hooks}
 % \label{sec:LaTeX-hooks}
 %
-%    In this section we describe the standard hooks that are now
-%    offered by \LaTeX{}, or give pointers to other documents in which
-%    they are described. This section will grow over time (and
-%    perhaps eventually move to usrguide3).  
-%
-% \subsection{Generic hooks}
+% \subsection{Builtin generic hooks}
 % \label{sec:generic}
 % \label{sec:LaTeX-generic-hooks}
 %
-% As stated earlier, with the exception of generic hooks, all hooks must 
-% be declared with \cs{NewHook} before they can be used.  
-% All generic hooks have names of the form 
-% \enquote{\meta{type}/\meta{name}/\meta{position}}, where \meta{type}
-% is from the predefined list shown below, and \meta{name} is the variable
-% part whose meaning will depend on the \meta{type}. The last component,
-% \meta{position}, has more complex possibilities: 
-% it can always be |before| or |after|; for |env| hooks, it can also be |begin|
-% or |end|; and for |include| hooks it can also be |end|.  Each specific
-% hook is documented below, or in \texttt{ltcmdhooks-doc.pdf} or
-% \texttt{ltfilehook-doc.pdf}.
-%
-% The generic hooks provided by \LaTeX{} belong to one of the six types:
-% \begin{description}
-%   \item[env] Hooks executed before and after environments --
-%     \meta{name} is the name of the environment, and available values
-%     for \meta{position} are |before|, |begin|, |end|, and |after|;
-%   \item[cmd] Hooks added to and executed before and after commands --
-%     \meta{name} is the name of the command, and available values
-%     for \meta{position} are |before| and |after|;
-%   \item[file] Hooks executed before and after reading a file --
-%     \meta{name} is the name of the file (with extension), and
-%     available values for \meta{position} are |before| and |after|;
-%   \item[package] Hooks executed before and after loading packages --
-%     \meta{name} is the name of the package, and available values for
-%     \meta{position} are |before| and |after|;
-%   \item[class] Hooks executed before and after loading classes --
-%     \meta{name} is the name of the class, and available values for
-%     \meta{position} are |before| and |after|;
-%   \item[include] Hooks executed before and after \cs{include}d files -- 
-%     \meta{name} is the name of the included file (without the |.tex|
-%     extension), and available values for \meta{position} are |before|,
-%     |end|, and |after|.
-% \end{description}
+% As stated earlier, all hooks must be declared with \cs{NewHook} or similar
+% before they can be used, except generic hooks.
+% \LaTeX2e\ provides us with sets of builtin generic hooks which names
+% have the form \enquote{\meta{type}/\meta{variable part}/\meta{position}}.
 %
 % Each of the hooks above are detailed in the following sections and
 % in linked documentation.
@@ -2028,7 +1993,7 @@
 %
 % \subsubsection{Generic hooks for all environments}
 %
-%    Every environment \meta{env} has now four associated hooks coming
+%    Every environment \meta{env}\footnote{\meta{env} is subject to usual restrictions on the environment name: only ascii letters, digits and \enquote{\texttt{*}}, as well as no leading \enquote{\texttt{end}}.} has four associated hooks coming
 %    with it:
 %    \begin{description}
 %    \item[\hook{env/\meta{env}/before}]
@@ -2040,123 +2005,102 @@
 %    \item[\hook{env/\meta{env}/begin}]
 %
 %       This hook is executed as part of \cs{begin} directly in front
-%       of the code specific to the environment start (e.g.,
-%       the third argument of \cs{NewDocumentEnvironment} and
-%       the second argument of \cs{newenvironment}).
+%       of the code specific to the environment start (i.e.,
+%       the second argument of \cs{newenvironment} or
+%       the third argument of \cs{NewDocumentEnvironment}).
 %       Its scope is the environment body.
 %
 %    \item[\hook{env/\meta{env}/end}]
 %
 %       This hook is executed as part of \cs{end} directly in front of the
-%       code specific to the end of the environment (e.g.,
-%       the forth argument of \cs{NewDocumentEnvironment} and
-%       the third argument of \cs{newenvironment}).
+%       code specific to the end of the environment (i.e.,
+%       the third argument of \cs{newenvironment}
+%       or the fourth argument of \cs{NewDocumentEnvironment}).
 %
 %    \item[\hook{env/\meta{env}/after}]
 %
-%       This hook is executed as part of \cs{end} after the
+%       This reversed hook is executed as part of \cs{end} after the
 %       code specific to the environment end and after the environment
 %       group has ended.
 %       Its scope is therefore not restricted by the environment.
-%
-%       The hook is implemented as a reversed hook so if two packages
-%       add code to \hook{env/\meta{env}/before} and to
-%       \hook{env/\meta{env}/after} they can add surrounding
-%       environments and the order of closing them happens in the
-%       right sequence.
+%       It is the mirror of the direct hook \hook{env/\meta{env}/before}.
 %
 %    \end{description}
 %    Generic environment hooks are never one-time hooks even with
 %    environments that are supposed to appear only once in a
-%    document.\footnote{Thus if one adds code to such hooks after the
-%    environment has been processed, it will only be executed if the
-%    environment appears again and if that doesn't happen the code
-%    will never get executed.}  In contrast to other hooks there is
-%    also no need to declare them using \cs{NewHook}.
+%    document.
 %
-%    The hooks are only executed if \cs{begin}\Arg{env} and
-%    \cs{end}\Arg{env} is used. If the environment code is executed
+%    The hooks are only executed if
+%    \texttt{\cs{begin}\Arg{env}...\cs{end}\Arg{env}} is used.
+%    If the environment code is executed
 %    via low-level calls to \cs[no-index]{\meta{env}} and \cs[no-index]{end\meta{env}}
 %    (e.g., to avoid the environment grouping) they are not
 %    available. If you want them available in code using this method,
-%    you would need to add them yourself, i.e., write something like
+%    you can emulate the sandard behavior with
 %\begin{lthooksCode}
-%\ROW|\UseHook{env/quote/before}\quote|\\
+%\ROW\cs{UseHook}|{|\hook{env/quote/before}|}%|\\
+%\ROW|\quote|\\
+%\ROW\cs{UseHook}|{|\hook{env/quote/begin}|}%|\\
 %\ROW|...|\\
-%\ROW|\endquote\UseHook{env/quote/after}|\\
+%\ROW\cs{UseHook}|{|\hook{env/quote/end}|}%|\\
+%\ROW|\endquote|\\
+%\ROW\cs{UseHook}|{|\hook{env/quote/after}|}%|\\
 %\end{lthooksCode}
-%    to add the outer hooks, etc.
 %
-%
-%    Largely for compatibility with existing packages, the following
-%    four commands are also available to set the environment hooks; but for
-%    new packages we recommend directly using the hook names and
-%    \cs{AddToHook}.
+%    Next commands to set environment hooks are available
+%    for compatibility with existing packages. We recommend
+%    directly using \cs{AddToHook} and the hook names instead.
 %
 %
 % \begin{function}{\BeforeBeginEnvironment}
 %   \begin{syntax}
 %     \cs{BeforeBeginEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
-%   This declaration adds to the \hook{env/\meta{env}/before} hook
-%    using the \meta{label}.  If \meta{label-spec} is not given, the
-%    \meta{current name} is used (see sections~\ref{sec:Command-arguments}
-% and \ref{sec:Managing-the-current-name}).
+%   Synonym of \cs{AddToHook}|{|\hook{env/\meta{env}/before}|}|\texttt{\oarg{label-spec}\Arg{code}}.
 % \end{function}
 %
 % \begin{function}{\AtBeginEnvironment}
 %   \begin{syntax}
 %     \cs{AtBeginEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
-%   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/begin} hook.
+%   Synonym of \cs{AddToHook}|{|\hook{env/\meta{env}/begin}|}|\texttt{\oarg{label-spec}\Arg{code}}.
 % \end{function}
 %
 % \begin{function}{\AtEndEnvironment}
 %   \begin{syntax}
 %     \cs{AtEndEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
-%   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/end} hook.
+%   Synonym of \cs{AddToHook}|{|\hook{env/\meta{env}/end}|}|\texttt{\oarg{label-spec}\Arg{code}}.
 % \end{function}
 %
 % \begin{function}{\AfterEndEnvironment}
 %   \begin{syntax}
 %     \cs{AfterEndEnvironment} \oarg{label-spec} \Arg{env} \Arg{code}
 %   \end{syntax}
-%   This is like \cs{BeforeBeginEnvironment} but it adds to the \hook{env/\meta{env}/after} hook.
+%   Synonym of \cs{AddToHook}|{|\hook{env/\meta{env}/after}|}|\texttt{\oarg{label-spec}\Arg{code}}.
 % \end{function}
 %
 %
 % \subsubsection{Generic hooks for commands}
 % \label{sec:Generic-hooks-for-commands}
-%    Similar to environments there are now (at least in theory) two
-%    generic hooks available for any \LaTeX{} command. These are
-%    \begin{description}
-%    \item[\hook{cmd/\meta{name}/before}]
-%
-%       This hook is executed at the very start of the command
-%       execution.
-%
-%    \item[\hook{cmd/\meta{name}/after}]
-%       This hook is executed at the very end of the command body.  It is
-%       implemented as a reversed hook.
-%    \end{description}
-%    In practice there are restrictions and especially the
-%    \hook{after} hook works only with a subset of commands. Details
-%    about these restrictions are documented in
+%    While executing the \cs{\meta{name}} command, the direct hook
+%    \hook{cmd/\meta{name}/before} is executed before the command body.
+%    Its mirror reverse hook \hook{cmd/\meta{name}/after} is executed
+%    after the command body.
+%    In practice there are restrictions, in particular
+%    the \hook{.../after} hook does not always work. More precisions in
 %    \texttt{ltcmdhooks-doc.pdf} or with code in
 %    \texttt{ltcmdhooks-code.pdf}.
 %
 %
-%
-%
 % \subsubsection{Generic hooks provided by file loading operations}
 %
-%    There are several hooks added to \LaTeX{}'s process of loading
+%    There are several hooks used during \LaTeX{}'s process of loading
 %    file via its high-level interfaces such as \cs{input},
-%    \cs{include}, \cs{usepackage}, \cs{RequirePackage}, etc. These
+%    \cs{include}, \cs{usepackage}, \cs{documentclass},
+%    \cs{RequirePackage}, etc. These
 %    are documented in \texttt{ltfilehook-doc.pdf} or with code in
 %    \texttt{ltfilehook-code.pdf}.
-%
 %
 %
 % \subsection{Hooks provided by \cs{begin}\texttt{\{document\}}}
