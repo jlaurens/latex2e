@@ -95,6 +95,8 @@ l3build save -cconfig-lthooks \
    lthooks-legacy \
    lthooks-doc-examples \
    lthooks-rollback-args \
+   lthooks-show \
+   lthooks-show_20-10 \
    shipout-000 \
    shipout-002 \
    shipout-004 \
