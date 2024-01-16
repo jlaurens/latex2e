@@ -1,0 +1,270 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+============================================================
+TEST 1: Environment: envA
+============================================================
+-> The generic hook 'env/envA/before':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/begin':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/end':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/after':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/before':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envA BEFORE>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/begin':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envA BEGIN>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/end':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envA END>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envA}
+-> The generic hook 'env/envA/after':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed first):
+>     -> \TYPE {<envA AFTER>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order (after reversal):
+>     ---.
+<recently read> }
+l. ...  {envA}
+============================================================
+<envA BEFORE>
+<envA BEGIN>
+<BEGIN{envA}>
+<envA BODY>
+<envA END>
+<END{envA}>
+<envA AFTER>
+============================================================
+TEST 2: Environment: envB
+============================================================
+-> The generic hook 'env/envB/before':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/begin':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/end':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/after':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/before':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envB BEFORE>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/begin':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envB BEGIN>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/end':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<envB END>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {envB}
+-> The generic hook 'env/envB/after':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed first):
+>     -> \TYPE {<envB AFTER>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order (after reversal):
+>     ---.
+<recently read> }
+l. ...  {envB}
+============================================================
+<envB BEFORE>
+<envB BEGIN>
+<BEGIN{envB}>
+<envB BODY>
+<envB END>
+<END{envB}>
+<envB AFTER>
+============================================================
+TEST 3: Command: Undefined command with no arguments
+============================================================
+-> The generic hook 'cmd/cmdA/before':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {cmdA}
+-> The generic hook 'cmd/cmdA/after':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {cmdA}
+-> The generic hook 'cmd/cmdA/before':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<cmdA BEFORE>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {cmdA}
+-> The generic hook 'cmd/cmdA/after':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed first):
+>     -> \TYPE {<cmdA AFTER>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order (after reversal):
+>     ---.
+<recently read> }
+l. ...  {cmdA}
+============================================================
+<cmdA BODY>
+============================================================
+TEST 4: Command: Defined command with no arguments
+============================================================
+-> The generic hook 'cmd/cmdB/before':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {cmdB}
+-> The generic hook 'cmd/cmdB/after':
+> The hook is not declared.
+> The hook is empty.
+<recently read> }
+l. ...  {cmdB}
+-> The generic hook 'cmd/cmdB/before':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed last):
+>     -> \TYPE {<cmdB BEFORE>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order:
+>     ---.
+<recently read> }
+l. ...  {cmdB}
+-> The generic hook 'cmd/cmdB/after':
+> Code chunks:
+>     ---
+> Document-level (top-level) code (executed first):
+>     -> \TYPE {<cmdB AFTER>}
+> Extra code for next invocation:
+>     ---
+> Rules:
+>     ---
+> Execution order (after reversal):
+>     ---.
+<recently read> }
+l. ...  {cmdB}
+============================================================
+<cmdB BODY>
+============================================================
+TEST 5: Custom generic hook: CUSTOM GENERIC HOOK
+============================================================
+============================================================
+TEST 6: Raw: CUSTOM GENERIC HOOK
+============================================================
+)
+Runaway argument?
+\s__hook_mark {\exp_args:Ne \__hook_try_declaring_generic_hook_split:nNNnn \ETC.
+! File ended while scanning use of \__hook_if_file_hook:wTF.
+<inserted text> 
+                \par 
+<*> \input lthooks-show_20-10.lvt
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+! Emergency stop.
+<*> \input lthooks-show_20-10.lvt
+*** (job aborted, no legal \end found)

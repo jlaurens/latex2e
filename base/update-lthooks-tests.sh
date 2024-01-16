@@ -95,6 +95,8 @@ l3build save -cconfig-lthooks \
    lthooks-legacy \
    lthooks-doc-examples \
    lthooks-rollback-args \
+   lthooks-show \
+   lthooks-show_2020-10-01 \
    shipout-000 \
    shipout-002 \
    shipout-004 \
