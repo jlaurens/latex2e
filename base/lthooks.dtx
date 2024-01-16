@@ -6172,19 +6172,30 @@
           { \seq_put_right:Nx \l_@@_info_seq { reversed } }
         \@@_if_disabled:nF { #1 }
           {
-            \exp_args:Nf \int_compare:nNnT
-              { \str_count:e { \@@_parameter:n { #1 } } } > 2
+            \cs_set:Npn \@@_info_log:nN:w ##1
               {
-                \seq_put_right:Nx \l_@@_info_seq
+                \exp_args:Nf \int_compare:nNnT { ##1 } > 2
                   {
-                    \@@_print_args:nn { #1 }
+                    \cs_set:Npn \@@_info_log:nN:w ####1
                       {
-                        \int_eval:n
-                          { \str_count:e { \@@_parameter:n { #1 } } / 3 }
+                       \int_compare:nNnT {####1} > { 0 }
+                          {
+                            \@@_if_declared:nT {#1} { \use_none:nnn }
+                            \@@_if_cmd_hook:nT {#1}
+                              { \use_i:nnn { unknown ~ } }
+                            \use:n { ####1 ~ }
+                            argument \int_compare:nNnT {####1} > { 1 } { s }
+                          }
+                      }
+                    \seq_put_right:Ne \l_@@_info_seq
+                      {
+                        \@@_info_log:nN:w { \int_eval:n { ##1 / 3 } }
                       }
                   }
-              }
-              \use_none:nnn
+                  \use_none:nnn
+                }
+              \exp_args:Ne \@@_info_log:nN:w
+                { \str_count:e { \@@_parameter:n { #1 } } }
           }
         \seq_put_right:Nn \l_@@_info_seq { disabled }
         \hook_if_empty:nT { #1 }
@@ -6232,7 +6243,7 @@
 %   Loop through the default rules in a hook and for every rule found, print it.
 %   The boolean \cs{l_@@_tmpa_bool} here indicates if the hook has no default rules.
 %    \begin{macrocode}
-        \cs_set:Npn \@@_info_log:nN:nw ##1 ##2 | ##3 \scan_stop:
+        \cs_set:Npn \@@_info_log:nN:w ##1 ##2 | ##3 \scan_stop:
           {
             \l_@@_print_tl
             \tl_clear:N \l_@@_print_tl
@@ -6266,7 +6277,7 @@
         \@@_list_rules:nn {#1}
           {
             \str_if_eq:nnT { ##3 } { ?? }
-              { \@@_info_log:nN:nw { ##1 } ##2 \scan_stop: }
+              { \@@_info_log:nN:w { ##1 } ##2 \scan_stop: }
           }
 %    \end{macrocode}
 %   Loop through the rules in a hook and for every non default rule found, print
@@ -6278,7 +6289,7 @@
         \@@_list_rules:nn { #1 }
           {
             \str_if_eq:nnF { ##3 } { ?? }
-              { \@@_info_log:nN:nw { ##1 } ##2 \scan_stop: }
+              { \@@_info_log:nN:w { ##1 } ##2 \scan_stop: }
           }
 %    \end{macrocode}
 %   When the hook is declared (that is, the sorting algorithm is applied

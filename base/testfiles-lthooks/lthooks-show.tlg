@@ -3,76 +3,52 @@ Don't change this file in any respect.
 ============================================================
 TEST 1: Environment: envA
 ============================================================
--> The generic hook 'env/envA/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envA/before'
+>   builtin generic.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/begin':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envA/begin'
+>   builtin generic.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/end':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envA/end'
+>   builtin generic.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envA/after'
+>   builtin generic.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/before':
+==> Hook: 'env/envA/before'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envA BEFORE>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envA BEFORE>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/begin':
+==> Hook: 'env/envA/begin'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envA BEGIN>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envA BEGIN>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/end':
+==> Hook: 'env/envA/end'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envA END>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envA END>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envA}
--> The generic hook 'env/envA/after':
+==> Hook: 'env/envA/after'
+>   builtin generic, reversed
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<envA AFTER>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<envA AFTER>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envA}
 ============================================================
@@ -86,76 +62,52 @@ l. ...  {envA}
 ============================================================
 TEST 2: Environment: envB
 ============================================================
--> The generic hook 'env/envB/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envB/before'
+>   builtin generic.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/begin':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envB/begin'
+>   builtin generic.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/end':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envB/end'
+>   builtin generic.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'env/envB/after'
+>   builtin generic.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/before':
+==> Hook: 'env/envB/before'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envB BEFORE>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envB BEFORE>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/begin':
+==> Hook: 'env/envB/begin'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envB BEGIN>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envB BEGIN>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/end':
+==> Hook: 'env/envB/end'
+>   builtin generic
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<envB END>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<envB END>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envB}
--> The generic hook 'env/envB/after':
+==> Hook: 'env/envB/after'
+>   builtin generic, reversed
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<envB AFTER>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<envB AFTER>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {envB}
 ============================================================
@@ -169,40 +121,28 @@ l. ...  {envB}
 ============================================================
 TEST 3: Command: Undefined command with no arguments
 ============================================================
--> The generic hook 'cmd/cmdA/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdA/before'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdA}
--> The generic hook 'cmd/cmdA/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdA/after'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdA}
--> The generic hook 'cmd/cmdA/before' (unknown arguments):
+==> Hook: 'cmd/cmdA/before'
+>   builtin generic, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<cmdA BEFORE>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<cmdA BEFORE>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdA}
--> The generic hook 'cmd/cmdA/after' (unknown arguments):
+==> Hook: 'cmd/cmdA/after'
+>   builtin generic, reversed, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<cmdA AFTER>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<cmdA AFTER>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdA}
 ============================================================
@@ -210,40 +150,28 @@ l. ...  {cmdA}
 ============================================================
 TEST 4: Command: Defined command with no arguments
 ============================================================
--> The generic hook 'cmd/cmdB/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdB/before'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdB}
--> The generic hook 'cmd/cmdB/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdB/after'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdB}
--> The generic hook 'cmd/cmdB/before' (unknown arguments):
+==> Hook: 'cmd/cmdB/before'
+>   builtin generic, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<cmdB BEFORE>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<cmdB BEFORE>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdB}
--> The generic hook 'cmd/cmdB/after' (unknown arguments):
+==> Hook: 'cmd/cmdB/after'
+>   builtin generic, reversed, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<cmdB AFTER>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<cmdB AFTER>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdB}
 ============================================================
@@ -251,40 +179,28 @@ l. ...  {cmdB}
 ============================================================
 TEST 5: Command Undefined command with one argument
 ============================================================
--> The generic hook 'cmd/cmdOneArgA/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdOneArgA/before'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdOneArgA}
--> The generic hook 'cmd/cmdOneArgA/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdOneArgA/after'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdOneArgA}
--> The generic hook 'cmd/cmdOneArgA/before' (unknown arguments):
+==> Hook: 'cmd/cmdOneArgA/before'
+>   builtin generic, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<cmdOneArgA BEFORE>}\TYPE {<BEFORE:#1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<cmdOneArgA BEFORE>}\TYPE {<BEFORE:#1>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdOneArgA}
--> The generic hook 'cmd/cmdOneArgA/after' (unknown arguments):
+==> Hook: 'cmd/cmdOneArgA/after'
+>   builtin generic, reversed, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<cmdOneArgA AFTER>}\TYPE {<AFTER:#1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<cmdOneArgA AFTER>}\TYPE {<AFTER:#1>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdOneArgA}
 ============================================================
@@ -292,40 +208,28 @@ l. ...  {cmdOneArgA}
 ============================================================
 TEST 6: Command Defined command with one argument
 ============================================================
--> The generic hook 'cmd/cmdOneArgB/before':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdOneArgB/before'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdOneArgB}
--> The generic hook 'cmd/cmdOneArgB/after':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'cmd/cmdOneArgB/after'
+>   builtin generic.
 <recently read> }
 l. ...  {cmdOneArgB}
--> The generic hook 'cmd/cmdOneArgB/before' (unknown arguments):
+==> Hook: 'cmd/cmdOneArgB/before'
+>   builtin generic, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<cmdOneArgB BEFORE>}\TYPE {<BEFORE:#1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<cmdOneArgB BEFORE>}\TYPE {<BEFORE:#1>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdOneArgB}
--> The generic hook 'cmd/cmdOneArgB/after' (unknown arguments):
+==> Hook: 'cmd/cmdOneArgB/after'
+>   builtin generic, reversed, unknown arguments
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<cmdOneArgB AFTER>}\TYPE {<AFTER:#1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<cmdOneArgB AFTER>}\TYPE {<AFTER:#1>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {cmdOneArgB}
 ============================================================
@@ -336,18 +240,11 @@ TEST 7: Custom generic hook: CUSTOM GENERIC HOOK
 ============================================================
 TEST 8: Raw: CUSTOM GENERIC HOOK
 ============================================================
--> The hook 'CUSTOM GENERIC HOOK':
-> The hook is not declared.
+==> Hook: 'CUSTOM GENERIC HOOK'
+>   not declared
 > Code chunks:
->     LABEL -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
-> Document-level (top-level) code:
->     ---
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'LABEL' -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
+> No execution.
 <recently read> }
 l. ...  {CUSTOM GENERIC HOOK}
 ============================================================
@@ -355,36 +252,22 @@ l. ...  {CUSTOM GENERIC HOOK}
 TEST 9: Activated: CUSTOM GENERIC HOOK
 ============================================================
 <CUSTOM GENERIC HOOK CODE>
--> The hook 'CUSTOM GENERIC HOOK':
+==> Hook: 'CUSTOM GENERIC HOOK'
 > Code chunks:
->     LABEL -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
-> Document-level (top-level) code (executed last):
->     ---
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'LABEL' -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
 > Execution order:
->     LABEL.
+>   1: 'LABEL'.
 <recently read> }
 l. ...  {CUSTOM GENERIC HOOK}
 ============================================================
 ============================================================
 TEST 10: Disabled: CUSTOM GENERIC HOOK
 ============================================================
--> The hook 'CUSTOM GENERIC HOOK':
-> The hook is not declared.
-> The hook is disabled.
+==> Hook: 'CUSTOM GENERIC HOOK'
+>   not declared, disabled
 > Code chunks:
->     LABEL -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
-> Document-level (top-level) code:
->     ---
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is disabled.
+>   'LABEL' -> \TYPE {<CUSTOM GENERIC HOOK CODE>}
+> No execution.
 <recently read> }
 l. ...  {CUSTOM GENERIC HOOK}
 ============================================================
@@ -395,161 +278,120 @@ TEST 11: OTHER HOOK: Undeclared
 ============================================================
 TEST 12: Undeclared UNDECLARED HOOK
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
-> The hook is empty.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 13: UNDECLARED HOOK + TOP LEVEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     ---
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 14: UNDECLARED HOOK + A LABEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 15: UNDECLARED HOOK + B LABEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 16: UNDECLARED HOOK + C LABEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<UNDECLARED HOOK C CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<UNDECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 17: UNDECLARED HOOK + NEXT
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<UNDECLARED HOOK C CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<UNDECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<UNDECLARED HOOK C CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
-> Rules:
->     ---
-> Execution order:
->     Not set because the hook is undeclared.
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<UNDECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 18: UNDECLARED HOOK + C LABEL < A LABEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<UNDECLARED HOOK C CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<UNDECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
 > Rules:
->     C LABEL|A LABEL with relation <
-> Execution order:
->     Not set because the hook is undeclared.
+>   'C LABEL' before 'A LABEL'
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
 ============================================================
 TEST 19: UNDECLARED HOOK + DEFAULT: B LABEL > C LABEL
 ============================================================
--> The hook 'UNDECLARED HOOK':
-> The hook is not declared.
+==> Hook: 'UNDECLARED HOOK'
+>   not declared
 > Code chunks:
->     A LABEL -> \TYPE {<UNDECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<UNDECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<UNDECLARED HOOK C CODE>}
-> Document-level (top-level) code:
->     -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
+>   'A LABEL' -> \TYPE {<UNDECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<UNDECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<UNDECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<UNDECLARED HOOK TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order:
->     Not set because the hook is undeclared.
+>   'C LABEL' before 'A LABEL'
+> No execution.
 <recently read> }
 l. ...  {UNDECLARED HOOK}
 ============================================================
@@ -560,8 +402,8 @@ TEST 20: OTHER HOOK: declared
 ============================================================
 TEST 21: Undeclared DECLARED HOOK
 ============================================================
--> The hook 'DECLARED HOOK':
-> The hook is empty.
+==> Hook: 'DECLARED HOOK'
+>   empty.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -569,17 +411,11 @@ l. ...  {DECLARED HOOK}
 TEST 22: DECLARED HOOK + TOP LEVEL
 ============================================================
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -588,17 +424,13 @@ TEST 23: DECLARED HOOK + A LABEL
 ============================================================
 <DECLARED HOOK A CODE>
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
 > Execution order:
->     A LABEL.
+>   1: 'A LABEL'
+>   2: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -608,18 +440,15 @@ TEST 24: DECLARED HOOK + B LABEL
 <DECLARED HOOK A CODE>
 <DECLARED HOOK B CODE>
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
 > Execution order:
->     A LABEL, B LABEL.
+>   1: 'A LABEL'
+>   2: 'B LABEL'
+>   3: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -630,38 +459,40 @@ TEST 25: DECLARED HOOK + C LABEL
 <DECLARED HOOK C CODE>
 <DECLARED HOOK B CODE>
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<DECLARED HOOK C CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
 ============================================================
 TEST 26: DECLARED HOOK + NEXT
 ============================================================
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<DECLARED HOOK C CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'
+>   5: next-only.
 <recently read> }
 l. ...  {DECLARED HOOK}
 <DECLARED HOOK A CODE>
@@ -669,19 +500,19 @@ l. ...  {DECLARED HOOK}
 <DECLARED HOOK B CODE>
 <DECLARED HOOK TOP-LEVEL>
 <NEXT-ONLY>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<DECLARED HOOK C CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -692,20 +523,21 @@ TEST 27: DECLARED HOOK + C LABEL < A LABEL
 <DECLARED HOOK A CODE>
 <DECLARED HOOK B CODE>
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<DECLARED HOOK C CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     C LABEL, A LABEL, B LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'C LABEL'
+>   2: 'A LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -716,20 +548,21 @@ TEST 28: DECLARED HOOK + DEFAULT: B LABEL > C LABEL
 <DECLARED HOOK A CODE>
 <DECLARED HOOK B CODE>
 <DECLARED HOOK TOP-LEVEL>
--> The hook 'DECLARED HOOK':
+==> Hook: 'DECLARED HOOK'
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED HOOK A CODE>}
->     B LABEL -> \TYPE {<DECLARED HOOK B CODE>}
->     C LABEL -> \TYPE {<DECLARED HOOK C CODE>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED HOOK A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED HOOK B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED HOOK C CODE>}
+>   'top-level' -> \TYPE {<DECLARED HOOK TOP-LEVEL>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     C LABEL, A LABEL, B LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'C LABEL'
+>   2: 'A LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {DECLARED HOOK}
 ============================================================
@@ -740,8 +573,8 @@ TEST 29: OTHER HOOK: declared reversed
 ============================================================
 TEST 30: Undeclared DECLARED REVERSED
 ============================================================
--> The hook 'DECLARED REVERSED':
-> The hook is empty.
+==> Hook: 'DECLARED REVERSED'
+>   reversed.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -749,17 +582,12 @@ l. ...  {DECLARED REVERSED}
 TEST 31: DECLARED REVERSED + TOP LEVEL
 ============================================================
 <DECLARED REVERSED TOP-LEVEL>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -768,17 +596,14 @@ TEST 32: DECLARED REVERSED + A LABEL
 ============================================================
 <DECLARED REVERSED TOP-LEVEL>
 <DECLARED REVERSED A CODE>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     A LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Execution order:
+>   1: 'top-level'
+>   2: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -788,18 +613,16 @@ TEST 33: DECLARED REVERSED + B LABEL
 <DECLARED REVERSED TOP-LEVEL>
 <DECLARED REVERSED B CODE>
 <DECLARED REVERSED A CODE>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     B LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -810,38 +633,42 @@ TEST 34: DECLARED REVERSED + C LABEL
 <DECLARED REVERSED B CODE>
 <DECLARED REVERSED C CODE>
 <DECLARED REVERSED A CODE>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
->     C LABEL -> \TYPE {<DECLARED REVERSED C CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED REVERSED C CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
 ============================================================
 TEST 35: DECLARED REVERSED + NEXT
 ============================================================
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
->     C LABEL -> \TYPE {<DECLARED REVERSED C CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     -> \TYPE {<NEXT-ONLY>}
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED REVERSED C CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+>   next-only -> \TYPE {<NEXT-ONLY>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'
+>   5: next-only.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 <DECLARED REVERSED TOP-LEVEL>
@@ -849,19 +676,20 @@ l. ...  {DECLARED REVERSED}
 <DECLARED REVERSED C CODE>
 <DECLARED REVERSED A CODE>
 <NEXT-ONLY>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
->     C LABEL -> \TYPE {<DECLARED REVERSED C CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED REVERSED C CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -872,20 +700,22 @@ TEST 36: DECLARED REVERSED + C LABEL < A LABEL
 <DECLARED REVERSED B CODE>
 <DECLARED REVERSED C CODE>
 <DECLARED REVERSED A CODE>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
->     C LABEL -> \TYPE {<DECLARED REVERSED C CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED REVERSED C CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -896,20 +726,22 @@ TEST 37: DECLARED REVERSED + DEFAULT: B LABEL > C LABEL
 <DECLARED REVERSED B CODE>
 <DECLARED REVERSED C CODE>
 <DECLARED REVERSED A CODE>
--> The hook 'DECLARED REVERSED':
+==> Hook: 'DECLARED REVERSED'
+>   reversed
 > Code chunks:
->     A LABEL -> \TYPE {<DECLARED REVERSED A CODE>}
->     B LABEL -> \TYPE {<DECLARED REVERSED B CODE>}
->     C LABEL -> \TYPE {<DECLARED REVERSED C CODE>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<DECLARED REVERSED A CODE>}
+>   'B LABEL' -> \TYPE {<DECLARED REVERSED B CODE>}
+>   'C LABEL' -> \TYPE {<DECLARED REVERSED C CODE>}
+>   'top-level' -> \TYPE {<DECLARED REVERSED TOP-LEVEL>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {DECLARED REVERSED}
 ============================================================
@@ -920,8 +752,8 @@ TEST 38: OTHER HOOK: with one argument
 ============================================================
 TEST 39: Undeclared WITH ONE ARGUMENT
 ============================================================
--> The hook 'WITH ONE ARGUMENT' (1 argument):
-> The hook is empty.
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -929,17 +761,12 @@ l. ...  {WITH ONE ARGUMENT}
 TEST 40: WITH ONE ARGUMENT + TOP LEVEL
 ============================================================
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
 > Execution order:
->     ---.
+>   1: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -948,17 +775,14 @@ TEST 41: WITH ONE ARGUMENT + A LABEL
 ============================================================
 <WITH ONE ARGUMENT A CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
 > Execution order:
->     A LABEL.
+>   1: 'A LABEL'
+>   2: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -968,18 +792,16 @@ TEST 42: WITH ONE ARGUMENT + B LABEL
 <WITH ONE ARGUMENT A CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT B CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
 > Execution order:
->     A LABEL, B LABEL.
+>   1: 'A LABEL'
+>   2: 'B LABEL'
+>   3: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -990,38 +812,42 @@ TEST 43: WITH ONE ARGUMENT + C LABEL
 <WITH ONE ARGUMENT C CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT B CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
 ============================================================
 TEST 44: WITH ONE ARGUMENT + NEXT
 ============================================================
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     -> \TYPE {<WITH ONE ARGUMENT NEXT-ONLY: >}
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
+>   next-only -> \TYPE {<WITH ONE ARGUMENT NEXT-ONLY: >}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'
+>   5: next-only.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 <WITH ONE ARGUMENT A CODE: WITH ONE ARGUMENT ARG 1>
@@ -1029,19 +855,20 @@ l. ...  {WITH ONE ARGUMENT}
 <WITH ONE ARGUMENT B CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT NEXT-ONLY: >
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     A LABEL, C LABEL, B LABEL.
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'A LABEL'
+>   2: 'C LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -1052,20 +879,22 @@ TEST 45: WITH ONE ARGUMENT + C LABEL < A LABEL
 <WITH ONE ARGUMENT A CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT B CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     C LABEL, A LABEL, B LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'C LABEL'
+>   2: 'A LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -1076,20 +905,22 @@ TEST 46: WITH ONE ARGUMENT + DEFAULT: B LABEL > C LABEL
 <WITH ONE ARGUMENT A CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT B CODE: WITH ONE ARGUMENT ARG 1>
 <WITH ONE ARGUMENT TOP-LEVEL: WITH ONE ARGUMENT ARG 1>
--> The hook 'WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'WITH ONE ARGUMENT'
+>   1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed last):
->     -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after applying rules):
->     C LABEL, A LABEL, B LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'C LABEL'
+>   2: 'A LABEL'
+>   3: 'B LABEL'
+>   4: 'top-level'.
 <recently read> }
 l. ...  {WITH ONE ARGUMENT}
 ============================================================
@@ -1100,8 +931,8 @@ TEST 47: OTHER HOOK: reversed with one argument
 ============================================================
 TEST 48: Undeclared REVERSED WITH ONE ARGUMENT
 ============================================================
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
-> The hook is empty.
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1109,17 +940,12 @@ l. ...  {REVERSED WITH ONE ARGUMENT}
 TEST 49: REVERSED WITH ONE ARGUMENT + TOP LEVEL
 ============================================================
 <REVERSED WITH ONE ARGUMENT TOP-LEVEL: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     ---
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     ---.
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Execution order:
+>   1: 'top-level'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1128,17 +954,14 @@ TEST 50: REVERSED WITH ONE ARGUMENT + A LABEL
 ============================================================
 <REVERSED WITH ONE ARGUMENT TOP-LEVEL: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     A LABEL.
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Execution order:
+>   1: 'top-level'
+>   2: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1148,18 +971,16 @@ TEST 51: REVERSED WITH ONE ARGUMENT + B LABEL
 <REVERSED WITH ONE ARGUMENT TOP-LEVEL: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT B CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     ---
-> Execution order (after reversal):
->     B LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1170,38 +991,42 @@ TEST 52: REVERSED WITH ONE ARGUMENT + C LABEL
 <REVERSED WITH ONE ARGUMENT B CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT C CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
 ============================================================
 TEST 53: REVERSED WITH ONE ARGUMENT + NEXT
 ============================================================
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT NEXT-ONLY: >}
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+>   next-only -> \TYPE {<REVERSED WITH ONE ARGUMENT NEXT-ONLY: >}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'
+>   5: next-only.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 <REVERSED WITH ONE ARGUMENT TOP-LEVEL: REVERSED WITH ONE ARGUMENT ARG 1>
@@ -1209,19 +1034,20 @@ l. ...  {REVERSED WITH ONE ARGUMENT}
 <REVERSED WITH ONE ARGUMENT C CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT NEXT-ONLY: >
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
-> Rules:
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1232,20 +1058,22 @@ TEST 54: REVERSED WITH ONE ARGUMENT + C LABEL < A LABEL
 <REVERSED WITH ONE ARGUMENT B CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT C CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
@@ -1256,20 +1084,22 @@ TEST 55: REVERSED WITH ONE ARGUMENT + DEFAULT: B LABEL > C LABEL
 <REVERSED WITH ONE ARGUMENT B CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT C CODE: REVERSED WITH ONE ARGUMENT ARG 1>
 <REVERSED WITH ONE ARGUMENT A CODE: REVERSED WITH ONE ARGUMENT ARG 1>
--> The hook 'REVERSED WITH ONE ARGUMENT' (1 argument):
+==> Hook: 'REVERSED WITH ONE ARGUMENT'
+>   reversed, 1 argument
 > Code chunks:
->     A LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
->     B LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
->     C LABEL -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
-> Document-level (top-level) code (executed first):
->     -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
-> Extra code for next invocation:
->     ---
+>   'A LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT A CODE: #1>}
+>   'B LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT B CODE: #1>}
+>   'C LABEL' -> \TYPE {<REVERSED WITH ONE ARGUMENT C CODE: #1>}
+>   'top-level' -> \TYPE {<REVERSED WITH ONE ARGUMENT TOP-LEVEL: #1>}
+> Default rules, to be mirrored:
+>   'C LABEL' before 'B LABEL'
 > Rules:
->     C LABEL|A LABEL with relation <
->     C LABEL|B LABEL with default relation <
-> Execution order (after reversal and applying rules):
->     B LABEL, C LABEL, A LABEL.
+>   'C LABEL' before 'A LABEL'
+> Execution order:
+>   1: 'top-level'
+>   2: 'B LABEL'
+>   3: 'C LABEL'
+>   4: 'A LABEL'.
 <recently read> }
 l. ...  {REVERSED WITH ONE ARGUMENT}
 ============================================================
