@@ -1,10 +1,18 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
------------- all unknown --------------
-<<< Hook: 'aaa'
+============================================================
+TEST 1: Generic
+============================================================
+============================================================
+TEST 2: builtin
+============================================================
+============================================================
+TEST 3: Raw generic hook
+============================================================
+<<< Hook: 'cmd/?/before'
 ... Attributes:
 ...   deprecated_generic: N
-...   generic: N
+...   generic: Y
 ...   declared: N
 ...   structure_exist: N
 ...   usable: N
@@ -21,11 +29,11 @@ Runaway argument?
 ! File ended while scanning use of \prg_map_break:Nn.
 <inserted text> 
                 \par 
-<*> \input lthooks-029-deprecated.lvt
+<*> \input lthooks-debug.lvt
 I suspect you have forgotten a `}', causing me
 to read past where you wanted me to stop.
 I'll try to recover; but if the error is serious,
 you'd better type `E' or `X' now and fix your file.
 ! Emergency stop.
-<*> \input lthooks-029-deprecated.lvt
+<*> \input lthooks-debug.lvt
 *** (job aborted, no legal \end found)

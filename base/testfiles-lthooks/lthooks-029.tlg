@@ -1,78 +1,31 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 ------------ all unknown --------------
-==> Hook: 'aaa'
->   not declared.
-<recently read> }
-l. ...\ShowHook{aaa}
-==> Hook: 'env/bbb/begin'
->   builtin generic.
-<recently read> }
-l. ...\ShowHook{env/bbb/begin}
-==> Hook: 'env/ccc/end'
->   builtin generic.
-<recently read> }
-l. ...\ShowHook{env/ccc/end}
-==> Hook: 'ddd'
->   not declared.
-<recently read> }
-l. ...\ShowHook{ddd}
-==> Hook: 'aaa'
->   empty.
-<recently read> }
-l. ...\ShowHook{aaa}
------------- activate a known hook --------------
-==> Hook: 'aaa'
->   empty.
-<recently read> }
-l. ...\ShowHook{aaa}
------------- activate a known hook with data --------------
-==> Hook: 'aaa'
-> Code chunks:
->   'X' -> \typeout {aaa: X1}
-> Execution order:
->   1: 'X'.
-<recently read> }
-l. ...\ShowHook{aaa}
-aaa: X1
-bbb: Y1
------------- activate an unknown hook with data --------------
-==> Hook: 'env/bbb/begin'
->   builtin generic
-> Code chunks:
->   'Y' -> \typeout {bbb: Y1}
-> Execution order:
->   1: 'Y'.
-<recently read> }
-l. ...\ShowHook{env/bbb/begin}
-aaa: X1
-bbb: Y1
------------- activate an unknown reversed hook --------------
-==> Hook: 'env/ccc/end'
->   builtin generic.
-<recently read> }
-l. ...\ShowHook{env/ccc/end}
-aaa: X1
-bbb: Y1
------------- activate an known reversed hook with data --------------
-==> Hook: 'env/ccc/end'
->   builtin generic
-> Code chunks:
->   'Z' -> \typeout {ccc: Z1}
-> Execution order:
->   1: 'Z'.
-<recently read> }
-l. ...\ShowHook{env/ccc/end}
-aaa: X1
-bbb: Y1
-ccc: Z1
------------- activate hook that was disabled --------------
-ddd: W1
-LaTeX hooks Warning: Cannot activate hook 'ddd' because it is disabled!
-==> Hook: 'ddd'
->   not declared, disabled
-> Code chunks:
->   'W' -> \typeout {ddd: W1}
-> No execution.
-<recently read> }
-l. ...\ShowHook{ddd}
+<<< Hook: 'aaa'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: N
+...   structure_exist: N
+...   usable: N
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+)
+Runaway argument?
+{\int_gdecr:N \g__kernel_prg_map_int \cs_gset_eq:Nc \__prop_pair:wn {\ETC.
+! File ended while scanning use of \prg_map_break:Nn.
+<inserted text> 
+                \par 
+<*> \input lthooks-029.lvt
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+! Emergency stop.
+<*> \input lthooks-029.lvt
+*** (job aborted, no legal \end found)

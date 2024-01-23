@@ -21,42 +21,32 @@ LaTeX hooks Warning: Generic hook 'include/after/bbb' is deprecated.
 \RemoveFromHook:
 LaTeX hooks Warning: Generic hook 'file/before/foo.tex' is deprecated.
 (hooks)              Use hook 'file/foo.tex/before' instead.
-\ShowHook:
-LaTeX hooks Warning: Generic hook 'file/before/foo.tex' is deprecated.
-(hooks)              Use hook 'file/foo.tex/before' instead.
-==> Hook: 'file/foo.tex/before'
->   builtin generic.
-<recently read> }
-l. ...\ShowHook{file/before/foo.tex}
-\AddToHookNext:
-LaTeX hooks Warning: Generic hook 'file/before/foo.tex' is deprecated.
-(hooks)              Use hook 'file/foo.tex/before' instead.
-\DeclareHookRule:
-LaTeX hooks Warning: Generic hook 'file/before/foo.tex' is deprecated.
-(hooks)              Use hook 'file/foo.tex/before' instead.
-Old class/before/minimal
-New class/minimal/before
-(minimal.cls
-Document Class: minimal ....-..-.. Standard LaTeX minimal class
+\DebugPrintHook:
+<<< Hook: 'file/before/foo.tex'
+... Attributes:
+...   deprecated_generic: Y
+...   generic: N
+...   declared: N
+...   structure_exist: N
+...   usable: N
+...   disabled: N
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
 )
-Old class/after/minimal
-New class/minimal/after
-Old package/before/aaa
-New package/aaa/before
-Old file/before/aaa.sty
-New file/aaa.sty/before
-Old file/before/aaa.sty
-New file/aaa.sty/before
-(aaa.sty)
-Old file/after/aaa.sty
-New file/aaa.sty/after
-Old package/after/aaa
-New package/aaa/after
-Old include/before/bbb
-New include/bbb/before
-(bbb.tex)
-Old include/end/bbb
-New include/bbb/end
-Old include/after/bbb
-New include/bbb/after
-(github-0648.aux (bbb.aux))
+Runaway argument?
+{\int_gdecr:N \g__kernel_prg_map_int \cs_gset_eq:Nc \__prop_pair:wn {\ETC.
+! File ended while scanning use of \prg_map_break:Nn.
+<inserted text> 
+                \par 
+<*> \input github-0648.lvt
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+! Emergency stop.
+<*> \input github-0648.lvt
+*** (job aborted, no legal \end found)

@@ -1,135 +1,179 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
 =================================
-==> Hook: 'foo'
->   not declared
-> Code chunks:
->   'top-level' -> before
-> No execution.
-<recently read> }
-l. ...\AddToHook{\foo}{before}    \ShowHook{\foo}
-==> Hook: 'foo'
->   not declared, disabled
-> Code chunks:
->   'top-level' -> before
-> No execution.
-<recently read> }
-l. ...\DisableGenericHook{\foo}   \ShowHook{\foo}
+<<< Hook: 'foo'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: N
+...   structure_exist: Y
+...   usable: N
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'foo'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: N
+...   disabled: Y
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
 ! LaTeX hooks Error: Cannot add code to disabled hook 'foo'.
 For immediate help type H <return>.
  ...                                              
 l. ...\AddToHook{\foo}{after}
-                                 \ShowHook{\foo}
+                                 \DebugPrintHook{\foo}
 The hook 'foo' you tried to add code to was previously disabled with
 \hook_disable_generic:n or \DisableGenericHook, so it cannot have code added
 to it.
-==> Hook: 'foo'
->   not declared, disabled
-> Code chunks:
->   'top-level' -> before
-> No execution.
-<recently read> }
-l. ...\AddToHook{\foo}{after}     \ShowHook{\foo}
+<<< Hook: 'foo'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: N
+...   disabled: Y
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
 =================================
-==> Hook: 'bar'
->   not declared
-> Code chunks:
->   'top-level' -> before
-> No execution.
-<recently read> }
-l. ...\AddToHook{\foo}{before}    \ShowHook{\foo}
-==> Hook: 'bar'
-> Code chunks:
->   'top-level' -> before
-> Execution order:
->   1: 'top-level'.
-<recently read> }
-l. ...\NewHook{\foo}              \ShowHook{\foo}
-==> Hook: 'bar'
->   not declared, disabled
-> Code chunks:
->   'top-level' -> before
-> No execution.
-<recently read> }
-l. ...\DisableGenericHook{\foo}   \ShowHook{\foo}
+<<< Hook: 'bar'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: N
+...   structure_exist: Y
+...   usable: N
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'bar'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: Y
+...   disabled: N
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
+<<< Hook: 'bar'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: Y
+...   usable: N
+...   disabled: Y
+...   empty: N
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+...   'top level' -> before
+...   next-only empty
+... Default rules:
+...   None
+... Rules:
+...   None
+... Execution order:
+...   None
+>>>
 =================================
-==> Hook: 'baz'
->   not declared, disabled.
-<recently read> }
-l. ...\DisableGenericHook{\foo}   \ShowHook{\foo}
-! LaTeX hooks Error: Cannot add code to disabled hook 'baz'.
-For immediate help type H <return>.
- ...                                              
-l. ...\AddToHookNext{\foo}{after}
-                                 \ShowHook{\foo}
-The hook 'baz' you tried to add code to was previously disabled with
-\hook_disable_generic:n or \DisableGenericHook, so it cannot have code added
-to it.
-==> Hook: 'baz'
->   not declared, disabled.
-<recently read> }
-l. ...\AddToHookNext{\foo}{after} \ShowHook{\foo}
-=================================
-==> Hook: 'env/foo/before'
->   builtin generic, disabled.
-<recently read> }
-l. ...\DisableGenericHook{\foo}   \ShowHook{\foo}
-! LaTeX hooks Error: Cannot add code to disabled hook 'env/foo/before'.
-For immediate help type H <return>.
- ...                                              
-l. ...\AddToHookNext{\foo}{after}
-                                 \ShowHook{\foo}
-The hook 'env/foo/before' you tried to add code to was previously disabled
-with \hook_disable_generic:n or \DisableGenericHook, so it cannot have code
-added to it.
-==> Hook: 'env/foo/before'
->   builtin generic, disabled.
-<recently read> }
-l. ...\AddToHookNext{\foo}{after} \ShowHook{\foo}
-=================================
-==> Hook: 'cmd/test/before'
->   builtin generic, disabled.
-<recently read> }
-l. ...\DisableGenericHook{\foo}   \ShowHook{\foo}
-! LaTeX hooks Error: Cannot add code to disabled hook 'cmd/test/before'.
-For immediate help type H <return>.
- ...                                              
-l. ...\AddToHook{\foo}{after}
-                                 \ShowHook{\foo}
-The hook 'cmd/test/before' you tried to add code to was previously disabled
-with \hook_disable_generic:n or \DisableGenericHook, so it cannot have code
-added to it.
-==> Hook: 'cmd/test/before'
->   builtin generic, disabled.
-<recently read> }
-l. ...\AddToHook{\foo}{after}     \ShowHook{\foo}
-=================================
-==> Hook: 'cmd/mycmd/after'
->   builtin generic, reversed, unknown arguments
-> Code chunks:
->   'XXX' -> \ERROR 1
->   next-only -> \ERROR 2
-> Execution order:
->   1: 'XXX'
->   2: next-only.
-<recently read> }
-l. ...\ShowHook{\foo}
-! LaTeX hooks Error: Cannot add code to disabled hook 'cmd/mycmd/after'.
-For immediate help type H <return>.
- ...                                              
-l. ...\AddToHook{\foo}{\ERROR 3}
-The hook 'cmd/mycmd/after' you tried to add code to was previously disabled
-with \hook_disable_generic:n or \DisableGenericHook, so it cannot have code
-added to it.
-==> Hook: 'cmd/mycmd/after'
->   builtin generic, reversed, disabled
-> Code chunks:
->   'XXX' -> \ERROR 1
->   next-only -> \ERROR 2
-> No execution.
-<recently read> }
-l. ...\ShowHook{\foo}
-> \mycmd=macro:
-->\@ifnextchar [{\mycmdaux }{\mycmdaux []}.
-<argument> \mycmd 
-l. ...\ShowCommand\mycmd
+<<< Hook: 'baz'
+... Attributes:
+...   deprecated_generic: N
+...   generic: N
+...   declared: Y
+...   structure_exist: N
+...   usable: N
+...   disabled: Y
+...   empty: Y
+...   reversed: N
+...   generic_reversed: N
+...   consumed: N
+...   # of arguments: 0
+... Code chunks:
+)
+Runaway argument?
+{\int_gdecr:N \g__kernel_prg_map_int \cs_gset_eq:Nc \__prop_pair:wn {\ETC.
+! File ended while scanning use of \prg_map_break:Nn.
+<inserted text> 
+                \par 
+<*> \input ltcmdhooks-008.lvt
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
+! Emergency stop.
+<*> \input ltcmdhooks-008.lvt
+*** (job aborted, no legal \end found)
