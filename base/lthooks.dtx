@@ -31,8 +31,8 @@
 %%% From File: lthooks.dtx
 %
 %    \begin{macrocode}
-\def\lthooksversion{v1.1g}
-\def\lthooksdate{2024/01/17}
+\def\lthooksversion{v1.1i}
+\def\lthooksdate{2024/01/25}
 %    \end{macrocode}
 %
 %<*driver>
@@ -890,6 +890,17 @@
 %    A leading |.| is treated literally.
 % \end{function}
 %
+% \begin{function}[added=2024/01/25]{ \IfHookConsumedTF, }
+% \begin{syntax}
+% \cs{IfHookConsumedTF} \marg{hook} \marg{true code} \marg{false code}
+% \end{syntax}
+% If a \cs[no-index]{UseOneTimeHook...} instruction has been executed with that hook
+% executes \meta{true code} otherwise executes \meta{false code}.
+%
+%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
+%    A leading |.| is treated literally.
+% \end{function}
+%
 %
 %
 % \subsubsection{Displaying hook code}
@@ -1000,7 +1011,7 @@
 %   that is, in the order they will be executed when the hook is used.
 %
 %
-% \subsubsection{Debugging hook code}
+% \subsubsection{Debugging or testing hook code}
 %
 % \begin{function}{\DebugHooksOn,\DebugHooksOff}
 %   \begin{syntax}
@@ -1009,6 +1020,15 @@
 %    Turn the debugging of hook code on or off. This displays most changes
 %    made to the hook data structures. The output is rather coarse and
 %      not really intended for normal use.
+% \end{function}
+%
+% \begin{function}{\DebugPrintHook}
+%   \begin{syntax}
+%     \cs{DebugPrintHook} \Arg{hook}
+%   \end{syntax}
+%    Prints information about the hook. The output is rather coarse and
+%      primarily intended for debugging or testing purposes.
+%    Use \cs{ShowHook} for normal use.
 % \end{function}
 %
 %
@@ -1275,6 +1295,17 @@
 %    A leading |.| is treated literally.
 % \end{function}
 %
+%
+% \begin{function}[added=2024/01/25, pTF]{ \hook_if_consumed:n, }
+% \begin{syntax}
+% \cs{hook_if_consumed:nTF} \marg{hook} \marg{true code} \marg{false code}
+% \end{syntax}
+% Executes \meta{true code} if one of the \cs{hook_use_once...} has been executed on
+% the given hook, otherwise executes \meta{false code}.
+%
+%    The \meta{hook} \emph{cannot} be specified using the dot-syntax.
+%    A leading |.| is treated literally.
+% \end{function}
 %
 % \begin{function}{\hook_show:n,\hook_log:n}
 %   \begin{syntax}
@@ -6464,7 +6495,163 @@
 %    \end{macrocode}
 % \end{macro}
 %
+%  \begin{macro}{\l_@@_print_tl}
+%    Scratch variables used by \cs{DebugPrintHook}.
+%    \begin{macrocode}
+%<latexrelease>\IncludeInRelease{2024/01/25}{\DebugPrintHook}
+%<latexrelease>                 {Test~or~debug}
+\tl_new:N \l_@@_print_tl
+%    \end{macrocode}
+%  \end{macro}
 %
+% \begin{macro}{\DebugPrintHook}
+%   Print detailed hook information.
+% \changes{v1.1i}{2024/01/25}
+%         {Add \cs{DebugPrintHook}.}
+%    \begin{macrocode}
+\cs_new_protected:Npn \DebugPrintHook #1
+  {
+%    \end{macrocode}
+% We store the argument before normalization in order to catch changes
+% without interfering with the actual normalization code.
+%    \begin{macrocode}
+    \tl_set:Ne \l_@@_print_tl { #1 }
+    \@@_normalize_hook_args:Nn \@@_debug_print:n { #1 }
+  }
+%    \end{macrocode}
+% Next function is for \cs{DebugPrintHook} usage only.
+%    \begin{macrocode}
+\cs_new_protected:Npn \@@_debug_print:n #1
+  {
+    \@@_preamble_hook:n { #1 }
+    \exp_args:NV \str_if_eq:nnF \l_@@_print_tl { #1 }
+      {
+%    \end{macrocode}
+% The normalization has changed the argument, also display the original argument
+% to see the change.
+%    \begin{macrocode}
+        \iow_term:x { <<<~Hook:~'#1'(<- ~ '\l_@@_print_tl') }
+        \use_none:nn
+      }
+%    \end{macrocode}
+% Next token and group are possibly gobbled.
+%    \begin{macrocode}
+    \iow_term:n { <<<~Hook:~'#1' }
+    \iow_term:n { ...~Attributes: }
+%    \end{macrocode}
+% We cannot use \cs[no-index]{@@_tmp:w} because it is not always available.
+%    \begin{macrocode}
+    \cs_set:Npn \@@_debug_print:n:w ##1
+      {
+        \iow_term:x
+          {
+            ...\space\space\space##1:~
+            \cs_if_exist_use:cF { @@_if_##1:nT }
+              { \use:c { hook_if_##1:nT } }
+              { #1 } { Y \use_none:n } N
+          }
+      }
+    \@@_debug_print:n:w { deprecated_generic }
+    \@@_debug_print:n:w { generic }
+    \@@_debug_print:n:w { declared }
+    \@@_debug_print:n:w { structure_exist }
+    \@@_debug_print:n:w { usable }
+    \@@_debug_print:n:w { disabled }
+    \@@_debug_print:n:w { empty }
+    \@@_debug_print:n:w { reversed }
+    \@@_debug_print:n:w { generic_reversed }
+    \@@_debug_print:n:w { consumed }
+    \iow_term:x
+      {
+        ...\space\space\space\c_hash_str\space of~arguments:~
+        \int_eval:n { \str_count:e { \@@_parameter:n {#1} } / 3 }
+      }
+    \iow_term:n { ...~Code~chunks: }
+    \prop_map_inline:cn { g_@@_#1_code_prop }
+      {
+        \exp_after:wN \cs_set:Npn \exp_after:wN \@@_debug_print:n:w
+            \c_@@_nine_parameters_tl { ##2 }
+        \iow_term:x
+          {
+            ...\space\space\space
+            '##1' ~->~\cs_replacement_spec:N \@@_debug_print:n:w
+          }
+      }
+    \iow_term:x
+      {
+        ...\space\space\space'top~level'
+        \@@_cs_if_empty:cTF { @@_toplevel~#1 }
+          { ~ empty }
+          { ~ -> ~ \cs_replacement_spec:c { @@_toplevel~#1 } }
+      }
+    \iow_term:x
+      {
+        ...\space\space\space next-only
+        \@@_cs_if_empty:cTF { @@_next~#1 }
+          { ~ empty }
+          {
+            ~ -> ~ \exp_last_unbraced:Nf \@@_log_next_code:w
+              { \cs_replacement_spec:c { @@_next~#1 } }
+          }
+      }
+%    \end{macrocode}
+% Default rules and non default rules are separate because their effect
+% on reversed hooks is not the same, still they remain similar.
+%    \begin{macrocode}
+   \iow_term:n { ...~Default~rules: }
+%    \end{macrocode}
+% \cs[no-index]{l_@@_print_tl} contains the default value printed without any rule.
+%    \begin{macrocode}
+    \tl_set:Nn \l_@@_print_tl
+      { \iow_term:x { ...\space\space\space None } }
+    \cs_set:Npn \@@_debug_print:n:w ##1 ##2
+      {
+        \tl_set:Nn \l_@@_print_tl { ##2 }
+        \tl_if_in:NnTF \l_@@_print_tl { ^^J }
+          {
+            \tl_replace_once:Nnn \l_@@_print_tl { ^^J } { '~##1~' }
+          }
+          {
+            \tl_replace_once:Nnn \l_@@_print_tl { | } { '~##1~' }
+          }
+        \iow_term:x { ...\space\space\space'\l_@@_print_tl' }
+        \tl_clear:N \l_@@_print_tl
+      }
+    \@@_list_rules:nn {#1}
+      { \str_if_eq:nnT {##3} {??} { \@@_debug_print:n:w {##1} {##2} } }
+    \l_@@_print_tl
+ %    \end{macrocode}
+% Same as default rules, except the test against \enquote{|??|}.
+%    \begin{macrocode}
+   \iow_term:n { ...~Rules: }
+    \tl_set:Nn \l_@@_print_tl
+      { \iow_term:x { ...\space\space\space None } }
+    \@@_list_rules:nn {#1}
+      { \str_if_eq:nnF {##3} {??} { \@@_debug_print:n:w {##1} {##2} } }
+    \l_@@_print_tl
+    \iow_term:n { ...~Execution~order: }
+    \hook_if_empty:nF { #1 }
+      {
+        \clist_if_exist:cT { g_@@_#1_labels_clist }
+          {
+            \clist_if_empty:cF
+              { g_@@_#1_labels_clist }
+              {
+                \iow_term:x
+                  {
+                    ...\space\space\space'
+                    \clist_use:cn { g_@@_#1_labels_clist } { ',~' }'
+                  }
+                \use_none:n
+              }
+          }
+      }
+      { \iow_term:x { ...\space\space\space None } }
+    \iow_term:n { >>> }
+  }
+%<latexrelease>\EndIncludeInRelease
+%    \end{macrocode}
+% \end{macro}
 %
 %
 %  \subsection{Specifying code for next invocation}
@@ -6971,6 +7158,39 @@
   }
 %    \end{macrocode}
 %  \end{macro}
+%
+% \begin{macro}[pTF]{ \hook_if_consumed:n, }
+% Partially redundant with \cs[no-index]{@@_execute_immediately:nTF}.
+% The name is more consistent with the documentation.
+% The predicate is available.
+% \changes{v1.1i}{2024/01/25}
+%         {Add \cs{hook_if_consumed:nTF}.}
+%    \begin{macrocode}
+\prg_new_conditional:Npnn \hook_if_consumed:n #1 { p, T, F, TF }
+  {
+    \exp_after:wN \@@_use_none_delimit_by_s_mark:w
+    \if:w I
+        \if_cs_exist:w g_@@_#1_reversed_tl \cs_end:
+          \cs:w g_@@_#1_reversed_tl \exp_after:wN \cs_end:
+        \fi:
+        X
+      \s_@@_mark \prg_return_true:
+    \else:
+      \s_@@_mark \prg_return_false:
+    \fi:
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{ \IfHookConsumedTF, }
+% \LaTeXe\ bridge to \cs{hook_if_consumed:nTF}.
+% \changes{v1.1i}{2024/01/25}
+%         {Add \cs{IfHookConsumedTF}.}
+%    \begin{macrocode}
+\cs_set_eq:NN \IfHookConsumedTF \hook_if_consumed:nTF  
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \subsection{Querying a hook}
 %

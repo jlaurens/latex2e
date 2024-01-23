@@ -21,7 +21,7 @@
     \hook_new:n { A }
     \hook_gput_code:nnn { A } { . } { \message{aaa} }
     \hook_gset_rule:nnnn { A } { . } { after } { x }
-    \hook_log:n { A }
+    \DebugPrintHook { A }
     \hook_use_once:n { A }
     \hook_gput_code:nnn { A } { x } { \message{bbb} }
   }
@@ -32,7 +32,7 @@
     \NewHook { -{hook}- }
     \AddToHook { -{hook}- } {\message{aaa}}
     \DeclareHookRule { -{hook}- } { . } { after } { x }
-    \LogHook { -{hook}- }
+    \DebugPrintHook { -{hook}- }
     \UseOneTimeHook {-{hook}-}
     \AddToHook { -{hook}- } [ x ] {\message{bbb}}
   }
@@ -48,7 +48,7 @@
     \NewHook { grüße }
     \AddToHook { grüße } {\message{aaa}}
     \DeclareHookRule { grüße } { . } { after } { x }
-    \LogHook { grüße }
+    \DebugPrintHook { grüße }
     \UseOneTimeHook {grüße}
     \AddToHook { grüße } [ x ] {\message{bbb}}
   }
@@ -60,7 +60,7 @@
     \NewHook { \hookname }
     \AddToHook { \hookname } {\message{aaa}}
     \DeclareHookRule { \hookname } { . } { after } { x }
-    \LogHook { \hookname }
+    \DebugPrintHook { \hookname }
     \UseOneTimeHook {\hookname}
     \AddToHook { \hookname } [ x ] {\message{bbb}}
   }
@@ -72,7 +72,7 @@
     \NewHook { \hookname }
     \AddToHook { \hookname } {\message{aaa}}
     \DeclareHookRule { \hookname } { . } { after } { x }
-    \LogHook { \hookname }
+    \DebugPrintHook { \hookname }
     \UseOneTimeHook {\hookname}
     \AddToHook { \hookname } [ x ] {\message{bbb}}
   }
